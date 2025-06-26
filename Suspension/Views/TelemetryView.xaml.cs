@@ -94,7 +94,7 @@ namespace Suspension.Views
             stopwatch.Stop();
             Loaded -= ShowLoadedTip;
 
-            timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds} ms.";
+            timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds:N0} ms.";
             timeTip.IsOpen = true;
         }
 
