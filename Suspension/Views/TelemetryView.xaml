@@ -21,6 +21,16 @@
                 </ControlTemplate>
             </oxy:PlotView.DefaultTrackerTemplate>
         </oxy:PlotView>
+        <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+                BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+                CornerRadius="8"
+                Grid.Row="1" Grid.Column="1">
+            <map:Map x:Name="map" Background="Transparent">
+                <map:MapTileLayer TileSource="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                  SourceName="OpenStreetMap"
+                                  Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)" />
+            </map:Map>
+        </Border>
 
         <TeachingTip x:Name="timeTip" />
     </Grid>
