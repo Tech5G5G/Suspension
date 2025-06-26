@@ -6,11 +6,11 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.WinUI;
 using LiveChartsCore.SkiaSharpView.Painting;
 
+using OxyPlot;
+using OxyPlot.Series;
+
 namespace Suspension.Views
 {
-    using OxyPlot;
-    using OxyPlot.Series;
-
     /// <summary>
     /// A page that shows information stored by a <see cref="TelemetryFile"/>.
     /// </summary>
@@ -30,6 +30,16 @@ namespace Suspension.Views
 
         private readonly ICartesianAxis[] xAxes = [new Axis()];
         private readonly ICartesianAxis[] yAxes = [new Axis()];
+
+
+        private PlotModel model = new()
+        {
+            Title = "Example",
+            Series =
+            {
+                new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)")
+            }
+        };
 
         /// <summary>
         /// Creates a new instance of <see cref="TelemetryView"/>.

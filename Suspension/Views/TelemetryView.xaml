@@ -11,10 +11,13 @@
     mc:Ignorable="d">
 
     <Grid>
-        <lvs:CartesianChart x:Name="chart"
-                            ZoomMode="Both"
+        <lvs:CartesianChart x:Name="chart" />
+                            <!--ZoomMode="Both"
                             LegendPosition="Bottom"
                             Series="{x:Bind series}"
-                            XAxes="{x:Bind xAxes}" YAxes="{x:Bind yAxes}" />
+                            XAxes="{x:Bind xAxes}" YAxes="{x:Bind yAxes}" />-->
+
+
+        <oxy:PlotView Model="{x:Bind model}" />
     </Grid>
 </Page>
