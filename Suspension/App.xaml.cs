@@ -69,6 +69,5 @@
             windows.Add(window);
             return window;
         }
-
     }
 }

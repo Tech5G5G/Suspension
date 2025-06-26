@@ -198,9 +198,7 @@
                 </Grid>
             </Grid>
 
-            <ContentPresenter x:Name="mainView">
-                <!--Make page type that gets shown here (stored in TelemetryItem)-->
-            </ContentPresenter>
+            <ContentPresenter x:Name="mainView" />
         </Grid>
 
         <Grid Height="30" Grid.Row="3" />

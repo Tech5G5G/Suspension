@@ -1,5 +1,4 @@
 using Windows.Graphics;
-using Windows.Storage.Pickers;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Input;
@@ -141,9 +140,7 @@ namespace Suspension
         {
             if (args.AddedItems.Count > 0 &&
                 args.AddedItems[0] is TelemetryItem item)
-            {
                 mainView.Content = item.TelemetryView;
-            }
         }
 
         private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
