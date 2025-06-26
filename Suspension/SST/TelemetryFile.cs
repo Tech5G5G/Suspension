@@ -31,12 +31,20 @@ public class TelemetryFile
                 counter++,
                 (BitConverter.ToUInt16(bytes, i), BitConverter.ToUInt16(bytes, i + 2)));
         }
+
+        size = fileStream.Length;
     }
 
     /// <summary>
     /// Gets the amount of data contained within the <see cref="TelemetryFile"/>.
     /// </summary>
     public int Count => data.Count;
+
+    /// <summary>
+    /// Gets the size of the SST file represented by the <see cref="TelemetryFile"/> in bytes.
+    /// </summary>
+    public long Size => size;
+    private readonly long size;
 
     /// <summary>
     /// Gets a tuple of <see cref="int"/>.
