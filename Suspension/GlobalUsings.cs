@@ -1,11 +1,13 @@
 ﻿global using System;
 global using System.IO;
 global using System.Linq;
+global using System.Diagnostics;
 global using System.Threading.Tasks;
 global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Collections.Specialized;
 global using Windows.Storage;
+global using Windows.Storage.Pickers;
 global using Windows.Foundation;
 global using Windows.Foundation.Collections;
 global using Microsoft.UI.Xaml;
