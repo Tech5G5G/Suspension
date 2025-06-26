@@ -6,18 +6,10 @@
     xmlns:local="using:Suspension.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:lvs="using:LiveChartsCore.SkiaSharpView.WinUI"
     xmlns:oxy="using:OxyPlot"
     mc:Ignorable="d">
 
     <Grid>
-        <lvs:CartesianChart x:Name="chart" />
-                            <!--ZoomMode="Both"
-                            LegendPosition="Bottom"
-                            Series="{x:Bind series}"
-                            XAxes="{x:Bind xAxes}" YAxes="{x:Bind yAxes}" />-->
-
-
-        <oxy:PlotView Model="{x:Bind model}" />
+        <oxy:PlotView x:Name="plot" Background="Transparent" />
     </Grid>
 </Page>

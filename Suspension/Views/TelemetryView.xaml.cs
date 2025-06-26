@@ -1,13 +1,7 @@
-using SkiaSharp;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.WinUI;
-using LiveChartsCore.SkiaSharpView.Painting;
-
 using OxyPlot;
+using OxyPlot.Legends;
 using OxyPlot.Series;
+using System.Reflection;
 
 namespace Suspension.Views
 {
@@ -22,38 +16,27 @@ namespace Suspension.Views
         public TelemetryFile TelemetryFile { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="CartesianChart"/> used in this <see cref="TelemetryView"/>.
+        /// Gets the <see cref="PlotView"/> used in this <see cref="TelemetryView"/>.
         /// </summary>
-        public CartesianChart Chart => chart;
+        public PlotView Plot => plot;
 
-        private readonly ObservableCollection<ISeries> series = [];
-
-        private readonly ICartesianAxis[] xAxes = [new Axis()];
-        private readonly ICartesianAxis[] yAxes = [new Axis()];
-
-
-        private PlotModel model = new()
+        private readonly PlotModel model = new()
         {
-            Title = "Example",
-            Series =
+            Legends =
             {
-                new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)")
-            }
+                new Legend { LegendPosition = LegendPosition.BottomRight }
+            },
+            IsLegendVisible = true
         };
 
         /// <summary>
         /// Creates a new instance of <see cref="TelemetryView"/>.
         /// </summary>
-        /// <param name="file">The <see cref="TelemetryFile"/> to display.</param>
+        /// <param name="file">The <see cref="SST.TelemetryFile"/> to display.</param>
         public TelemetryView(TelemetryFile file)
         {
             InitializeComponent();
             TelemetryFile = file;
-
-            chart.EasingFunction = null;
-            chart.LegendTextPaint = new SolidColorPaint(SKColors.White);
-
-            chart.CacheMode = new BitmapCache();
 
             //Item1 is the timestamp
             //Item2 is the fork
@@ -61,26 +44,26 @@ namespace Suspension.Views
             (int, int, int)[] data = ExtractData();
 
             //Create graph line for fork
-            series.Add(new LineSeries<ObservablePoint>
+            model.Series.Add(new LineSeries()
             {
-                Name = "Fork",
-                Values = [.. data.Select(i => new ObservablePoint(i.Item1, i.Item2))],
-                Stroke = new SolidColorPaint(new(0x84, 0x43, 0x54)),
-                Fill = new SolidColorPaint(new(0x84, 0x43, 0x54, 0x32)),
-                GeometryStroke = null,
-                GeometryFill = null
+                Title = "Fork",
+                MinimumSegmentLength = 20,
+                Color = OxyColor.FromRgb(0x84, 0x43, 0x54),
+                ItemsSource = data.Select(i => new DataPoint(i.Item1, i.Item2)).ToArray()
             });
 
             //Create graph line for shock
-            series.Add(new LineSeries<ObservablePoint>
+            model.Series.Add(new LineSeries
             {
-                Name = "Shock",
-                Values = [.. data.Select(i => new ObservablePoint(i.Item1, i.Item3))],
-                Stroke = new SolidColorPaint(new(0x37, 0xA9, 0xCF)),
-                Fill = new SolidColorPaint(new(0x37, 0xA9, 0xCF, 0x32)),
-                GeometryStroke = null,
-                GeometryFill = null
+                Title = "Shock",
+                MinimumSegmentLength = 20,
+                Color = OxyColor.FromRgb(0x37, 0xA9, 0xCF),
+                ItemsSource = data.Select(i => new DataPoint(i.Item1, i.Item3)).ToArray()
             });
+
+            plot.Model = model;
+            model.DefaultXAxis.Title = "Time";
+            model.DefaultYAxis.Title = "Travel";
         }
 
         private (int, int, int)[] ExtractData()
