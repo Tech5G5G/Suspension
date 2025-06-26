@@ -63,7 +63,9 @@ namespace Suspension
             {
                 tabs.TabItemsSource = telemetry;
                 tabs.CanDragTabs = tabs.CanReorderTabs = true;
+
                 welcomeView.Visibility = Visibility.Collapsed;
+                statsContainer.Visibility = Visibility.Visible;
 
                 addVideoButton.IsEnabled = addMapButton.IsEnabled = true;
             }
@@ -142,7 +144,12 @@ namespace Suspension
         {
             if (args.AddedItems.Count > 0 &&
                 args.AddedItems[0] is TelemetryItem item)
+            {
                 mainView.Content = item.TelemetryView;
+
+                sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
+                pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
+            }
         }
 
         private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
