@@ -22,11 +22,12 @@
         </Grid.ColumnDefinitions>
 
         <Border x:Name="plotContainer"
+                Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
-                CornerRadius="8" Grid.RowSpan="2">
+                CornerRadius="8" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <oxy:PlotView x:Name="plot" Background="Transparent">
                 <oxy:PlotView.DefaultTrackerTemplate>
-                    <ControlTemplate >
+                    <ControlTemplate>
                         <con:TrackerControl Position="{Binding Position}"
                                         Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
                             <TextBlock Text="{Binding}" Foreground="{ThemeResource TextFillColorPrimary}" Margin="6" />
@@ -37,19 +38,18 @@
         </Border>
 
         <Grid x:Name="mediaContainer"
+              Background="{ThemeResource CardBackgroundFillColorDefault}"
               BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+              Visibility="Collapsed"
               CornerRadius="8" Grid.Column="1">
-            <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" Visibility="Collapsed" />
-            <Button x:Name="openMediaButton" Content="Open"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Click="OpenMediaButton_Click" />
+            <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" />
         </Grid>
 
         <Border x:Name="mapContainer"
                 Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
-                CornerRadius="8"
-                Grid.Row="1" Grid.Column="1">
+                Visibility="Collapsed"
+                CornerRadius="8" Grid.Column="1">
             <map:Map x:Name="map" Background="Transparent">
                 <map:MapTileLayer TileSource="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                                   SourceName="OpenStreetMap"
