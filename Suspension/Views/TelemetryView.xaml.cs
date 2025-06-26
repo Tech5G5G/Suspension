@@ -11,12 +11,12 @@ namespace Suspension.Views
     public sealed partial class TelemetryView : Page
     {
         /// <summary>
-        /// Gets the <see cref="SST.TelemetryFile"/> used to create this <see cref="TelemetryView"/>.
+        /// Gets the <see cref="SST.TelemetryFile"/> used to create the <see cref="TelemetryView"/>.
         /// </summary>
         public TelemetryFile TelemetryFile { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="PlotModel"/> used in this <see cref="TelemetryView"/>.
+        /// Gets the <see cref="PlotModel"/> used in the <see cref="TelemetryView"/>.
         /// </summary>
         public PlotModel Model => model;
 
