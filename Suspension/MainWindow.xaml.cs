@@ -64,6 +64,8 @@ namespace Suspension
                 tabs.TabItemsSource = telemetry;
                 tabs.CanDragTabs = tabs.CanReorderTabs = true;
                 welcomeView.Visibility = Visibility.Collapsed;
+
+                addVideoButton.IsEnabled = addMapButton.IsEnabled = true;
             }
         }
 
@@ -291,7 +293,11 @@ namespace Suspension
 
         #endregion
 
-        #region Windowing
+        #region MenuBar
+
+        private void AddVideoButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestVideo();
+
+        private void AddMapButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestMap();
 
         private void NewWindowButton_Click(object sender, RoutedEventArgs args) => App.CreateWindow();
 

@@ -139,7 +139,16 @@
             </MenuBarItem>
 
             <MenuBarItem Title="View">
-                
+                <MenuFlyoutItem x:Name="addVideoButton" Text="Add video" IsEnabled="False" Click="AddVideoButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="addMapButton" Text="Add map" IsEnabled="False" Click="AddMapButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
             </MenuBarItem>
         </MenuBar>
 
