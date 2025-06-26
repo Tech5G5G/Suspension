@@ -143,10 +143,10 @@
             </MenuBarItem>
         </MenuBar>
 
-        <Grid Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
-              BorderThickness="0,1" BorderBrush="{ThemeResource CardStrokeColorDefault}"
-              Grid.Row="2">
-            <Grid x:Name="welcomeView">
+        <Grid Grid.Row="2">
+            <Grid x:Name="welcomeView"
+                  Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                  BorderThickness="0,1" BorderBrush="{ThemeResource CardStrokeColorDefault}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
