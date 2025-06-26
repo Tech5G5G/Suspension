@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="Suspension.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Suspension"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Suspension">
+    <Window.SystemBackdrop>
+        <MicaBackdrop Kind="BaseAlt" />
+    </Window.SystemBackdrop>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TabView x:Name="tabs"
+                 CanDragTabs="False"
+                 CanReorderTabs="False"
+                 AllowDropTabs="True"
+                 
+                 TabDroppedOutside="Tabs_TabDroppedOutside"
+                 TabStripDragOver="Tabs_TabStripDragOver"
+                 TabStripDrop="Tabs_TabStripDrop"
+                 TabDragStarting="Tabs_TabDragStarting"
+                 
+                 AddTabButtonClick="Tabs_AddTabButtonClick"
+                 TabCloseRequested="Tabs_TabCloseRequested"
+                 SelectionChanged="Tabs_SelectionChanged"
+                 TabItemsChanged="Tabs_TabItemsChanged">
+            <TabViewItem Header="Welcome">
+                <TabViewItem.IconSource>
+                    <FontIconSource Glyph="&#xF133;" />
+                </TabViewItem.IconSource>
+            </TabViewItem>
+
+            <TabView.TabItemTemplate>
+                <DataTemplate x:DataType="local:TelemetryItem">
+                    <TabViewItem Loaded="TabViewItem_Loaded" Header="{x:Bind FileName}" />
+                </DataTemplate>
+            </TabView.TabItemTemplate>
+            
+            <TabView.TabStripHeader>
+                <Image Source="Assets/StoreLogo.png" Width="16" Margin="12,2,8,0" />
+            </TabView.TabStripHeader>
+            <TabView.TabStripFooter>
+                <Grid>
+                    <Grid.Resources>
+                        <Style x:Key="CaptionButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Margin" Value="0,4,4,4" />
+                            <Setter Property="Width" Value="45" />
+                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                            <Setter Property="ToolTipService.Placement" Value="Top" />
+                        </Style>
+                    </Grid.Resources>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border x:Name="dragRegion" Background="Transparent" />
+
+                    <Button Style="{StaticResource CaptionButtonStyle}" ToolTipService.ToolTip="Minimize" Grid.Column="1" Click="MinimizeButton_Click">
+                        <FontIcon Glyph="&#xE921;" FontSize="10" />
+                    </Button>
+
+                    <Button x:Name="maximizeButton" Style="{StaticResource CaptionButtonStyle}" Grid.Column="2" Click="MaximizeButton_Click">
+                        <FontIcon Glyph="&#xE922;" FontSize="10" />
+                        <ToolTipService.ToolTip>
+                            <ToolTip x:Name="maximizeToolTip" Content="Maximize" />
+                        </ToolTipService.ToolTip>
+                    </Button>
+
+                    <Button Style="{StaticResource CaptionButtonStyle}" ToolTipService.ToolTip="Close" Grid.Column="3" Click="CloseButton_Click">
+                        <FontIcon Glyph="&#xE8BB;" FontSize="10" />
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FFe81123" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#FFF1707a" />
+                            <SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FF000000" />
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </TabView.TabStripFooter>
+            
+            <TabView.Resources>
+                <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" />
+            </TabView.Resources>
+        </TabView>
+
+        <Border Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}" Grid.RowSpan="3" Grid.Row="1" />
+
+        <MenuBar Grid.Row="1">
+            <MenuBarItem Title="File">
+                <MenuFlyoutItem Text="Open" Click="OpenButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="O" />
+                        <KeyboardAccelerator Modifiers="Control" Key="T" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Open folder" Click="OpenFolderButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="O" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator />
+
+                <MenuFlyoutItem Text="New window" Click="NewWindowButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="N" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Close window" Click="CloseButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="W" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator />
+
+                <MenuFlyoutItem Text="Close tab" Click="CloseTabButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="W" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Exit" Click="ExitButton_Click" />
+            </MenuBarItem>
+
+            <MenuBarItem Title="View">
+                
+            </MenuBarItem>
+        </MenuBar>
+
+        <Grid Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+              BorderThickness="0,1" BorderBrush="{ThemeResource CardStrokeColorDefault}"
+              Grid.Row="2">
+            <Grid x:Name="welcomeView">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Start" Margin="48,48,0,0" Style="{StaticResource TitleTextBlockStyle}" />
+                    <StackPanel Margin="46,8,0,48" Spacing="8" Grid.Row="1">
+                        <Button Content="Open" Click="OpenButton_Click" />
+                        <Button Content="Open folder" Click="OpenFolderButton_Click" />
+                    </StackPanel>
+
+                    <TextBlock Text="Recent" Margin="8,48,0,0" Style="{StaticResource TitleTextBlockStyle}" Grid.Column="1" />
+                    <ListView SelectionMode="None"
+                              IsItemClickEnabled="True"
+                              Padding="0,8,48,48"
+                              ItemsSource="{x:Bind recents}"
+                              ItemClick="Recents_ItemClick"
+                              Grid.Row="1" Grid.Column="1">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:RecentItem">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{x:Bind FileName}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{x:Bind FilePath}" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondary}" Grid.Row="1" />
+
+                                    <TextBlock Text="{x:Bind LastModified}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{ThemeResource TextFillColorSecondary}"
+                                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                                               Margin="8,0,0,0" Grid.Column="1" Grid.RowSpan="2" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <ProgressRing x:Name="recentsRing" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,48,0" Grid.Row="1" Grid.Column="1" />
+                </Grid>
+            </Grid>
+
+            <ContentPresenter x:Name="mainView">
+                <!--Make page type that gets shown here (stored in TelemetryItem)-->
+            </ContentPresenter>
+        </Grid>
+
+        <Grid Height="30" Grid.Row="3" />
+    </Grid>
+</Window>

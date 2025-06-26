@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Suspension (Package)": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": false
+    },
+    "Suspension (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
