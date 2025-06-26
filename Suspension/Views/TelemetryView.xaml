@@ -7,9 +7,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="using:OxyPlot"
+    xmlns:con="using:OxyPlot.Controls"
     mc:Ignorable="d">
 
     <Grid>
-        <oxy:PlotView x:Name="plot" Background="Transparent" />
+        <oxy:PlotView x:Name="plot" Background="Transparent">
+            <oxy:PlotView.DefaultTrackerTemplate>
+                <ControlTemplate >
+                    <con:TrackerControl Position="{Binding Position}"
+                                        Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
+                        <TextBlock Text="{Binding}" Foreground="{ThemeResource TextFillColorPrimary}" Margin="6" />
+                    </con:TrackerControl>
+                </ControlTemplate>
+            </oxy:PlotView.DefaultTrackerTemplate>
+        </oxy:PlotView>
     </Grid>
 </Page>
