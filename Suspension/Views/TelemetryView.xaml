@@ -11,6 +11,9 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+                BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+                CornerRadius="8" Grid.RowSpan="2">
         <oxy:PlotView x:Name="plot" Background="Transparent">
             <oxy:PlotView.DefaultTrackerTemplate>
                 <ControlTemplate >
@@ -21,6 +24,8 @@
                 </ControlTemplate>
             </oxy:PlotView.DefaultTrackerTemplate>
         </oxy:PlotView>
+        </Border>
+
         <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
                 CornerRadius="8"
