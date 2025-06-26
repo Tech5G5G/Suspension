@@ -172,7 +172,7 @@
                               Grid.Row="1" Grid.Column="1">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="local:RecentItem">
-                                <Grid>
+                                <Grid Padding="0,8">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
