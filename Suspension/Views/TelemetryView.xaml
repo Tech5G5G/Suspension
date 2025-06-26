@@ -21,7 +21,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+        <Border x:Name="plotContainer"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
                 CornerRadius="8" Grid.RowSpan="2">
             <oxy:PlotView x:Name="plot" Background="Transparent">
@@ -36,7 +36,7 @@
             </oxy:PlotView>
         </Border>
 
-        <Grid Background="{ThemeResource CardBackgroundFillColorDefault}"
+        <Grid x:Name="mediaContainer"
               BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
               CornerRadius="8" Grid.Column="1">
             <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" Visibility="Collapsed" />
@@ -45,7 +45,8 @@
                     Click="OpenMediaButton_Click" />
         </Grid>
 
-        <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+        <Border x:Name="mapContainer"
+                Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
                 CornerRadius="8"
                 Grid.Row="1" Grid.Column="1">
