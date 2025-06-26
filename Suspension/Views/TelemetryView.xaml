@@ -10,7 +10,16 @@
     xmlns:con="using:OxyPlot.Controls"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid RowSpacing="4" ColumnSpacing="4" Padding="4,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
         <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
                 CornerRadius="8" Grid.RowSpan="2">
