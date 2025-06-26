@@ -24,17 +24,26 @@
         <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
                 CornerRadius="8" Grid.RowSpan="2">
-        <oxy:PlotView x:Name="plot" Background="Transparent">
-            <oxy:PlotView.DefaultTrackerTemplate>
-                <ControlTemplate >
-                    <con:TrackerControl Position="{Binding Position}"
+            <oxy:PlotView x:Name="plot" Background="Transparent">
+                <oxy:PlotView.DefaultTrackerTemplate>
+                    <ControlTemplate >
+                        <con:TrackerControl Position="{Binding Position}"
                                         Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
-                        <TextBlock Text="{Binding}" Foreground="{ThemeResource TextFillColorPrimary}" Margin="6" />
-                    </con:TrackerControl>
-                </ControlTemplate>
-            </oxy:PlotView.DefaultTrackerTemplate>
-        </oxy:PlotView>
+                            <TextBlock Text="{Binding}" Foreground="{ThemeResource TextFillColorPrimary}" Margin="6" />
+                        </con:TrackerControl>
+                    </ControlTemplate>
+                </oxy:PlotView.DefaultTrackerTemplate>
+            </oxy:PlotView>
         </Border>
+
+        <Grid Background="{ThemeResource CardBackgroundFillColorDefault}"
+              BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+              CornerRadius="8" Grid.Column="1">
+            <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" Visibility="Collapsed" />
+            <Button x:Name="openMediaButton" Content="Open"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Click="OpenMediaButton_Click" />
+        </Grid>
 
         <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"

@@ -1,6 +1,7 @@
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Legends;
+using Windows.Media.Core;
 
 namespace Suspension.Views
 {
@@ -90,6 +91,30 @@ namespace Suspension.Views
             }
 
             return values;
+        }
+
+        private async void OpenMediaButton_Click(object sender, RoutedEventArgs args)
+        {
+            FileOpenPicker picker = new()
+            {
+                FileTypeFilter =
+                {
+                    ".mp4",
+                    ".wmv",
+                    ".avi",
+                    ".mov",
+                    ".mkv"
+                },
+                SuggestedStartLocation = PickerLocationId.ComputerFolder
+            };
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, (nint)XamlRoot.ContentIslandEnvironment.AppWindowId.Value);
+
+            if (await picker.PickSingleFileAsync() is StorageFile file)
+            {
+                media.Source = MediaSource.CreateFromUri(new(file.Path));
+                media.Visibility = Visibility.Visible;
+                openMediaButton.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
