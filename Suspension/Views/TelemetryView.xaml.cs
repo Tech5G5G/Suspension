@@ -70,6 +70,8 @@ namespace Suspension.Views
 
             model.DefaultYAxis.Title = "Travel";
             model.DefaultYAxis.Unit = "mm";
+            model.DefaultYAxis.StartPosition = 1;
+            model.DefaultYAxis.EndPosition = 0;
 
             Loaded += ShowLoadedTip;
         }
