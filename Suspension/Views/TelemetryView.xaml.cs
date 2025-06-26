@@ -64,8 +64,12 @@ namespace Suspension.Views
             });
 
             plot.Model = model;
+
             model.DefaultXAxis.Title = "Time";
+            model.DefaultXAxis.Unit = "s";
+
             model.DefaultYAxis.Title = "Travel";
+            model.DefaultYAxis.Unit = "mm";
 
             Loaded += ShowLoadedTip;
         }
