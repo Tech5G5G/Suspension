@@ -1,7 +1,6 @@
 using OxyPlot;
-using OxyPlot.Legends;
 using OxyPlot.Series;
-using System.Reflection;
+using OxyPlot.Legends;
 
 namespace Suspension.Views
 {
@@ -16,9 +15,9 @@ namespace Suspension.Views
         public TelemetryFile TelemetryFile { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="PlotView"/> used in this <see cref="TelemetryView"/>.
+        /// Gets the <see cref="PlotModel"/> used in this <see cref="TelemetryView"/>.
         /// </summary>
-        public PlotView Plot => plot;
+        public PlotModel Model => model;
 
         private readonly PlotModel model = new()
         {
