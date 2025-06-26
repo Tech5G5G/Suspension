@@ -21,6 +21,8 @@ public class TelemetryFile
 
         var bytes = ReadAllBytes(fileStream);
 
+        //TODO: Get sampling rate of SST file
+
         if (bytes.Length < 3 || System.Text.Encoding.UTF8.GetString(bytes[..3]) != "SST") //Check header of SST file
             throw new InvalidDataException("Incorrect file contents. It may be corrupt or of a different format.");
 

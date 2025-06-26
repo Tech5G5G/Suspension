@@ -99,7 +99,8 @@ namespace Suspension.Views
             return values;
         }
 
-        private async void OpenMediaButton_Click(object sender, RoutedEventArgs args)
+        //TODO: Complete implementation of request methods
+
         {
             FileOpenPicker picker = new()
             {
