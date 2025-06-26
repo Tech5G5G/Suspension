@@ -21,5 +21,7 @@
                 </ControlTemplate>
             </oxy:PlotView.DefaultTrackerTemplate>
         </oxy:PlotView>
+
+        <TeachingTip x:Name="timeTip" />
     </Grid>
 </Page>

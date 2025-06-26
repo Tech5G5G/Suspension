@@ -19,6 +19,8 @@ namespace Suspension.Views
         /// </summary>
         public PlotModel Model => model;
 
+        private readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
         private readonly PlotModel model = new()
         {
             Legends =
@@ -63,6 +65,17 @@ namespace Suspension.Views
             plot.Model = model;
             model.DefaultXAxis.Title = "Time";
             model.DefaultYAxis.Title = "Travel";
+
+            Loaded += ShowLoadedTip;
+        }
+
+        private void ShowLoadedTip(object sender, RoutedEventArgs args)
+        {
+            stopwatch.Stop();
+            Loaded -= ShowLoadedTip;
+
+            timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds} ms.";
+            timeTip.IsOpen = true;
         }
 
         private (int, int, int)[] ExtractData()
