@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="using:OxyPlot"
     xmlns:con="using:OxyPlot.Controls"
+    xmlns:map="using:MapControl"
     mc:Ignorable="d">
 
     <Grid RowSpacing="4" ColumnSpacing="4" Padding="4,0">
