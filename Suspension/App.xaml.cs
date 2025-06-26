@@ -20,7 +20,11 @@
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            CreateWindow();
+            var window = CreateWindow();
+            var activation = AppInstance.GetCurrent().GetActivatedEventArgs();
+
+            if (activation.Kind == ExtendedActivationKind.File)
+                window.LoadTelemetryFromArguments(activation);
 
             Program.Activated += (s, e) =>
             {
