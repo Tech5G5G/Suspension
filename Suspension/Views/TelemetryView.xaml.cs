@@ -1,4 +1,5 @@
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Legends;
 using Windows.Media.Core;
@@ -63,15 +64,27 @@ namespace Suspension.Views
                 ItemsSource = data.Select(i => new DataPoint(i.Item1, i.Item3)).ToArray()
             });
 
+            //Create X-Axis
+            model.Axes.Add(new TimeSpanAxis()
+            {
+                Title = "Time",
+                Unit = "s",
+                Position = AxisPosition.Bottom
+            });
+
+            //Create Y-Axis
+            model.Axes.Add(new LinearAxis()
+            {
+                Title = "Travel",
+                Unit = "mm",
+                StartPosition = 1,
+                EndPosition = 0,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                Position = AxisPosition.Left
+            });
+
             plot.Model = model;
-
-            model.DefaultXAxis.Title = "Time";
-            model.DefaultXAxis.Unit = "s";
-
-            model.DefaultYAxis.Title = "Travel";
-            model.DefaultYAxis.Unit = "mm";
-            model.DefaultYAxis.StartPosition = 1;
-            model.DefaultYAxis.EndPosition = 0;
 
             Loaded += ShowLoadedTip;
         }
