@@ -11,7 +11,7 @@
     xmlns:map="using:MapControl"
     mc:Ignorable="d">
 
-    <Grid RowSpacing="4" ColumnSpacing="4" Padding="4,0">
+    <Grid RowSpacing="8" ColumnSpacing="8" Padding="8,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
@@ -29,7 +29,7 @@
                 <oxy:PlotView.DefaultTrackerTemplate>
                     <ControlTemplate>
                         <con:TrackerControl Position="{Binding Position}"
-                                        Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
+                                            Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
                             <TextBlock Text="{Binding}" Foreground="{ThemeResource TextFillColorPrimary}" Margin="6" />
                         </con:TrackerControl>
                     </ControlTemplate>
