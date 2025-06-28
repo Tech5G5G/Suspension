@@ -45,17 +45,16 @@
             <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" />
         </Grid>
 
-        <Border x:Name="mapContainer"
+        <Grid x:Name="mapContainer"
                 Background="{ThemeResource CardBackgroundFillColorDefault}"
                 BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
                 Visibility="Collapsed"
-                CornerRadius="8" Grid.Column="1">
+                CornerRadius="8"
+                Grid.Row="1" Grid.Column="1">
             <map:Map x:Name="map" Background="Transparent">
-                <map:MapTileLayer TileSource="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                  SourceName="OpenStreetMap"
-                                  Description="© [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)" />
+                <map:MapTileLayer TileSource="https://mts1.google.com/vt/lyrs=y&amp;x={x}&amp;y={y}&amp;z={z}" />
             </map:Map>
-        </Border>
+        </Grid>
 
         <TeachingTip x:Name="timeTip" />
     </Grid>

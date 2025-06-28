@@ -73,6 +73,7 @@ namespace Suspension
                 statusBar.Visibility = Visibility.Visible;
 
                 statusBarToggle.IsEnabled = statusBarToggle.IsChecked =
+                addVideoButton.IsEnabled = addMapButton.IsEnabled = 
                 zoomInButton.IsEnabled = zoomOutButton.IsEnabled = resetZoomButton.IsEnabled = true;
             }
 
@@ -322,7 +323,22 @@ namespace Suspension
 
         private void AddVideoButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestVideo();
 
-        private void AddMapButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestMap();
+        private void AddMapButton_Click(object sender, RoutedEventArgs args)
+        {
+            var view = mainView.Content as TelemetryView;
+            view?.RequestMap();
+            MapServiceButton_Click(mapServices.Items.First(i => (i as RadioMenuFlyoutItem).IsChecked), null);
+        }
+
+        private void MapServiceButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)
+            .SetBaseMapLayer((sender as RadioMenuFlyoutItem).Text switch
+            {
+                "OpenStreetMap" => "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "Wikimedia" => "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
+                "Carto Voyager" => "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                _ => "https://mts1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+            });
+
         private void ToggleStatusBar_Click(object sender, RoutedEventArgs args)
         {
             bool visible = (sender as ToggleMenuFlyoutItem).IsChecked;

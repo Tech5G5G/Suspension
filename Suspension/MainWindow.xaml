@@ -44,7 +44,7 @@
                     <TabViewItem Loaded="TabViewItem_Loaded" Header="{x:Bind FileName}" />
                 </DataTemplate>
             </TabView.TabItemTemplate>
-            
+
             <TabView.TabStripHeader>
                 <Image Source="Assets/StoreLogo.png" Width="16" Margin="12,2,8,0" />
             </TabView.TabStripHeader>
@@ -92,7 +92,7 @@
                     </Button>
                 </Grid>
             </TabView.TabStripFooter>
-            
+
             <TabView.Resources>
                 <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Transparent" />
                 <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" />
@@ -163,6 +163,13 @@
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+
+                <MenuFlyoutSubItem x:Name="mapServices" Text="Map service">
+                    <RadioMenuFlyoutItem Text="Google Maps" IsChecked="True" Click="MapServiceButton_Click" />
+                    <RadioMenuFlyoutItem Text="OpenStreetMap" Click="MapServiceButton_Click" />
+                    <RadioMenuFlyoutItem Text="Wikimedia" Click="MapServiceButton_Click" />
+                    <RadioMenuFlyoutItem Text="Carto Voyager" Click="MapServiceButton_Click" />
+                </MenuFlyoutSubItem>
 
                 <MenuFlyoutSeparator />
 

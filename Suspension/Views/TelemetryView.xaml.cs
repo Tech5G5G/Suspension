@@ -3,6 +3,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Legends;
 using Windows.Media.Core;
+using MapControl;
 
 namespace Suspension.Views
 {
@@ -150,7 +151,38 @@ namespace Suspension.Views
                 media.Source = MediaSource.CreateFromUri(new(file.Path));
                 media.Visibility = Visibility.Visible;
                 openMediaButton.Visibility = Visibility.Collapsed;
+        /// <summary>
+        /// Request a map to be added to the <see cref="TelemetryView"/>.
+        /// </summary>
+        public /*async*/ void RequestMap()
+        {
+            FileOpenPicker picker = new()
+            {
+                FileTypeFilter = { /*File type for mapping*/ },
+                SuggestedStartLocation = PickerLocationId.ComputerFolder
+            };
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, (nint)XamlRoot.ContentIslandEnvironment.AppWindowId.Value);
+
+            //if (await picker.PickSingleFileAsync() is StorageFile file)
+            //{
+            //Add map layer
+            mapContainer.Visibility = Visibility.Visible;
+            Grid.SetColumnSpan(plotContainer, 1);
+
+            if (mediaContainer.Visibility == Visibility.Visible)
+                Grid.SetRowSpan(mediaContainer, 1);
+            else
+            {
+                Grid.SetRow(mapContainer, 0);
+                Grid.SetRowSpan(mapContainer, 2);
             }
+            //}
         }
+
+        /// <summary>
+        /// Sets the base layer of the map to a <see cref="MapTileLayer"/> using <paramref name="uri"/>.
+        /// </summary>
+        /// <param name="uri">The <see cref="Uri"/> to set as the base layer of the map.</param>
+        public void SetBaseMapLayer(string uri) => map.Children[0] = new MapTileLayer { TileSource = new() { UriTemplate = uri } };
     }
 }
