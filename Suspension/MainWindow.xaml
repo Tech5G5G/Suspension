@@ -215,12 +215,18 @@
         </Grid>
 
         <Grid x:Name="statusBar" Visibility="Collapsed" Padding="8,0" Height="32" Grid.Row="3">
-            <StackPanel x:Name="statsContainer" Orientation="Horizontal" Visibility="Collapsed" Spacing="6">
-                <TextBlock x:Name="sizeText" VerticalAlignment="Center"  Margin="0,0,0,2" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock x:Name="sizeText" VerticalAlignment="Center" Margin="0,0,0,2" />
 
                 <AppBarSeparator />
 
                 <TextBlock x:Name="pointsText" VerticalAlignment="Center" Margin="0,0,0,2" />
             </StackPanel>
+        </Grid>
     </Grid>
 </Window>
