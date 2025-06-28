@@ -214,7 +214,7 @@
             <ContentPresenter x:Name="mainView" />
         </Grid>
 
-        <Grid Height="30" Grid.Row="3" />
+        <Grid x:Name="statusBar" Visibility="Collapsed" Padding="8,0" Height="32" Grid.Row="3">
             <StackPanel x:Name="statsContainer" Orientation="Horizontal" Visibility="Collapsed" Spacing="6">
                 <TextBlock x:Name="sizeText" VerticalAlignment="Center"  Margin="0,0,0,2" />
 

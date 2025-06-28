@@ -67,7 +67,7 @@ namespace Suspension
                 tabs.CanDragTabs = tabs.CanReorderTabs = true;
 
                 welcomeView.Visibility = Visibility.Collapsed;
-                statsContainer.Visibility = Visibility.Visible;
+                statusBar.Visibility = Visibility.Visible;
 
                 addVideoButton.IsEnabled = addMapButton.IsEnabled = true;
             }
