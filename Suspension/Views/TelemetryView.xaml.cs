@@ -102,6 +102,11 @@ namespace Suspension.Views
 
             plot.Model = model;
             Loaded += ShowLoadedTip;
+
+            media.TransportControls.IsSkipBackwardEnabled =
+            media.TransportControls.IsSkipBackwardButtonVisible =
+            media.TransportControls.IsSkipForwardEnabled =
+            media.TransportControls.IsSkipForwardButtonVisible = true;
         }
 
         private void ShowLoadedTip(object sender, RoutedEventArgs args)
@@ -127,8 +132,10 @@ namespace Suspension.Views
             return values;
         }
 
-        //TODO: Complete implementation of request methods
-
+        /// <summary>
+        /// Request a video to be added to the <see cref="TelemetryView"/>.
+        /// </summary>
+        public async void RequestVideo()
         {
             FileOpenPicker picker = new()
             {
@@ -147,8 +154,20 @@ namespace Suspension.Views
             if (await picker.PickSingleFileAsync() is StorageFile file)
             {
                 media.Source = MediaSource.CreateFromUri(new(file.Path));
-                media.Visibility = Visibility.Visible;
-                openMediaButton.Visibility = Visibility.Collapsed;
+
+                mediaContainer.Visibility = Visibility.Visible;
+                Grid.SetColumnSpan(plotContainer, 1);
+
+                if (mapContainer.Visibility == Visibility.Visible)
+                {
+                    Grid.SetRow(mapContainer, 1);
+                    Grid.SetRowSpan(mapContainer, 1);
+                }
+                else
+                    Grid.SetRowSpan(mediaContainer, 2);
+            }
+        }
+
         /// <summary>
         /// Request a map to be added to the <see cref="TelemetryView"/>.
         /// </summary>
