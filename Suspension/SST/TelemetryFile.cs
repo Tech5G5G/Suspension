@@ -21,10 +21,13 @@ public class TelemetryFile
 
         var bytes = ReadAllBytes(fileStream);
 
-        //TODO: Get sampling rate of SST file
-
         if (bytes.Length < 3 || System.Text.Encoding.UTF8.GetString(bytes[..3]) != "SST") //Check header of SST file
             throw new InvalidDataException("Incorrect file contents. It may be corrupt or of a different format.");
+
+        //Populate properties from file and file header
+        Size = fileStream.Length;
+        SampleRate = BitConverter.ToUInt16(bytes, 4);
+        Timestamp = DateTimeOffset.FromUnixTimeSeconds(BitConverter.ToInt64(bytes, 8)).ToLocalTime().DateTime;
 
         int counter = 0;
         for (int i = 16; i < bytes.Length; i += 4)
@@ -34,19 +37,29 @@ public class TelemetryFile
                 (BitConverter.ToUInt16(bytes, i), BitConverter.ToUInt16(bytes, i + 2)));
         }
 
-        size = fileStream.Length;
+        //Cache count
+        Count = data.Count;
     }
+
+    /// <summary>
+    /// Gets the size of the <see cref="TelemetryFile"/> in bytes.
+    /// </summary>
+    public long Size { get; }
+
+    /// <summary>
+    /// Gets the sample rate of the <see cref="TelemetryFile"/> in Hz.
+    /// </summary>
+    public int SampleRate { get; }
+
+    /// <summary>
+    /// Gets the <see cref="DateTime"/> at which the <see cref="TelemetryFile"/> was recorded.
+    /// </summary>
+    public DateTime Timestamp { get; }
 
     /// <summary>
     /// Gets the amount of data contained within the <see cref="TelemetryFile"/>.
     /// </summary>
-    public int Count => data.Count;
-
-    /// <summary>
-    /// Gets the size of the SST file represented by the <see cref="TelemetryFile"/> in bytes.
-    /// </summary>
-    public long Size => size;
-    private readonly long size;
+    public int Count { get; }
 
     /// <summary>
     /// Gets a tuple of <see cref="int"/>.
