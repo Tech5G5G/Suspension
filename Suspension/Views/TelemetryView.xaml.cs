@@ -115,8 +115,11 @@ namespace Suspension.Views
             Loaded -= ShowLoadedTip;
 
             timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds:N0} ms.";
+            timeTip.Focus(FocusState.Programmatic);
             timeTip.IsOpen = true;
         }
+
+        private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args) => timeTip.IsOpen = false;
 
         private (int, int, int)[] ExtractData()
         {

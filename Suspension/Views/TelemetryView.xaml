@@ -56,6 +56,10 @@
             </map:Map>
         </Grid>
 
-        <TeachingTip x:Name="timeTip" />
+        <TeachingTip x:Name="timeTip">
+            <TeachingTip.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Escape" Invoked="HideTimeTip_Invoked" />
+            </TeachingTip.KeyboardAccelerators>
+        </TeachingTip>
     </Grid>
 </Page>
