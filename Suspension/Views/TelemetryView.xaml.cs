@@ -65,18 +65,16 @@ namespace Suspension.Views
             model.Series.Add(new LineSeries()
             {
                 Title = "Fork",
-                MinimumSegmentLength = 20,
                 Color = OxyColor.FromRgb(0x84, 0x43, 0x54),
-                ItemsSource = data.Select(i => new DataPoint(i.Item1, i.Item2)).ToArray()
+                ItemsSource = data.Select(i => new DataPoint((double)i.Item1 / file.SampleRate, i.Item2)).ToArray()
             });
 
             //Create graph line for shock
             model.Series.Add(new LineSeries
             {
                 Title = "Shock",
-                MinimumSegmentLength = 20,
                 Color = OxyColor.FromRgb(0x37, 0xA9, 0xCF),
-                ItemsSource = data.Select(i => new DataPoint(i.Item1, i.Item3)).ToArray()
+                ItemsSource = data.Select(i => new DataPoint((double)i.Item1 / file.SampleRate, i.Item3)).ToArray()
             });
 
             //Create X-Axis
@@ -103,6 +101,7 @@ namespace Suspension.Views
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
 #pragma warning restore CS0618 // Type or member is obsolete
 
+            plot.Model = model;
             Loaded += ShowLoadedTip;
         }
 
