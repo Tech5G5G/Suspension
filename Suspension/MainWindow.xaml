@@ -149,6 +149,10 @@
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator />
+
+                <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" IsEnabled="False" Click="ToggleStatusBar_Click" />
             </MenuBarItem>
         </MenuBar>
 

@@ -307,6 +307,12 @@ namespace Suspension
         private void AddVideoButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestVideo();
 
         private void AddMapButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestMap();
+        private void ToggleStatusBar_Click(object sender, RoutedEventArgs args)
+        {
+            bool visible = (sender as ToggleMenuFlyoutItem).IsChecked;
+            statusBar.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            mainView.Margin = visible ? default : new(0, 0, 0, 8);
+        }
 
         private void NewWindowButton_Click(object sender, RoutedEventArgs args) => App.CreateWindow();
 
