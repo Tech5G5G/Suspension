@@ -17,9 +17,23 @@ namespace Suspension.Views
         public TelemetryFile TelemetryFile { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="PlotModel"/> used in the <see cref="TelemetryView"/>.
+        /// Gets or sets the zoom factor of the graph.
         /// </summary>
-        public PlotModel Model => model;
+        public double ZoomFactor
+        {
+            get => TelemetryFile.Count / TelemetryFile.SampleRate / (model.Axes[0].ActualMaximum - model.Axes[0].ActualMinimum);
+            set
+            {
+                plot.ResetAllAxes();
+                plot.ZoomAllAxes(value);
+                plot.InvalidatePlot();
+            }
+        }
+
+        /// <summary>
+        /// Occurs when <see cref="ZoomFactor"/> is changed.
+        /// </summary>
+        public event EventHandler<double> ZoomFactorChanged;
 
         private readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -84,7 +98,9 @@ namespace Suspension.Views
                 Position = AxisPosition.Left
             });
 
-            plot.Model = model;
+#pragma warning disable CS0618 // Type or member is obsolete
+            model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             Loaded += ShowLoadedTip;
         }

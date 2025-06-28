@@ -44,6 +44,9 @@ namespace Suspension
                 icon.Glyph = isRestored ? "\uE922" : "\uE923";
             };
 
+            zoomInButton.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = (VirtualKey)0xBB });
+            zoomOutButton.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = (VirtualKey)0xBD });
+
             if (telemetry.Count > 0)
                 HideWelcome();
             else
@@ -69,8 +72,15 @@ namespace Suspension
                 welcomeView.Visibility = Visibility.Collapsed;
                 statusBar.Visibility = Visibility.Visible;
 
-                addVideoButton.IsEnabled = addMapButton.IsEnabled = true;
+                statusBarToggle.IsEnabled = statusBarToggle.IsChecked =
+                zoomInButton.IsEnabled = zoomOutButton.IsEnabled = resetZoomButton.IsEnabled = true;
             }
+
+            telemetry.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems[0] is TelemetryItem item)
+                    DeregisterZooming(item.TelemetryView);
+            };
         }
 
         #region Title bar
@@ -151,6 +161,12 @@ namespace Suspension
 
                 sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
                 pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
+
+                if (args.RemovedItems.Count > 0 &&
+                    args.RemovedItems[0] is TelemetryItem prevItem)
+                    DeregisterZooming(prevItem.TelemetryView);
+
+                RegisterZooming(item.TelemetryView);
             }
         }
 
@@ -314,18 +330,101 @@ namespace Suspension
             mainView.Margin = visible ? default : new(0, 0, 0, 8);
         }
 
+        private void ResetZoomButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.ZoomFactor = 1.02;
+        }
+
         private void NewWindowButton_Click(object sender, RoutedEventArgs args) => App.CreateWindow();
 
         private void ExitButton_Click(object sender, RoutedEventArgs args) => Environment.Exit(0);
 
         #endregion
+
+        #region Zooming
+
+        private void RegisterZooming(TelemetryView view)
+        {
+            zoomText.Value = zoomSlider.Value = view.ZoomFactor;
+            view.ZoomFactorChanged += View_ZoomFactorChanged;
+        }
+
+        private void DeregisterZooming(TelemetryView view) => view.ZoomFactorChanged -= View_ZoomFactorChanged;
+
+        private void DecreaseZoomButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.ZoomFactor -= 1;
+        }
+
+        private void IncreaseZoomButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.ZoomFactor += 1;
+        }
+
+        private void ZoomText_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.ZoomFactor = args.NewValue + 0.02;
+        }
+
+        private void ZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.ZoomFactor = args.NewValue + 0.02;
+        }
+
+        private void View_ZoomFactorChanged(object sender, double args)
+        {
+            zoomText.ValueChanged -= ZoomText_ValueChanged;
+            zoomSlider.ValueChanged -= ZoomSlider_ValueChanged;
+
+            zoomText.Value = zoomSlider.Value = args;
+
+            zoomText.ValueChanged += ZoomText_ValueChanged;
+            zoomSlider.ValueChanged += ZoomSlider_ValueChanged;
+        }
+
+        #endregion
     }
 
-    #region Records
+    #region Types
 
     public record RecentItem(string FileName, string FilePath, string LastModified, string FullName);
 
     public record TelemetryItem(string FileName, TelemetryFile TelemetryFile, TelemetryView TelemetryView);
+
+    public partial class PercentFormatter : INumberFormatter, INumberFormatter2, INumberParser
+    {
+        public string Format(long value) => $"{value}%";
+
+        public string Format(ulong value) => $"{value}%";
+
+        public string Format(double value) => $"{Math.Round(Math.Round(value, 2) * 100)}%";
+
+        public string FormatDouble(double value) => Format(value);
+
+        public string FormatInt(long value) => Format(value);
+
+        public string FormatUInt(ulong value) => Format(value);
+
+        public double? ParseDouble(string text) => double.TryParse(text.Replace("%", null), out double value) ? value / 100 : null;
+
+        public long? ParseInt(string text) => long.TryParse(text.Replace("%", null), out long value) ? value : null;
+
+        public ulong? ParseUInt(string text) => ulong.TryParse(text.Replace("%", null), out ulong value) ? value : null;
+    }
+
+    public partial class DoubleToPercentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language) =>
+            value is double num ? $"{Math.Round(Math.Round(num, 2) * 100)}%" : value;
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+            value is string str ? double.TryParse(str.Replace("%", null), out double num) ? num / 100 : value : value;
+    }
 
     #endregion
 }

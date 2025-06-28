@@ -139,6 +139,20 @@
             </MenuBarItem>
 
             <MenuBarItem Title="View">
+                <MenuFlyoutItem x:Name="zoomInButton"
+                                Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
+                                IsEnabled="False" Click="IncreaseZoomButton_Click" />
+                <MenuFlyoutItem x:Name="zoomOutButton"
+                                Text="Zoom out" KeyboardAcceleratorTextOverride="Ctrl+Minus"
+                                IsEnabled="False" Click="DecreaseZoomButton_Click" />
+                <MenuFlyoutItem x:Name="resetZoomButton" Text="Reset zoom" IsEnabled="False" Click="ResetZoomButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="Number0" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator />
+
                 <MenuFlyoutItem x:Name="addVideoButton" Text="Add video" IsEnabled="False" Click="AddVideoButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
@@ -159,7 +173,7 @@
         <Grid Grid.Row="2">
             <Grid x:Name="welcomeView"
                   Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
-                  BorderThickness="0,1" BorderBrush="{ThemeResource CardStrokeColorDefault}">
+                  BorderThickness="0,1,0,0" BorderBrush="{ThemeResource CardStrokeColorDefault}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -226,6 +240,39 @@
                 <AppBarSeparator />
 
                 <TextBlock x:Name="pointsText" VerticalAlignment="Center" Margin="0,0,0,2" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8" Grid.Column="2">
+                <NumberBox x:Name="zoomText"
+                           Minimum="0.01"
+                           SmallChange="1" LargeChange="1"
+                           SpinButtonPlacementMode="Compact"
+                           PlaceholderText="100%"
+                           Background="Transparent" BorderThickness="0"
+                           Padding="10,6,6,6" Margin="0,0,-6,0"
+                           ValueChanged="ZoomText_ValueChanged">
+                    <NumberBox.NumberFormatter>
+                        <local:PercentFormatter />
+                    </NumberBox.NumberFormatter>
+                </NumberBox>
+
+                <RepeatButton Background="Transparent" BorderThickness="0" Padding="4" ToolTipService.ToolTip="Zoom out" Click="DecreaseZoomButton_Click">
+                    <FontIcon Glyph="&#xE71F;" FontSize="16" />
+                </RepeatButton>
+
+                <Slider x:Name="zoomSlider"
+                        StepFrequency="0.01"
+                        Minimum="0.5" Maximum="100"
+                        Width="150"
+                        ValueChanged="ZoomSlider_ValueChanged">
+                    <Slider.ThumbToolTipValueConverter>
+                        <local:DoubleToPercentConverter />
+                    </Slider.ThumbToolTipValueConverter>
+                </Slider>
+
+                <RepeatButton Background="Transparent" BorderThickness="0" Padding="4" ToolTipService.ToolTip="Zoom in" Click="IncreaseZoomButton_Click">
+                    <FontIcon Glyph="&#xE8A3;" FontSize="16" />
+                </RepeatButton>
             </StackPanel>
         </Grid>
     </Grid>
