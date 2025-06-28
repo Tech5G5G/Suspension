@@ -115,8 +115,8 @@ namespace Suspension.Views
 
         private (int, int, int)[] ExtractData()
         {
-            int end = TelemetryFile.Count;
-            (int, int, int)[] values = new (int, int, int)[end--];
+            int end = TelemetryFile.Count - 1;
+            (int, int, int)[] values = new (int, int, int)[end];
 
             for (int i = 0; i < end; ++i)
             {
