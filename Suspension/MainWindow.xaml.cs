@@ -57,6 +57,8 @@ namespace Suspension
             SetupWelcome();
         }
 
+        #region Setup
+
         private void LoadSettings()
         {
             statusBarToggle.IsChecked = SettingValues.StatusBar;
@@ -102,6 +104,8 @@ namespace Suspension
                 ShowStatusBar(statusBarToggle.IsChecked);
             }
         }
+
+        #endregion
 
         #region Title bar
 
