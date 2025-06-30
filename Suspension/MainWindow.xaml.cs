@@ -222,7 +222,8 @@ namespace Suspension
 
         private void Tabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args) => RemoveTabItem(args.Item as TelemetryItem);
 
-        private void CloseTabButton_Click(object sender, RoutedEventArgs args) => RemoveTabItem(telemetry[tabs.SelectedIndex]);
+        private void CloseTabButton_Click(object sender, RoutedEventArgs args) =>
+            RemoveTabItem(welcomeView.Visibility == Visibility.Visible ? null : telemetry[tabs.SelectedIndex]);
 
         private void RemoveTabItem(TelemetryItem item)
         {
