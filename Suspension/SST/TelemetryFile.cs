@@ -88,7 +88,12 @@ public class TelemetryFile
     /// <exception cref="ArgumentException"/>
     public static async Task<Stream> StreamFromPath(string path)
     {
-        if (!new FileInfo(path).Extension.Equals(".sst", StringComparison.OrdinalIgnoreCase))
+        FileInfo info = new(path);
+
+        if (!info.Exists)
+            throw new ArgumentException("File does not exist.");
+
+        if (!info.Extension.Equals(".sst", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("File must be of file type SST.", nameof(path));
 
         var file = await StorageFile.GetFileFromPathAsync(path);
