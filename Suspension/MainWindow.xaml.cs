@@ -349,7 +349,7 @@ namespace Suspension
             MapServiceButton_Click(mapServices.Items.First(i => (i as RadioMenuFlyoutItem).IsChecked), null);
         }
 
-        private void MapServiceButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)
+        private void MapServiceButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?
             .SetBaseMapLayer((sender as RadioMenuFlyoutItem).Text switch
             {
                 "OpenStreetMap" => "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
