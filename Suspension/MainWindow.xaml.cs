@@ -47,6 +47,16 @@ namespace Suspension
             zoomInButton.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = (VirtualKey)0xBB });
             zoomOutButton.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = (VirtualKey)0xBD });
 
+            telemetry.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems[0] is TelemetryItem item)
+                    DeregisterZooming(item.TelemetryView);
+            };
+
+            SetupWelcome();
+        }
+        private void SetupWelcome()
+        {
             if (telemetry.Count > 0)
                 HideWelcome();
             else
@@ -78,10 +88,7 @@ namespace Suspension
             }
 
             telemetry.CollectionChanged += (s, e) =>
-            {
-                if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems[0] is TelemetryItem item)
-                    DeregisterZooming(item.TelemetryView);
-            };
+        }
         }
 
         #region Title bar
