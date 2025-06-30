@@ -53,8 +53,22 @@ namespace Suspension
                     DeregisterZooming(item.TelemetryView);
             };
 
+            LoadSettings();
             SetupWelcome();
         }
+
+        private void LoadSettings()
+        {
+            statusBarToggle.IsChecked = SettingValues.StatusBar;
+            SettingValues.StatusBar.ValueChanged += (s, e) =>
+            {
+                statusBarToggle.IsChecked = e;
+
+                if (welcomeView.Visibility == Visibility.Collapsed)
+                    ShowStatusBar(e);
+            };
+        }
+
         private void SetupWelcome()
         {
             if (telemetry.Count > 0)
@@ -80,15 +94,13 @@ namespace Suspension
                 tabs.CanDragTabs = tabs.CanReorderTabs = true;
 
                 welcomeView.Visibility = Visibility.Collapsed;
-                statusBar.Visibility = Visibility.Visible;
 
-                statusBarToggle.IsEnabled = statusBarToggle.IsChecked =
-                addVideoButton.IsEnabled = addMapButton.IsEnabled = 
+                statusBarToggle.IsEnabled =
+                addVideoButton.IsEnabled = addMapButton.IsEnabled =
                 zoomInButton.IsEnabled = zoomOutButton.IsEnabled = resetZoomButton.IsEnabled = true;
-            }
 
-            telemetry.CollectionChanged += (s, e) =>
-        }
+                ShowStatusBar(statusBarToggle.IsChecked);
+            }
         }
 
         #region Title bar
@@ -323,16 +335,16 @@ namespace Suspension
 
         private void ShowErrorDialog(string content)
         {
-                ContentDialog dialog = new()
-                {
-                    Title = "Error",
+            ContentDialog dialog = new()
+            {
+                Title = "Error",
                 Content = content,
-                    CloseButtonText = "OK",
-                    DefaultButton = ContentDialogButton.Close,
-                    XamlRoot = Content.XamlRoot
-                };
-                _ = dialog.ShowAsync();
-            }
+                CloseButtonText = "OK",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = Content.XamlRoot
+            };
+            _ = dialog.ShowAsync();
+        }
 
         public void AddTelemetryItem(TelemetryItem telemetryItem) => telemetry.Add(telemetryItem);
 
@@ -360,9 +372,9 @@ namespace Suspension
 
         private void ToggleStatusBar_Click(object sender, RoutedEventArgs args)
         {
-            bool visible = (sender as ToggleMenuFlyoutItem).IsChecked;
-            statusBar.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-            mainView.Margin = visible ? default : new(0, 0, 0, 8);
+            bool enable = (sender as ToggleMenuFlyoutItem).IsChecked;
+            ShowStatusBar(enable);
+            SettingValues.StatusBar.Value = enable;
         }
 
         private void ResetZoomButton_Click(object sender, RoutedEventArgs args)
@@ -374,6 +386,12 @@ namespace Suspension
         private void NewWindowButton_Click(object sender, RoutedEventArgs args) => App.CreateWindow();
 
         private void ExitButton_Click(object sender, RoutedEventArgs args) => Environment.Exit(0);
+
+        private void ShowStatusBar(bool show)
+        {
+            statusBar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            mainView.Margin = show ? default : new(0, 0, 0, 8);
+        }
 
         #endregion
 
