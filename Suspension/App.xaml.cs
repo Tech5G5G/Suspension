@@ -67,6 +67,8 @@
             window.Activate();
 
             windows.Add(window);
+            window.Closed += (s, e) => windows.Remove(window);
+
             return window;
         }
     }
