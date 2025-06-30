@@ -311,17 +311,22 @@ namespace Suspension
             }
             catch (InvalidDataException ex)
             {
+                ShowErrorDialog(ex.Message);
+            }
+        }
+
+        private void ShowErrorDialog(string content)
+        {
                 ContentDialog dialog = new()
                 {
                     Title = "Error",
-                    Content = ex.Message,
+                Content = content,
                     CloseButtonText = "OK",
                     DefaultButton = ContentDialogButton.Close,
                     XamlRoot = Content.XamlRoot
                 };
                 _ = dialog.ShowAsync();
             }
-        }
 
         public void AddTelemetryItem(TelemetryItem telemetryItem) => telemetry.Add(telemetryItem);
 
