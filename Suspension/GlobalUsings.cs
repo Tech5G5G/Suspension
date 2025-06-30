@@ -23,3 +23,4 @@ global using WinUIEx;
 global using Suspension;
 global using Suspension.SST;
 global using Suspension.Views;
+global using Suspension.Settings;
