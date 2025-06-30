@@ -264,8 +264,14 @@ namespace Suspension
         private async void Recents_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = e.ClickedItem as RecentItem;
-            var stream = await TelemetryFile.StreamFromPath(item.FullName);
-            TryAddTelemetryFile(stream, item.FileName);
+            try
+            {
+                TryAddTelemetryFile(await TelemetryFile.StreamFromPath(item.FullName), item.FileName);
+            }
+            catch (ArgumentException ex)
+            {
+                ShowErrorDialog(ex.Message);
+            }
         }
 
         public void LoadTelemetryFromArguments(AppActivationArguments args)
