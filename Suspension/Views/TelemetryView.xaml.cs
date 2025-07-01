@@ -62,7 +62,7 @@ namespace Suspension.Views
             (int, int, int)[] data = ExtractData();
 
             //Create graph line for fork
-            model.Series.Add(new LineSeries()
+            model.Series.Add(new LineSeries
             {
                 Title = "Fork",
                 Color = OxyColor.FromRgb(0x84, 0x43, 0x54),
@@ -78,7 +78,7 @@ namespace Suspension.Views
             });
 
             //Create X-Axis
-            model.Axes.Add(new TimeSpanAxis()
+            model.Axes.Add(new TimeSpanAxis
             {
                 Title = "Time",
                 Unit = "s",
@@ -86,7 +86,7 @@ namespace Suspension.Views
             });
 
             //Create Y-Axis
-            model.Axes.Add(new LinearAxis()
+            model.Axes.Add(new LinearAxis
             {
                 Title = "Travel",
                 StartPosition = 1,
