@@ -382,6 +382,9 @@ namespace Suspension
                 (mainView.Content as TelemetryView)?.AddMapLayer(str);
         }
 
+        private void ToggleStatusBar_Click(object sender, RoutedEventArgs args) =>
+            ShowStatusBar(SettingValues.StatusBar.Value = (sender as ToggleMenuFlyoutItem).IsChecked);
+
         private void ResetZoomButton_Click(object sender, RoutedEventArgs args)
         {
             if (mainView.Content is TelemetryView view)
