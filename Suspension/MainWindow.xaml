@@ -142,14 +142,14 @@
                 </MenuBarItem.KeyboardAccelerators>
             </MenuBarItem>
 
-            <MenuBarItem Title="View">
+            <MenuBarItem x:Name="viewMenu" Title="View" IsEnabled="False">
                 <MenuFlyoutItem x:Name="zoomInButton"
                                 Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
-                                IsEnabled="False" Click="IncreaseZoomButton_Click" />
+                                Click="IncreaseZoomButton_Click" />
                 <MenuFlyoutItem x:Name="zoomOutButton"
                                 Text="Zoom out" KeyboardAcceleratorTextOverride="Ctrl+Minus"
-                                IsEnabled="False" Click="DecreaseZoomButton_Click" />
-                <MenuFlyoutItem x:Name="resetZoomButton" Text="Reset zoom" IsEnabled="False" Click="ResetZoomButton_Click">
+                                Click="DecreaseZoomButton_Click" />
+                <MenuFlyoutItem Text="Reset zoom" Click="ResetZoomButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="Number0" />
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -157,12 +157,12 @@
 
                 <MenuFlyoutSeparator />
 
-                <MenuFlyoutItem x:Name="addVideoButton" Text="Add video" IsEnabled="False" Click="AddVideoButton_Click">
+                <MenuFlyoutItem Text="Add video" Click="AddVideoButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem x:Name="addMapButton" Text="Add map" IsEnabled="False" Click="AddMapButton_Click">
+                <MenuFlyoutItem Text="Add map" Click="AddMapButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -175,7 +175,7 @@
 
                 <MenuFlyoutSeparator />
 
-                <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" IsEnabled="False" Click="ToggleStatusBar_Click" />
+                <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" Click="ToggleStatusBar_Click" />
 
                 <MenuBarItem.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Menu" Key="V" />

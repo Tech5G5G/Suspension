@@ -95,13 +95,10 @@ namespace Suspension
             void HideWelcome()
             {
                 tabs.TabItemsSource = telemetry;
-                tabs.CanDragTabs = tabs.CanReorderTabs = true;
-
                 welcomeView.Visibility = Visibility.Collapsed;
 
-                statusBarToggle.IsEnabled =
-                addVideoButton.IsEnabled = addMapButton.IsEnabled =
-                zoomInButton.IsEnabled = zoomOutButton.IsEnabled = resetZoomButton.IsEnabled = true;
+                tabs.CanDragTabs = tabs.CanReorderTabs =
+                viewMenu.IsEnabled = true;
 
                 ShowStatusBar(statusBarToggle.IsChecked);
             }
@@ -368,7 +365,7 @@ namespace Suspension
         }
 
         private async void SetMapBaseLayerButton_Click(object sender, RoutedEventArgs args)
-            {
+        {
             if (await RequestStringAsync("Set map base layer", "Map tile URL") is string str)
             {
                 (mainView.Content as TelemetryView)?.SetMapBaseLayer(str);
