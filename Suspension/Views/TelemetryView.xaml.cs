@@ -96,6 +96,8 @@ namespace Suspension.Views
                 Position = AxisPosition.Left
             });
 
+            DetermineAirtimes();
+
 #pragma warning disable CS0618 // Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -134,6 +136,65 @@ namespace Suspension.Views
 
             return values;
         }
+
+        #region Airtime
+
+        private const float AirtimeTravelThreshold = 3, // (mm) maximum travel to consider stroke an airtime
+                            AirtimeDurationThreshold = 0.20f, // (s) minimum duration to consider stroke an airtime
+                            AirtimeVelocityThreshold = 500, // (mm/s) minimum velocity after stroke to consider it an airtime
+                            AirtimeOverlapThreshold = 0.5f, // f&r airtime candidates must overlap at least this amount to be an airtime
+                            AirtimeTravelMeanThresholdRatio = 0.04f; // stroke f&r mean travel must be below max*this to be an airtime
+
+        private void DetermineAirtimes()
+        {
+            (int, int, int)[] data = ExtractData();
+
+            double[] values = new double[TelemetryFile.Count];
+            for (int i = 0; i < TelemetryFile.Count - 1; ++i)
+            {
+                (int t, int f, int s) = data[i];
+
+                if (f < AirtimeTravelThreshold && s < AirtimeTravelThreshold)
+                    values[i] = (double)t / TelemetryFile.SampleRate;
+            }
+
+            List<RectangleAnnotation> annots = [CreateAirtimeAnnotation()];
+            RectangleAnnotation currentAnnot = annots[0];
+            foreach (double t in values)
+            {
+                if (t == 0)
+                    continue;
+                else if (currentAnnot.MinimumX == double.NegativeInfinity) //No minimum
+                    currentAnnot.MinimumX = t;
+                else if (currentAnnot.MaximumX + (1.0 / TelemetryFile.SampleRate) == t) //Previous max is one unit less than proposed
+                    currentAnnot.MaximumX = t;
+                else //Create new annotation and set as current
+                {
+                    annots.Add(currentAnnot = CreateAirtimeAnnotation());
+                    currentAnnot.MinimumX = t;
+                }
+            }
+
+            foreach (var a in annots)
+            {
+                double calc = a.MaximumX - a.MinimumX;
+                if (calc < double.PositiveInfinity && calc >= AirtimeDurationThreshold * TelemetryFile.SampleRate)
+                {
+                    a.Text = $"{calc:0.#}s air time";
+                    model.Annotations.Add(a);
+                }
+            }
+        }
+
+        private static RectangleAnnotation CreateAirtimeAnnotation() => new()
+        {
+            Fill = OxyColor.FromArgb(0x4E, 0xFF, 0xDE, 0x2B),
+            Layer = AnnotationLayer.AboveSeries,
+            Text = "Air time",
+            MaximumX = 0
+        };
+
+        #endregion
 
         /// <summary>
         /// Request a video to be added to the <see cref="TelemetryView"/>.
