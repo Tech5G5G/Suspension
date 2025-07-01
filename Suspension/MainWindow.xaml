@@ -136,6 +136,10 @@
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
                 <MenuFlyoutItem Text="Exit" Click="ExitButton_Click" />
+
+                <MenuBarItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Menu" Key="F" />
+                </MenuBarItem.KeyboardAccelerators>
             </MenuBarItem>
 
             <MenuBarItem Title="View">
@@ -174,6 +178,10 @@
                 <MenuFlyoutSeparator />
 
                 <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" IsEnabled="False" Click="ToggleStatusBar_Click" />
+
+                <MenuBarItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Menu" Key="V" />
+                </MenuBarItem.KeyboardAccelerators>
             </MenuBarItem>
         </MenuBar>
 
