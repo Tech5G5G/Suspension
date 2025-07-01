@@ -61,6 +61,8 @@ namespace Suspension
 
         private void LoadSettings()
         {
+            SettingValues.BaseMapLayer.ValueChanged += (s, e) => (mainView.Content as TelemetryView)?.SetMapBaseLayer(e);
+
             statusBarToggle.IsChecked = SettingValues.StatusBar;
             SettingValues.StatusBar.ValueChanged += (s, e) =>
             {
@@ -362,23 +364,22 @@ namespace Suspension
         {
             var view = mainView.Content as TelemetryView;
             view?.RequestMap();
-            MapServiceButton_Click(mapServices.Items.First(i => (i as RadioMenuFlyoutItem).IsChecked), null);
+            view?.SetMapBaseLayer(SettingValues.BaseMapLayer);
         }
 
-        private void MapServiceButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?
-            .SetBaseMapLayer((sender as RadioMenuFlyoutItem).Text switch
+        private async void SetMapBaseLayerButton_Click(object sender, RoutedEventArgs args)
             {
-                "OpenStreetMap" => "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                "Wikimedia" => "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
-                "Carto Voyager" => "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-                _ => "https://mts1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
-            });
+            if (await RequestStringAsync("Set map base layer", "Map tile URL") is string str)
+            {
+                (mainView.Content as TelemetryView)?.SetMapBaseLayer(str);
+                SettingValues.BaseMapLayer.Value = str;
+            }
+        }
 
-        private void ToggleStatusBar_Click(object sender, RoutedEventArgs args)
+        private async void AddMapLayerButton_Click(object sender, RoutedEventArgs args)
         {
-            bool enable = (sender as ToggleMenuFlyoutItem).IsChecked;
-            ShowStatusBar(enable);
-            SettingValues.StatusBar.Value = enable;
+            if (await RequestStringAsync("Add map layer", "Map tile URL") is string str)
+                (mainView.Content as TelemetryView)?.AddMapLayer(str);
         }
 
         private void ResetZoomButton_Click(object sender, RoutedEventArgs args)
@@ -395,6 +396,24 @@ namespace Suspension
         {
             statusBar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             mainView.Margin = show ? default : new(0, 0, 0, 8);
+        }
+
+        private async Task<string> RequestStringAsync(string title, string placeholder)
+        {
+            TextBox box = new() { PlaceholderText = placeholder };
+            ContentDialog dialog = new()
+            {
+                Title = title,
+                Content = box,
+                PrimaryButtonText = "OK",
+                IsPrimaryButtonEnabled = false,
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = Content.XamlRoot
+            };
+            box.TextChanged += (s, e) => dialog.IsPrimaryButtonEnabled = !string.IsNullOrWhiteSpace(box.Text);
+
+            return await dialog.ShowAsync() == ContentDialogResult.Primary ? box.Text : null;
         }
 
         #endregion

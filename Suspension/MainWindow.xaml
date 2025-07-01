@@ -168,11 +168,9 @@
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
 
-                <MenuFlyoutSubItem x:Name="mapServices" Text="Map service">
-                    <RadioMenuFlyoutItem Text="Google Maps" IsChecked="True" Click="MapServiceButton_Click" />
-                    <RadioMenuFlyoutItem Text="OpenStreetMap" Click="MapServiceButton_Click" />
-                    <RadioMenuFlyoutItem Text="Wikimedia" Click="MapServiceButton_Click" />
-                    <RadioMenuFlyoutItem Text="Carto Voyager" Click="MapServiceButton_Click" />
+                <MenuFlyoutSubItem Text="Map layering">
+                    <MenuFlyoutItem Text="Set base layer" Click="SetMapBaseLayerButton_Click" />
+                    <MenuFlyoutItem Text="Add layer" Click="AddMapLayerButton_Click" />
                 </MenuFlyoutSubItem>
 
                 <MenuFlyoutSeparator />
