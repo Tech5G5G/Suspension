@@ -385,7 +385,7 @@ namespace Suspension
         private void ResetZoomButton_Click(object sender, RoutedEventArgs args)
         {
             if (mainView.Content is TelemetryView view)
-                view.ZoomFactor = 1.02;
+                view.ZoomFactor = 1 + ZoomOffset;
         }
 
         private void NewWindowButton_Click(object sender, RoutedEventArgs args) => App.CreateWindow();
@@ -420,6 +420,8 @@ namespace Suspension
 
         #region Zooming
 
+        private const double ZoomOffset = 0.02;
+
         private void RegisterZooming(TelemetryView view)
         {
             zoomText.Value = zoomSlider.Value = view.ZoomFactor;
@@ -443,13 +445,13 @@ namespace Suspension
         private void ZoomText_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
             if (mainView.Content is TelemetryView view)
-                view.ZoomFactor = args.NewValue + 0.02;
+                view.ZoomFactor = args.NewValue + ZoomOffset;
         }
 
         private void ZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs args)
         {
             if (mainView.Content is TelemetryView view)
-                view.ZoomFactor = args.NewValue + 0.02;
+                view.ZoomFactor = args.NewValue + ZoomOffset;
         }
 
         private void View_ZoomFactorChanged(object sender, double args)
