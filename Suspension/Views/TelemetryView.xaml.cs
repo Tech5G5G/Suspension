@@ -204,8 +204,11 @@ namespace Suspension.Views
         /// </summary>
         /// <param name="uri">The URL template of the specified map tile source.</param>
         public void SetMapBaseLayer(string uri) => map.Children[0] = new MapTileLayer { TileSource = new() { UriTemplate = uri } };
+
+        /// <summary>
+        /// Adds a layer to the map using the specified <paramref name="uri"/>.
         /// </summary>
-        /// <param name="uri">The <see cref="Uri"/> to set as the base layer of the map.</param>
-        public void SetBaseMapLayer(string uri) => map.Children[0] = new MapTileLayer { TileSource = new() { UriTemplate = uri } };
+        /// <param name="uri">The URL template of the specified map tile source.</param>
+        public void AddMapLayer(string uri) => map.Children.Add(new MapTileLayer { TileSource = new() { UriTemplate = uri } });
     }
 }
