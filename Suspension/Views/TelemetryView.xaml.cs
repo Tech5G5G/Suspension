@@ -14,11 +14,6 @@ namespace Suspension.Views
     public sealed partial class TelemetryView : Page
     {
         /// <summary>
-        /// Gets the <see cref="SST.TelemetryFile"/> used to create the <see cref="TelemetryView"/>.
-        /// </summary>
-        public TelemetryFile TelemetryFile { get; private set; }
-
-        /// <summary>
         /// Gets or sets the zoom factor of the graph.
         /// </summary>
         public double ZoomFactor
@@ -36,6 +31,11 @@ namespace Suspension.Views
         /// Occurs when <see cref="ZoomFactor"/> is changed.
         /// </summary>
         public event EventHandler<double> ZoomFactorChanged;
+
+        /// <summary>
+        /// Gets the <see cref="SST.TelemetryFile"/> used to create the <see cref="TelemetryView"/>.
+        /// </summary>
+        public TelemetryFile TelemetryFile { get; }
 
         private readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
