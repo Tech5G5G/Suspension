@@ -63,6 +63,15 @@ namespace Suspension
         {
             SettingValues.BaseMapLayer.ValueChanged += (s, e) => (mainView.Content as TelemetryView)?.SetMapBaseLayer(e);
 
+            airtimeToggle.IsChecked = SettingValues.Airtimes;
+            SettingValues.Airtimes.ValueChanged += (s, e) =>
+            {
+                airtimeToggle.IsChecked = e;
+
+                if (mainView.Content is TelemetryView view)
+                    view.AreAirtimesVisible = e;
+            };
+
             statusBarToggle.IsChecked = SettingValues.StatusBar;
             SettingValues.StatusBar.ValueChanged += (s, e) =>
             {
@@ -181,6 +190,7 @@ namespace Suspension
                 args.AddedItems[0] is TelemetryItem item)
             {
                 mainView.Content = item.TelemetryView;
+                item.TelemetryView.AreAirtimesVisible = airtimeToggle.IsChecked;
 
                 sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
                 pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
@@ -377,6 +387,12 @@ namespace Suspension
         {
             if (await RequestStringAsync("Add map layer", "Map tile URL") is string str)
                 (mainView.Content as TelemetryView)?.AddMapLayer(str);
+        }
+
+        private void AirtimeToggle_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.AreAirtimesVisible = SettingValues.Airtimes.Value = (sender as ToggleMenuFlyoutItem).IsChecked;
         }
 
         private void ToggleStatusBar_Click(object sender, RoutedEventArgs args) =>
