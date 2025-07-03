@@ -94,7 +94,7 @@ namespace Suspension.Views
                 Position = AxisPosition.Left
             });
 
-            DetermineAirtimes();
+            DetermineAirtimes(data);
 
 #pragma warning disable CS0618 //Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
@@ -145,10 +145,8 @@ namespace Suspension.Views
 
         private void DetermineAirtimes()
         {
-            (int, int, int)[] data = ExtractData();
-
-            double[] values = new double[TelemetryFile.Count];
-            for (int i = 0; i < TelemetryFile.Count - 1; ++i)
+            get => model.Annotations.Count > 0;
+            set
             {
                 (int t, int f, int s) = data[i];
 
