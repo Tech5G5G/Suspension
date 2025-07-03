@@ -154,8 +154,8 @@ namespace Suspension.Views
                     values[i] = (double)t / TelemetryFile.SampleRate;
             }
 
-            List<RectangleAnnotation> annots = [CreateAirtimeAnnotation()];
-            RectangleAnnotation currentAnnot = annots[0];
+        private const float AirtimeTravelThreshold = 3,
+                            AirtimeDurationThreshold = 0.20f;
             foreach (double t in values)
             {
                 if (t == 0)
