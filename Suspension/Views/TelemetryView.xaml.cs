@@ -153,6 +153,8 @@ namespace Suspension.Views
                 if (f < AirtimeTravelThreshold && s < AirtimeTravelThreshold)
                     values[i] = (double)t / TelemetryFile.SampleRate;
             }
+        }
+        private readonly List<RectangleAnnotation> airAnnots = [];
 
         private const float AirtimeTravelThreshold = 3,
                             AirtimeDurationThreshold = 0.20f;
