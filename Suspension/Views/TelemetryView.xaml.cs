@@ -41,10 +41,7 @@ namespace Suspension.Views
 
         private readonly PlotModel model = new()
         {
-            Legends =
-            {
-                new Legend { LegendPosition = LegendPosition.BottomRight }
-            },
+            Legends = { new Legend { LegendPosition = LegendPosition.BottomRight } },
             IsLegendVisible = true
         };
 
