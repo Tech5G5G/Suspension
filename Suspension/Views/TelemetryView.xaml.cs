@@ -96,9 +96,9 @@ namespace Suspension.Views
 
             DetermineAirtimes();
 
-#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 //Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
-#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning restore CS0618 //Type or member is obsolete
 
             plot.Model = model;
             Loaded += ShowLoadedTip;
