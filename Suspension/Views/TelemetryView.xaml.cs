@@ -158,39 +158,48 @@ namespace Suspension.Views
 
         private const float AirtimeTravelThreshold = 3,
                             AirtimeDurationThreshold = 0.20f;
-            foreach (double t in values)
-            {
-                if (t == 0)
-                    continue;
-                else if (currentAnnot.MinimumX == double.NegativeInfinity) //No minimum
-                    currentAnnot.MinimumX = t;
-                else if (currentAnnot.MaximumX + (1.0 / TelemetryFile.SampleRate) == t) //Previous max is one unit less than proposed
-                    currentAnnot.MaximumX = t;
-                else //Create new annotation and set as current
-                {
-                    annots.Add(currentAnnot = CreateAirtimeAnnotation());
-                    currentAnnot.MinimumX = t;
-                }
-            }
 
-            foreach (var a in annots)
+        private void DetermineAirtimes((int, int, int)[] data)
             {
-                double calc = a.MaximumX - a.MinimumX;
-                if (calc < double.PositiveInfinity && calc >= AirtimeDurationThreshold * TelemetryFile.SampleRate)
+            AirtimeItem currentItem = new() { Min = double.NegativeInfinity };
+
+            foreach (var item in data.Where(i => i.Item2 < AirtimeTravelThreshold && i.Item3 < AirtimeTravelThreshold)
+                                     .Select(i => (double)i.Item1 / TelemetryFile.SampleRate)
+                                     .Select(i =>
                 {
-                    a.Text = $"{calc:0.#}s air time";
-                    model.Annotations.Add(a);
-                }
+                                         if (currentItem.Min == double.NegativeInfinity)
+                                             currentItem.Min = i;
+                                         else if (Math.Ceiling(currentItem.Max * TelemetryFile.SampleRate) + 1 == Math.Ceiling(i * TelemetryFile.SampleRate))
+                                             currentItem.Max = i;
+                                         else
+                                             currentItem = new() { Min = i, Max = i };
+
+                                         return currentItem;
+                                     })
+                                     .ToArray()
+                                     .Distinct()
+                                     .Where(i => i.Max - i.Min is double x &&
+                                                 x < double.PositiveInfinity &&
+                                                 x >= AirtimeDurationThreshold))
+            {
+                RectangleAnnotation annot = new()
+                {
+                    Fill = OxyColor.FromArgb(0x4E, 0xFF, 0xDE, 0x2B),
+                    Text = $"{item.Max - item.Min:0.#}s air time",
+                    TextRotation = 270,
+                    MaximumX = item.Max,
+                    MinimumX = item.Min,
+                };
+                model.Annotations.Add(annot);
+                airAnnots.Add(annot);
             }
         }
 
-        private static RectangleAnnotation CreateAirtimeAnnotation() => new()
+        private record AirtimeItem
         {
-            Fill = OxyColor.FromArgb(0x4E, 0xFF, 0xDE, 0x2B),
-            Layer = AnnotationLayer.AboveSeries,
-            Text = "Air time",
-            MaximumX = 0
-        };
+            public double Max { get; set; }
+            public double Min { get; set; }
+        }
 
         #endregion
 
