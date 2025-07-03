@@ -137,21 +137,24 @@ namespace Suspension.Views
 
         #region Airtime
 
-        private const float AirtimeTravelThreshold = 3, // (mm) maximum travel to consider stroke an airtime
-                            AirtimeDurationThreshold = 0.20f, // (s) minimum duration to consider stroke an airtime
-                            AirtimeVelocityThreshold = 500, // (mm/s) minimum velocity after stroke to consider it an airtime
-                            AirtimeOverlapThreshold = 0.5f, // f&r airtime candidates must overlap at least this amount to be an airtime
-                            AirtimeTravelMeanThresholdRatio = 0.04f; // stroke f&r mean travel must be below max*this to be an airtime
-
-        private void DetermineAirtimes()
+        /// <summary>
+        /// Gets or sets whether the graph contains airtime annotations.
+        /// </summary>
+        public bool AreAirtimesVisible
         {
             get => model.Annotations.Count > 0;
             set
             {
-                (int t, int f, int s) = data[i];
+                if (AreAirtimesVisible == value)
+                    return;
+                else if (value)
+                    foreach (var annot in airAnnots)
+                        model.Annotations.Add(annot);
+                else
+                    foreach (var annot in airAnnots)
+                        model.Annotations.Remove(annot);
 
-                if (f < AirtimeTravelThreshold && s < AirtimeTravelThreshold)
-                    values[i] = (double)t / TelemetryFile.SampleRate;
+                model.InvalidatePlot(true);
             }
         }
         private readonly List<RectangleAnnotation> airAnnots = [];
