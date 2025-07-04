@@ -175,7 +175,11 @@
 
                 <MenuFlyoutSeparator />
 
-                <ToggleMenuFlyoutItem x:Name="airtimeToggle" Text="Airtimes" Click="AirtimeToggle_Click" />
+                <ToggleMenuFlyoutItem x:Name="airtimeToggle" Text="Airtimes" Click="AirtimeToggle_Click">
+                    <ToggleMenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="A" />
+                    </ToggleMenuFlyoutItem.KeyboardAccelerators>
+                </ToggleMenuFlyoutItem>
                 <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" Click="ToggleStatusBar_Click" />
 
                 <MenuBarItem.KeyboardAccelerators>
