@@ -89,7 +89,7 @@ public class TelemetryFile
     /// <param name="path">A path to an SST file.</param>
     /// <returns>A <see cref="Stream"/> created from <paramref name="path"/>, asynchronously.</returns>
     /// <exception cref="ArgumentException"/>
-    public static async Task<Stream> StreamFromPath(string path)
+    public static async Task<Stream> StreamFromSSTPath(string path)
     {
         FileInfo info = new(path);
 
