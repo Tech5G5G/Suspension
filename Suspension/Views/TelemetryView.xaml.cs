@@ -242,21 +242,31 @@ namespace Suspension.Views
             }
         }
 
+        private const double MapZoomPadding = 0.005;
+
+        private readonly List<TrackPoint> points = [];
+
         /// <summary>
         /// Request a map to be added to the <see cref="TelemetryView"/>.
         /// </summary>
-        public /*async*/ void RequestMap()
+        public async void RequestMap()
         {
             FileOpenPicker picker = new()
             {
-                FileTypeFilter = { /*File type for mapping*/ },
+                FileTypeFilter = { ".gpx" },
                 SuggestedStartLocation = PickerLocationId.ComputerFolder
             };
             WinRT.Interop.InitializeWithWindow.Initialize(picker, (nint)XamlRoot.ContentIslandEnvironment.AppWindowId.Value);
 
-            //if (await picker.PickSingleFileAsync() is StorageFile file)
-            //{
-            //Add map layer
+            if (await picker.PickSingleFileAsync() is not StorageFile file)
+                return;
+
+            //Remove existing map lines (while keeping layers) and clear points list
+            points.Clear();
+            foreach (var child in map.Children.Where(i => i is MapPolyline))
+                map.Children.Remove(child);
+
+            //Update layout of view to add map
             mapContainer.Visibility = Visibility.Visible;
             Grid.SetColumnSpan(plotContainer, 1);
 
@@ -267,7 +277,89 @@ namespace Suspension.Views
                 Grid.SetRow(mapContainer, 0);
                 Grid.SetRowSpan(mapContainer, 2);
             }
-            //}
+
+            //Draw lines to display route(s)
+            using var stream = await file.OpenStreamForReadAsync();
+
+            GPX gpx;
+            try
+            {
+                gpx = new GPXFile(stream).Data;
+            }
+            catch
+            {
+                ContentDialog dialog = new()
+                {
+                    Title = "Error",
+                    Content = "Incorrect file contents. It may be corrupt or of a different format.",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = XamlRoot
+                };
+
+                _ = dialog.ShowAsync();
+                return;
+            }
+
+            double minLatitude = int.MaxValue,
+                minLongitude = int.MaxValue,
+                maxLatitude = int.MinValue,
+                maxLongitude = int.MinValue;
+
+            foreach (var track in gpx.Tracks)
+                foreach (var segment in track.Segments)
+                {
+                    if (segment.Points.Length < 1)
+                        continue;
+
+                    TrackPoint prevPoint = segment.Points[0];
+                    int threshold = 0,
+                        hr = 0;
+
+                    foreach (var point in segment.Points.Skip(1).ToArray())
+                    {
+                        if (minLatitude > point.Latitude) minLatitude = point.Latitude;
+                        else if (maxLatitude < point.Latitude) maxLatitude = point.Latitude;
+
+                        if (minLongitude > point.Longitude) minLongitude = point.Longitude;
+                        else if (maxLongitude < point.Longitude) maxLongitude = point.Longitude;
+
+                        hr += point.Extensions.GarminExtension.HeartRate ?? 0;
+                        points.Add(point);
+
+                        if (threshold > 5)
+                        {
+                            map.Children.Add(new MapPolyline
+                            {
+                                Locations = LocationCollection.OrthodromeLocations(
+                                    new(prevPoint.Latitude, prevPoint.Longitude),
+                                    new(point.Latitude, point.Longitude)),
+                                StrokeThickness = 2,
+                                Stroke = new SolidColorBrush((hr / 5.0 / 220) switch
+                                {
+                                    0 => Colors.Black,
+                                    > 0.9 => Colors.Red,
+                                    > 0.8 => Colors.Orange,
+                                    > 0.7 => Colors.Yellow,
+                                    > 0.6 => Colors.YellowGreen,
+                                    _ => Colors.Green
+                                })
+                            });
+
+                            threshold = hr = 0;
+                            prevPoint = point;
+                        }
+                        else
+                            ++threshold;
+                    }
+                }
+
+            //Zoom map to show drawn paths
+            map.ZoomToBounds(new(
+                minLatitude - MapZoomPadding,
+                minLongitude - MapZoomPadding,
+                maxLatitude + MapZoomPadding,
+                maxLongitude + MapZoomPadding));
         }
 
         /// <summary>
