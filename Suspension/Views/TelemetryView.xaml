@@ -51,7 +51,7 @@
                 Visibility="Collapsed"
                 CornerRadius="8"
                 Grid.Row="1" Grid.Column="1">
-            <map:Map x:Name="map" Background="Transparent">
+            <map:Map x:Name="map" MinZoomLevel="12" Background="Transparent">
                 <map:MapTileLayer TileSource="https://mts1.google.com/vt/lyrs=y&amp;x={x}&amp;y={y}&amp;z={z}" />
             </map:Map>
         </Grid>
