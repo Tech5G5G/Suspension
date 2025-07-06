@@ -13,9 +13,12 @@ public class TelemetryFile
     /// </summary>
     /// <param name="fileStream">A <see cref="Stream"/> that has read access to an SST file.</param>
     /// <exception cref="ArgumentException"/>
+    /// <exception cref="ArgumentNullException"/>
     /// <exception cref="InvalidDataException"/>
     public TelemetryFile(Stream fileStream)
     {
+        ArgumentNullException.ThrowIfNull(fileStream, nameof(fileStream));
+
         if (!fileStream.CanRead)
             throw new ArgumentException("Stream must have read access.", nameof(fileStream));
 
