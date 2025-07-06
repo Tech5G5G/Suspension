@@ -291,7 +291,8 @@ namespace Suspension
             var item = e.ClickedItem as RecentItem;
             try
             {
-                TryAddTelemetryFile(await TelemetryFile.StreamFromPath(item.FullName), item.FileName);
+                using var stream = await TelemetryFile.StreamFromSSTPath(item.FullName);
+                TryAddTelemetryFile(stream, item.FileName);
             }
             catch (ArgumentException ex)
             {
@@ -302,7 +303,11 @@ namespace Suspension
         public void LoadTelemetryFromArguments(AppActivationArguments args)
         {
             if (args.Data is IFileActivatedEventArgs fileArgs && fileArgs.Files[0] is IStorageFile file)
-                this.DispatcherQueue.TryEnqueue(async () => TryAddTelemetryFile(await file.OpenStreamForReadAsync(), file.Name));
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    using var stream = await file.OpenStreamForReadAsync();
+                    TryAddTelemetryFile(stream, file.Name);
+                });
         }
 
         private async void OpenButton_Click(object sender, RoutedEventArgs args)
@@ -315,7 +320,10 @@ namespace Suspension
             WinRT.Interop.InitializeWithWindow.Initialize(picker, this.GetWindowHandle());
 
             if (await picker.PickSingleFileAsync() is StorageFile file)
-                TryAddTelemetryFile(await file.OpenStreamForReadAsync(), file.Name);
+            {
+                using var stream = await file.OpenStreamForReadAsync();
+                TryAddTelemetryFile(stream, file.Name);
+            }
         }
 
         private async void OpenFolderButton_Click(object sender, RoutedEventArgs args)
@@ -328,7 +336,10 @@ namespace Suspension
                 foreach (var file in await folder.GetFilesAsync())
                 {
                     if (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase))
-                        TryAddTelemetryFile(await file.OpenStreamForReadAsync(), file.Name);
+                    {
+                        using var stream = await file.OpenStreamForReadAsync();
+                        TryAddTelemetryFile(stream, file.Name);
+                    }
                 }
             }
         }
