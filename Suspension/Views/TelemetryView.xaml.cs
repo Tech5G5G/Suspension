@@ -251,6 +251,7 @@ namespace Suspension.Views
         /// </summary>
         public async void RequestMap()
         {
+            //Create file picker to get GPX file
             FileOpenPicker picker = new()
             {
                 FileTypeFilter = { ".gpx" },
@@ -260,11 +261,6 @@ namespace Suspension.Views
 
             if (await picker.PickSingleFileAsync() is not StorageFile file)
                 return;
-
-            //Remove existing map lines (while keeping layers) and clear points list
-            points.Clear();
-            foreach (var child in map.Children.Where(i => i is MapPolyline))
-                map.Children.Remove(child);
 
             //Update layout of view to add map
             mapContainer.Visibility = Visibility.Visible;
@@ -278,10 +274,15 @@ namespace Suspension.Views
                 Grid.SetRowSpan(mapContainer, 2);
             }
 
-            //Draw lines to display route(s)
-            using var stream = await file.OpenStreamForReadAsync();
+            //Remove existing map lines (while keeping layers) and clear points list
+            points.Clear();
+            foreach (var child in map.Children.Where(i => i is MapPolyline))
+                map.Children.Remove(child);
 
+            //Extract GPX file data
+            using var stream = await file.OpenStreamForReadAsync();
             GPX gpx;
+
             try
             {
                 gpx = new GPXFile(stream).Data;
@@ -301,6 +302,7 @@ namespace Suspension.Views
                 return;
             }
 
+            //Draw lines to display route(s)
             double minLatitude = int.MaxValue,
                 minLongitude = int.MaxValue,
                 maxLatitude = int.MinValue,
