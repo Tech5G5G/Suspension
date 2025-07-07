@@ -22,6 +22,7 @@ global using Microsoft.UI.Xaml.Shapes;
 global using Microsoft.Windows.AppLifecycle;
 global using WinUIEx;
 global using Suspension;
+global using Suspension.AI;
 global using Suspension.SST;
 global using Suspension.GPS;
 global using Suspension.Views;
