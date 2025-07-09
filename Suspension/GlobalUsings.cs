@@ -26,4 +26,5 @@ global using Suspension.AI;
 global using Suspension.SST;
 global using Suspension.GPS;
 global using Suspension.Views;
+global using Suspension.Controls;
 global using Suspension.Settings;
