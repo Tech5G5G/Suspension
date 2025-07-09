@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <None Remove="Assets\Suspension.ico" />
+    <None Remove="Controls\MapLayerEditor.xaml" />
+    <None Remove="Controls\MapLayerEditorItem.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +56,16 @@
     <Resource Include="Assets\Suspension.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\MapLayerEditorItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\MapLayerEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--
