@@ -365,15 +365,42 @@ namespace Suspension.Views
         }
 
         /// <summary>
-        /// Sets the base layer of the map to the specified <paramref name="uri"/>.
+        /// Request for a <see cref="MapLayerEditor"/> hosted in a <see cref="ContentDialog"/> to be shown.
         /// </summary>
-        /// <param name="uri">The URL template of the specified map tile source.</param>
-        public void SetMapBaseLayer(string uri) => map.Children[0] = new MapTileLayer { TileSource = new() { UriTemplate = uri } };
+        public async void RequestMapLayerEditor()
+        {
+            MapLayerEditor editor = new()
+            {
+                Width = 410,
+                BaseLayer = new((map.Children[0] as MapTileLayer).TileSource.UriTemplate),
+                Layers = map.Children.Skip(1)
+                                     .Where(i => i is MapTileLayer)
+                                     .Select(i => new Uri((i as MapTileLayer).TileSource.UriTemplate))
+            };
+            ContentDialog dialog = new()
+            {
+                Content = editor,
+                XamlRoot = XamlRoot,
+                CloseButtonText = "Cancel",
+                PrimaryButtonText = "OK",
+                DefaultButton = ContentDialogButton.Primary
+            };
 
-        /// <summary>
-        /// Adds a layer to the map using the specified <paramref name="uri"/>.
-        /// </summary>
-        /// <param name="uri">The URL template of the specified map tile source.</param>
-        public void AddMapLayer(string uri) => map.Children.Add(new MapTileLayer { TileSource = new() { UriTemplate = uri } });
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                map.Children[0] = new MapTileLayer { TileSource = new() { UriTemplate = editor.BaseLayer.OriginalString } };
+
+                foreach (var child in map.Children.Skip(1).ToArray())
+                {
+                    if (child is MapTileLayer layer)
+                        map.Children.Remove(layer);
+                    else
+                        break;
+                }
+
+                foreach (var layer in editor.Layers.Reverse())
+                    map.Children.Insert(1, new MapTileLayer { TileSource = new() { UriTemplate = layer.OriginalString } });
+            }
+        }
     }
 }
