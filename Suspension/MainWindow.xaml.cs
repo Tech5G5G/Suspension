@@ -61,8 +61,6 @@ namespace Suspension
 
         private void LoadSettings()
         {
-            SettingValues.BaseMapLayer.ValueChanged += (s, e) => (mainView.Content as TelemetryView)?.SetMapBaseLayer(e);
-
             airtimeToggle.IsChecked = SettingValues.Airtimes;
             SettingValues.Airtimes.ValueChanged += (s, e) =>
             {
@@ -382,23 +380,9 @@ namespace Suspension
         {
             var view = mainView.Content as TelemetryView;
             view?.RequestMap();
-            view?.SetMapBaseLayer(SettingValues.BaseMapLayer);
         }
 
-        private async void SetMapBaseLayerButton_Click(object sender, RoutedEventArgs args)
-        {
-            if (await RequestStringAsync("Set map base layer", "Map tile URL") is string str)
-            {
-                (mainView.Content as TelemetryView)?.SetMapBaseLayer(str);
-                SettingValues.BaseMapLayer.Value = str;
-            }
-        }
-
-        private async void AddMapLayerButton_Click(object sender, RoutedEventArgs args)
-        {
-            if (await RequestStringAsync("Add map layer", "Map tile URL") is string str)
-                (mainView.Content as TelemetryView)?.AddMapLayer(str);
-        }
+        private void EditLayersButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestMapLayerEditor();
 
         private void AirtimeToggle_Click(object sender, RoutedEventArgs args)
         {
@@ -423,24 +407,6 @@ namespace Suspension
         {
             statusBar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             mainView.Margin = show ? default : new(0, 0, 0, 8);
-        }
-
-        private async Task<string> RequestStringAsync(string title, string placeholder)
-        {
-            TextBox box = new() { PlaceholderText = placeholder };
-            ContentDialog dialog = new()
-            {
-                Title = title,
-                Content = box,
-                PrimaryButtonText = "OK",
-                IsPrimaryButtonEnabled = false,
-                CloseButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = Content.XamlRoot
-            };
-            box.TextChanged += (s, e) => dialog.IsPrimaryButtonEnabled = !string.IsNullOrWhiteSpace(box.Text);
-
-            return await dialog.ShowAsync() == ContentDialogResult.Primary ? box.Text : null;
         }
 
         #endregion

@@ -167,11 +167,7 @@
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-
-                <MenuFlyoutSubItem Text="Map layering">
-                    <MenuFlyoutItem Text="Set base layer" Click="SetMapBaseLayerButton_Click" />
-                    <MenuFlyoutItem Text="Add layer" Click="AddMapLayerButton_Click" />
-                </MenuFlyoutSubItem>
+                <MenuFlyoutItem Text="Edit map layers" Click="EditLayersButton_Click" />
 
                 <MenuFlyoutSeparator />
 
