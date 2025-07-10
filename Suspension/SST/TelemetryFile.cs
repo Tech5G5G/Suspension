@@ -4,7 +4,7 @@
 /// Represents an SST file.
 /// </summary>
 /// <remarks>Data can be accessed using the indexer.</remarks>
-public class TelemetryFile
+public class TelemetryFile : BaseFile
 {
     private readonly Dictionary<int, (int, int)> data = [];
 
@@ -12,16 +12,10 @@ public class TelemetryFile
     /// Creates a new instance of <see cref="TelemetryFile"/> using a <see cref="Stream"/>.
     /// </summary>
     /// <param name="fileStream">A <see cref="Stream"/> that has read access to an SST file.</param>
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="ArgumentNullException"/>
     /// <exception cref="InvalidDataException"/>
-    public TelemetryFile(Stream fileStream)
+    /// <inheritdoc/>
+    public TelemetryFile(Stream fileStream) : base(fileStream)
     {
-        ArgumentNullException.ThrowIfNull(fileStream, nameof(fileStream));
-
-        if (!fileStream.CanRead)
-            throw new ArgumentException("Stream must have read access.", nameof(fileStream));
-
         var bytes = ReadAllBytes(fileStream);
 
         if (bytes.Length < 3 || System.Text.Encoding.UTF8.GetString(bytes[..3]) != "SST") //Check header of SST file
