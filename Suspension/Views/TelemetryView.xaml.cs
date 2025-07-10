@@ -416,7 +416,59 @@ namespace Suspension.Views
 
                 foreach (var layer in editor.Layers.Reverse())
                     map.Children.Insert(1, new MapTileLayer { TileSource = new() { UriTemplate = layer.OriginalString } });
+
+        #region Saving
+
+        /// <summary>
+        /// Gets whether the <see cref="TelemetryView"/> needs to be saved.
+        /// </summary>
+        public bool IsDirty
+        {
+            get => (bool)GetValue(IsDirtyProperty);
+            private set => SetValue(IsDirtyProperty, value);
+        }
+        public static DependencyProperty IsDirtyProperty { get; } =
+            DependencyProperty.Register(nameof(IsDirty), typeof(bool), typeof(TelemetryView), new(false));
+
+        /// <summary>
+        /// Requests <see cref="ProjectFile"/> to be saved.
+        /// </summary>
+        public void RequestSave()
+        {
+            if (ProjectFile.FilePath is null)
+                RequestSaveLocation();
+            else
+                Save(ProjectFile.FilePath);
+        }
+
+        /// <summary>
+        /// Requests <see cref="ProjectFile"/> to be saved to a location picked by the user.
+        /// </summary>
+        public async void RequestSaveLocation()
+        {
+            FileSavePicker picker = new()
+            {
+                FileTypeChoices =
+                {
+                    { "SST Project", [".sstproj"] }
+                },
+                SuggestedFileName = ProjectFile.FilePath is null ? "New SST Project" : System.IO.Path.GetFileNameWithoutExtension(ProjectFile.FilePath),
+                SuggestedStartLocation = PickerLocationId.Downloads
+            };
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, (nint)XamlRoot.ContentIslandEnvironment.AppWindowId.Value);
+
+            if (await picker.PickSaveFileAsync() is StorageFile file)
+                Save(ProjectFile.FilePath = file.Path);
+        }
+
+        private async void Save(string path)
+        {
+            await ProjectFile.Save(path);
+            IsDirty = false;
             }
+
+        #endregion
+
         #region Errors
 
         private ContentDialog dialog;
