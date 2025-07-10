@@ -75,25 +75,4 @@ public class TelemetryFile : BaseFile
         stream.CopyTo(memoryStream);
         return memoryStream.ToArray();
     }
-
-    /// <summary>
-    /// Creates a <see cref="Stream"/> from a <paramref name="path"/> to an SST file.
-    /// </summary>
-    /// <remarks>The returned <see cref="Stream"/> can be used in the <see cref="TelemetryFile(Stream)"/> constructor.</remarks>
-    /// <param name="path">A path to an SST file.</param>
-    /// <returns>A <see cref="Stream"/> created from <paramref name="path"/>, asynchronously.</returns>
-    /// <exception cref="ArgumentException"/>
-    public static async Task<Stream> StreamFromSSTPath(string path)
-    {
-        FileInfo info = new(path);
-
-        if (!info.Exists)
-            throw new ArgumentException("File does not exist.");
-
-        if (!info.Extension.Equals(".sst", StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException("File must be of file type SST.", nameof(path));
-
-        var file = await StorageFile.GetFileFromPathAsync(path);
-        return await file.OpenStreamForReadAsync();
-    }
 }
