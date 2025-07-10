@@ -37,6 +37,11 @@ namespace Suspension.Views
         /// </summary>
         public TelemetryFile TelemetryFile { get; }
 
+        /// <summary>
+        /// Gets the <see cref="SST.ProjectFile"/> that the <see cref="TelemetryView"/> manages.
+        /// </summary>
+        public ProjectFile ProjectFile { get; }
+
         private readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         private readonly PlotModel model = new()
@@ -49,10 +54,16 @@ namespace Suspension.Views
         /// Creates a new instance of <see cref="TelemetryView"/>.
         /// </summary>
         /// <param name="file">The <see cref="SST.TelemetryFile"/> to display.</param>
-        public TelemetryView(TelemetryFile file)
+        /// <param name="project">The <see cref="SST.ProjectFile"/> to manage.</param>
+        public TelemetryView(TelemetryFile file, ProjectFile project)
         {
             InitializeComponent();
+
             TelemetryFile = file;
+            ProjectFile = project;
+
+            //Add layers if none exist
+            project.Layers ??= [.. map.Children.Where(i => i is MapTileLayer).Select(i => (i as MapTileLayer).TileSource.UriTemplate)];
 
             //Item1 is the timestamp
             //Item2 is the fork
