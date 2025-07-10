@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Suspension.AI;
+﻿namespace Suspension.AI;
 
 public partial class Model
 {
