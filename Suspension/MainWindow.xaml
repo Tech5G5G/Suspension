@@ -6,6 +6,7 @@
     xmlns:local="using:Suspension"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:convert="using:CommunityToolkit.WinUI.UI.Converters"
     mc:Ignorable="d"
     Title="Suspension">
     <Window.SystemBackdrop>
@@ -13,12 +14,17 @@
     </Window.SystemBackdrop>
 
     <Grid>
+        <Grid.Resources>
+            <convert:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <TabView x:Name="tabs"
                  CanDragTabs="False"
                  CanReorderTabs="False"
@@ -33,6 +39,7 @@
                  TabCloseRequested="Tabs_TabCloseRequested"
                  SelectionChanged="Tabs_SelectionChanged"
                  TabItemsChanged="Tabs_TabItemsChanged">
+
             <TabViewItem Header="Welcome">
                 <TabViewItem.IconSource>
                     <FontIconSource Glyph="&#xF133;" />
