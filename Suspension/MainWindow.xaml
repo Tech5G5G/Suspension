@@ -48,7 +48,22 @@
 
             <TabView.TabItemTemplate>
                 <DataTemplate x:DataType="local:TelemetryItem">
-                    <TabViewItem Loaded="TabViewItem_Loaded" Header="{x:Bind FileName}" />
+                    <TabViewItem Loaded="TabViewItem_Loaded">
+                        <TabViewItem.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Ellipse Fill="{ThemeResource TextFillColorTertiary}"
+                                         Width="6" Height="6" Margin="2,0,10,0"
+                                         Visibility="{Binding TelemetryView.IsDirty, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                                <TextBlock Text="{x:Bind FileName}" Grid.Column="1"  />
+                            </Grid>
+                        </TabViewItem.Header>
+                    </TabViewItem>
                 </DataTemplate>
             </TabView.TabItemTemplate>
 
