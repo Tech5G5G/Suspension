@@ -66,6 +66,14 @@
 				  </uap:SupportedFileTypes>
 			  </uap:FileTypeAssociation>
 		  </uap:Extension>
+		  <uap:Extension Category="windows.fileTypeAssociation">
+			  <uap:FileTypeAssociation Name="sstproj">
+				  <uap:Logo>Assets\SSTFileExtension.png</uap:Logo>
+				  <uap:SupportedFileTypes>
+					  <uap:FileType>.sstproj</uap:FileType>
+				  </uap:SupportedFileTypes>
+			  </uap:FileTypeAssociation>
+		  </uap:Extension>
 	  </Extensions>
     </Application>
   </Applications>
