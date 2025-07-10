@@ -101,7 +101,6 @@ namespace Suspension.Views
 #pragma warning restore CS0618 //Type or member is obsolete
 
             plot.Model = model;
-            Loaded += ShowLoadedTip;
 
             media.TransportControls.IsSkipBackwardEnabled =
             media.TransportControls.IsSkipBackwardButtonVisible =
@@ -109,14 +108,15 @@ namespace Suspension.Views
             media.TransportControls.IsSkipForwardButtonVisible = true;
         }
 
-        private void ShowLoadedTip(object sender, RoutedEventArgs args)
+        private void View_Loaded(object sender, RoutedEventArgs args)
         {
             stopwatch.Stop();
-            Loaded -= ShowLoadedTip;
+            Loaded -= View_Loaded;
 
             timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds:N0} ms.";
             timeTip.Focus(FocusState.Programmatic);
             timeTip.IsOpen = true;
+        }
         }
 
         private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args) => timeTip.IsOpen = false;
