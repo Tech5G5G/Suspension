@@ -121,6 +121,7 @@
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="O" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+                <MenuFlyoutSubItem x:Name="recentsMenu" Text="Recent" IsEnabled="False" />
 
                 <MenuFlyoutSeparator />
 

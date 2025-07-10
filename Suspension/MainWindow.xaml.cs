@@ -261,9 +261,8 @@ namespace Suspension
 
         private async void LoadRecents()
         {
-            if (!File.Exists(recentsFile))
-                return;
-
+            if (File.Exists(recentsFile))
+            {
             var destination = await Task.Run(() => JumpList.JumpList.LoadAutoJumplist(recentsFile));
 
             foreach (var item in destination.DestListEntries)
@@ -272,13 +271,23 @@ namespace Suspension
                 try
                 {
                     info = new(item.Path);
+                        if (!info.Exists)
+                            continue;
                 }
                 catch
                 {
                     continue;
                 }
 
-                recents.Add(new(info.Name, info.DirectoryName, item.LastModified.ToLocalTime().ToString("f"), item.Path));
+                    RecentItem recent = new(info.Name, info.DirectoryName, item.LastModified.ToLocalTime().ToString("f"), item.Path);
+                    recents.Add(recent);
+
+                    MenuFlyoutItem flyout = new() { Text = info.Name };
+                    flyout.Click += (s, e) => TryAddRecentItem(recent);
+                    recentsMenu.Items.Add(flyout);
+            }
+
+                recentsMenu.IsEnabled = true;
             }
 
             recentsRing.Visibility = Visibility.Collapsed;
