@@ -140,6 +140,24 @@
 
                 <MenuFlyoutSeparator />
 
+                <MenuFlyoutItem x:Name="saveButton" Text="Save" IsEnabled="False" Click="SaveButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="S" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="saveAsButton" Text="Save as" IsEnabled="False" Click="SaveAsButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="S" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="saveAllButton" Text="Save all" IsEnabled="False" Click="SaveAllButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Menu" Key="S" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator />
+
                 <MenuFlyoutItem Text="New window" Click="NewWindowButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="N" />

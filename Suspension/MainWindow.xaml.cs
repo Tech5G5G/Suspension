@@ -408,6 +408,21 @@ namespace Suspension
                 view.ZoomFactor = 1 + ZoomOffset;
         }
 
+        private void SaveButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view && view.IsDirty)
+                view.RequestSave();
+        }
+
+        private void SaveAsButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestSaveLocation();
+        
+        private void SaveAllButton_Click(object sender, RoutedEventArgs args)
+        {
+            foreach (var item in telemetry)
+                if (item.TelemetryView.IsDirty)
+                    item.TelemetryView.RequestSave();
+        }
+
         private void NewWindowButton_Click(object sender, RoutedEventArgs args) => App.CreateWindow();
 
         private void ExitButton_Click(object sender, RoutedEventArgs args) => Environment.Exit(0);
