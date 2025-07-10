@@ -264,21 +264,21 @@ namespace Suspension
         {
             if (File.Exists(recentsFile))
             {
-            var destination = await Task.Run(() => JumpList.JumpList.LoadAutoJumplist(recentsFile));
+                var destination = await Task.Run(() => JumpList.JumpList.LoadAutoJumplist(recentsFile));
 
-            foreach (var item in destination.DestListEntries)
-            {
-                FileInfo info = null;
-                try
+                foreach (var item in destination.DestListEntries)
                 {
-                    info = new(item.Path);
+                    FileInfo info = null;
+                    try
+                    {
+                        info = new(item.Path);
                         if (!info.Exists)
                             continue;
-                }
-                catch
-                {
-                    continue;
-                }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
 
                     RecentItem recent = new(info.Name, info.DirectoryName, item.LastModified.ToLocalTime().ToString("f"), item.Path);
                     recents.Add(recent);
@@ -286,7 +286,7 @@ namespace Suspension
                     MenuFlyoutItem flyout = new() { Text = info.Name };
                     flyout.Click += (s, e) => TryAddRecentItem(recent);
                     recentsMenu.Items.Add(flyout);
-            }
+                }
 
                 recentsMenu.IsEnabled = true;
             }
@@ -294,44 +294,32 @@ namespace Suspension
             recentsRing.Visibility = Visibility.Collapsed;
         }
 
-        private async void Recents_ItemClick(object sender, ItemClickEventArgs e)
+        private void Recents_ItemClick(object sender, ItemClickEventArgs args) => TryAddRecentItem(args.ClickedItem as RecentItem);
+
+        private async void TryAddRecentItem(RecentItem item)
         {
-            var item = e.ClickedItem as RecentItem;
             try
             {
-                using var stream = await TelemetryFile.StreamFromSSTPath(item.FullName);
-                TryAddTelemetryFile(stream, item.FileName);
+                var file = await StorageFile.GetFileFromPathAsync(item.FullName);
+                TryAddTelemetryFile(file);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 ShowErrorDialog(ex.Message);
             }
-        }
-
-        public void LoadTelemetryFromArguments(AppActivationArguments args)
-        {
-            if (args.Data is IFileActivatedEventArgs fileArgs && fileArgs.Files[0] is IStorageFile file)
-                this.DispatcherQueue.TryEnqueue(async () =>
-                {
-                    using var stream = await file.OpenStreamForReadAsync();
-                    TryAddTelemetryFile(stream, file.Name);
-                });
         }
 
         private async void OpenButton_Click(object sender, RoutedEventArgs args)
         {
             FileOpenPicker picker = new()
             {
-                FileTypeFilter = { ".sst" },
+                FileTypeFilter = { ".sst", ".sstproj" },
                 SuggestedStartLocation = PickerLocationId.ComputerFolder
             };
             WinRT.Interop.InitializeWithWindow.Initialize(picker, this.GetWindowHandle());
 
             if (await picker.PickSingleFileAsync() is StorageFile file)
-            {
-                using var stream = await file.OpenStreamForReadAsync();
-                TryAddTelemetryFile(stream, file.Name);
-            }
+                TryAddTelemetryFile(file);
         }
 
         private async void OpenFolderButton_Click(object sender, RoutedEventArgs args)
@@ -343,25 +331,61 @@ namespace Suspension
             {
                 foreach (var file in await folder.GetFilesAsync())
                 {
-                    if (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase))
-                    {
-                        using var stream = await file.OpenStreamForReadAsync();
-                        TryAddTelemetryFile(stream, file.Name);
-                    }
+                    if (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase) ||
+                        file.FileType.Equals(".sstproj", StringComparison.OrdinalIgnoreCase))
+                        TryAddTelemetryFile(file);
                 }
             }
         }
 
-        private void TryAddTelemetryFile(Stream stream, string name)
+        public void LoadTelemetryFromArguments(AppActivationArguments args)
+        {
+            if (args.Data is IFileActivatedEventArgs fileArgs && fileArgs.Files[0] is IStorageFile file)
+                this.DispatcherQueue.TryEnqueue(() => TryAddTelemetryFile(file));
+        }
+
+        private async void TryAddTelemetryFile(IStorageFile file)
         {
             try
             {
-                TelemetryFile file = new(stream);
-                telemetry.Add(new(name, file, new(file)));
+                using var stream = await file.OpenStreamForReadAsync();
+
+                if (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase))
+                {
+                    TelemetryFile telemetry = new(stream);
+                    this.telemetry.Add(new(file.Name, telemetry, new(telemetry, new() { SSTPath = file.Path })));
+                }
+                else if (file.FileType.Equals(".sstproj", StringComparison.OrdinalIgnoreCase))
+                {
+                    ProjectFile project = new(stream, file.Path);
+
+                    if (!new FileInfo(project.SSTPath).Exists)
+                    {
+                        ShowErrorDialog("Project SST file does not exist.");
+                        return;
+                    }
+
+                    StorageFile telemetry = await StorageFile.GetFileFromPathAsync(project.SSTPath);
+                    TelemetryFile telemetryFile = new(await telemetry.OpenStreamForReadAsync());
+                    TelemetryView view = new(telemetryFile, project);
+                    
+                    if (project.VideoPath is not null)
+                        view.RequestVideo(project.VideoPath);
+
+                    if (project.GPXPath is not null)
+                        view.RequestMap(project.GPXPath);
+
+                    if (project.Layers.Length > 0)
+                        view.SetMapLayers(project.Layers);
+
+                    this.telemetry.Add(new(System.IO.Path.GetFileNameWithoutExtension(file.Path), telemetryFile, view));
+                }
+                else
+                    ShowErrorDialog("Incorrect file type. Accepted types are .sst and .sstproj files.");
             }
-            catch (InvalidDataException ex)
+            catch
             {
-                ShowErrorDialog(ex.Message);
+                ShowErrorDialog("Incorrect file contents. It may be corrupt or of a different format.");
             }
         }
 
