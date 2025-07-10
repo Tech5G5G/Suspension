@@ -222,6 +222,8 @@ namespace Suspension.Views
 
         #endregion
 
+        #region Video
+
         /// <summary>
         /// Request a video to be added to the <see cref="TelemetryView"/>.
         /// </summary>
@@ -243,7 +245,20 @@ namespace Suspension.Views
 
             if (await picker.PickSingleFileAsync() is StorageFile file)
             {
-                media.Source = MediaSource.CreateFromUri(new(file.Path));
+                ShowVideo(ProjectFile.VideoPath = file.Path);
+                IsDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Request a video to be added to the <see cref="TelemetryView"/> using the specified <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">A path to a video file.</param>
+        public void RequestVideo(string path) => ShowVideo(path);
+
+        private void ShowVideo(string path)
+        {
+            media.Source = MediaSource.CreateFromUri(new(path));
 
                 mediaContainer.Visibility = Visibility.Visible;
                 Grid.SetColumnSpan(plotContainer, 1);
@@ -256,7 +271,8 @@ namespace Suspension.Views
                 else
                     Grid.SetRowSpan(mediaContainer, 2);
             }
-        }
+
+        #endregion
 
         #region Map
 
