@@ -258,6 +258,8 @@ namespace Suspension.Views
             }
         }
 
+        #region Map
+
         private const double MapZoomPadding = 0.005;
 
         private readonly List<TrackPoint> points = [];
@@ -267,17 +269,35 @@ namespace Suspension.Views
         /// </summary>
         public async void RequestMap()
         {
-            //Create file picker to get GPX file
             FileOpenPicker picker = new()
             {
                 FileTypeFilter = { ".gpx" },
-                SuggestedStartLocation = PickerLocationId.ComputerFolder
+                SuggestedStartLocation = PickerLocationId.Downloads
             };
             WinRT.Interop.InitializeWithWindow.Initialize(picker, (nint)XamlRoot.ContentIslandEnvironment.AppWindowId.Value);
 
-            if (await picker.PickSingleFileAsync() is not StorageFile file)
-                return;
+            if (await picker.PickSingleFileAsync() is StorageFile file)
+                ShowMap(file);
+        }
 
+        /// <summary>
+        /// Request a map to be added to the <see cref="TelemetryView"/> using the specified <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">A path to a GPX file.</param>
+        public async void RequestMap(string path)
+        {
+            try
+            {
+                ShowMap(await StorageFile.GetFileFromPathAsync(path), false);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorDialog(ex.Message);
+            }
+        }
+
+        private async void ShowMap(StorageFile file, bool makeDirty = true)
+        {
             //Update layout of view to add map
             mapContainer.Visibility = Visibility.Visible;
             Grid.SetColumnSpan(plotContainer, 1);
@@ -296,27 +316,21 @@ namespace Suspension.Views
                 map.Children.Remove(child);
 
             //Extract GPX file data
-            using var stream = await file.OpenStreamForReadAsync();
             GPX gpx;
-
             try
             {
+                using var stream = await file.OpenStreamForReadAsync();
                 gpx = new GPXFile(stream).Data;
             }
             catch
             {
-                ContentDialog dialog = new()
-                {
-                    Title = "Error",
-                    Content = "Incorrect file contents. It may be corrupt or of a different format.",
-                    CloseButtonText = "OK",
-                    DefaultButton = ContentDialogButton.Close,
-                    XamlRoot = XamlRoot
-                };
-
-                _ = dialog.ShowAsync();
+                ShowErrorDialog("Incorrect file contents. It may be corrupt or of a different format.");
                 return;
             }
+
+            //Update project GPX path
+            ProjectFile.GPXPath = file.Path;
+            IsDirty = makeDirty;
 
             //Draw lines to display route(s)
             double minLatitude = int.MaxValue,
@@ -402,8 +416,9 @@ namespace Suspension.Views
                 DefaultButton = ContentDialogButton.Primary
             };
 
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-            {
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+                return;
+
                 map.Children[0] = new MapTileLayer { TileSource = new() { UriTemplate = editor.BaseLayer.OriginalString } };
 
                 foreach (var child in map.Children.Skip(1).ToArray())
@@ -416,6 +431,30 @@ namespace Suspension.Views
 
                 foreach (var layer in editor.Layers.Reverse())
                     map.Children.Insert(1, new MapTileLayer { TileSource = new() { UriTemplate = layer.OriginalString } });
+
+            ProjectFile.Layers = [editor.BaseLayer.OriginalString, .. editor.Layers.Select(i => i.OriginalString)];
+            IsDirty = true;
+        }
+
+        /// <summary>
+        /// Sets the layers of the map to <paramref name="layers"/>.
+        /// </summary>
+        /// <param name="layers">The URL templates of the specified map tile sources.</param>
+        public void SetMapLayers(string[] layers)
+        {
+            foreach (var child in map.Children)
+            {
+                if (child is MapTileLayer layer)
+                    map.Children.Remove(layer);
+                else
+                    break;
+            }
+
+            foreach (var layer in layers.Reverse())
+                map.Children.Insert(0, new MapTileLayer { TileSource = new() { UriTemplate = layer } });
+        }
+
+        #endregion
 
         #region Saving
 
