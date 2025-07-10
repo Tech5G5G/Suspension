@@ -6,6 +6,34 @@
 /// <remarks>Data can be accessed using the indexer.</remarks>
 public class TelemetryFile : BaseFile
 {
+    /// <summary>
+    /// Gets the size of the <see cref="TelemetryFile"/> in bytes.
+    /// </summary>
+    public long Size { get; }
+
+    /// <summary>
+    /// Gets the sample rate of the <see cref="TelemetryFile"/> in Hz.
+    /// </summary>
+    public int SampleRate { get; }
+
+    /// <summary>
+    /// Gets the <see cref="DateTime"/> at which the <see cref="TelemetryFile"/> was recorded.
+    /// </summary>
+    public DateTime Timestamp { get; }
+
+    /// <summary>
+    /// Gets the amount of data contained within the <see cref="TelemetryFile"/>.
+    /// </summary>
+    public int Count { get; }
+
+    /// <summary>
+    /// Gets a tuple of <see cref="int"/>.
+    /// </summary>
+    /// <remarks><see cref="ValueTuple{T1, T2}.Item1"/> represents the fork. <see cref="ValueTuple{T1, T2}.Item2"/> represents the shock.</remarks>
+    /// <param name="index">The timestamp at which to get the tuple at.</param>
+    /// <returns>A tuple containing information about the fork and shock.</returns>
+    public (int, int) this[int index] => data[index];
+
     private readonly Dictionary<int, (int, int)> data = [];
 
     /// <summary>
@@ -37,34 +65,6 @@ public class TelemetryFile : BaseFile
         //Cache count
         Count = data.Count;
     }
-
-    /// <summary>
-    /// Gets the size of the <see cref="TelemetryFile"/> in bytes.
-    /// </summary>
-    public long Size { get; }
-
-    /// <summary>
-    /// Gets the sample rate of the <see cref="TelemetryFile"/> in Hz.
-    /// </summary>
-    public int SampleRate { get; }
-
-    /// <summary>
-    /// Gets the <see cref="DateTime"/> at which the <see cref="TelemetryFile"/> was recorded.
-    /// </summary>
-    public DateTime Timestamp { get; }
-
-    /// <summary>
-    /// Gets the amount of data contained within the <see cref="TelemetryFile"/>.
-    /// </summary>
-    public int Count { get; }
-
-    /// <summary>
-    /// Gets a tuple of <see cref="int"/>.
-    /// </summary>
-    /// <remarks><see cref="ValueTuple{T1, T2}.Item1"/> represents the fork. <see cref="ValueTuple{T1, T2}.Item2"/> represents the shock.</remarks>
-    /// <param name="index">The timestamp at which to get the tuple at.</param>
-    /// <returns>A tuple containing information about the fork and shock.</returns>
-    public (int, int) this[int index] => data[index];
 
     private static byte[] ReadAllBytes(Stream stream)
     {
