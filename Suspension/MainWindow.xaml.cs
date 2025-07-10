@@ -105,7 +105,8 @@ namespace Suspension
                 welcomeView.Visibility = Visibility.Collapsed;
 
                 tabs.CanDragTabs = tabs.CanReorderTabs =
-                viewMenu.IsEnabled = true;
+                viewMenu.IsEnabled = saveButton.IsEnabled =
+                saveAsButton.IsEnabled = saveAllButton.IsEnabled = true;
 
                 ShowStatusBar(statusBarToggle.IsChecked);
             }
