@@ -116,6 +116,11 @@ namespace Suspension.Views
             timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds:N0} ms.";
             timeTip.Focus(FocusState.Programmatic);
             timeTip.IsOpen = true;
+
+            if (dialog is not null)
+            {
+                dialog.XamlRoot = XamlRoot;
+                _ = dialog.ShowAsync();
         }
         }
 
@@ -401,6 +406,25 @@ namespace Suspension.Views
                 foreach (var layer in editor.Layers.Reverse())
                     map.Children.Insert(1, new MapTileLayer { TileSource = new() { UriTemplate = layer.OriginalString } });
             }
+        #region Errors
+
+        private ContentDialog dialog;
+
+        private void ShowErrorDialog(string content)
+        {
+            dialog = new()
+            {
+                Title = "Error",
+                Content = content,
+                CloseButtonText = "OK",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = XamlRoot
+            };
+
+            if (XamlRoot is not null)
+                _ = dialog.ShowAsync();
         }
+
+        #endregion
     }
 }
