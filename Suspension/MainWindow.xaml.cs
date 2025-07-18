@@ -378,7 +378,7 @@ namespace Suspension
                     if (project.Layers.Length > 0)
                         view.SetMapLayers(project.Layers);
 
-                    this.telemetry.Add(new(System.IO.Path.GetFileNameWithoutExtension(file.Path), telemetryFile, view));
+                    this.telemetry.Add(new(Path.GetFileNameWithoutExtension(file.Path), telemetryFile, view));
                 }
                 else
                     ShowErrorDialog("Incorrect file type. Accepted types are .sst and .sstproj files.");
