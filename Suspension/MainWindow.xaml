@@ -232,6 +232,39 @@
             </MenuBarItem>
         </MenuBar>
 
+            <DropDownButton x:Name="assistantButton"
+                            IsEnabled="False"
+                            Background="Transparent"
+                            BorderThickness="0" Margin="0,0,4,0" Height="32"
+                            ToolTipService.ToolTip="Suspension Assistant"
+                            Grid.Column="2">
+                <DropDownButton.Content>
+                    <FontIcon Glyph="&#xF22C;" FontSize="16" />
+                </DropDownButton.Content>
+                
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuFlyoutItem Text="New chat">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE932;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+
+                        <MenuFlyoutSeparator />
+
+                        <MenuFlyoutItem Text="Tuning advice" />
+                        <MenuFlyoutItem Text="Maintenance" />
+                        <MenuFlyoutItem Text="Rider style" Click="RiderStyleButton_Click" />
+                        <MenuFlyoutItem Text="Terrain" />
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+
+                <DropDownButton.Resources>
+                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
+                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+                    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent" />
+                </DropDownButton.Resources>
+            </DropDownButton>
         </Grid>
 
         <Grid Grid.Row="2">
