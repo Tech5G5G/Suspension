@@ -68,7 +68,7 @@ namespace Suspension.Views
             //Item1 is the timestamp
             //Item2 is the fork
             //Item3 is the shock
-            (int, int, int)[] data = ExtractData();
+            var data = ExtractData(file);
 
             //Create graph line for fork
             model.Series.Add(new LineSeries
@@ -137,14 +137,13 @@ namespace Suspension.Views
 
         private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args) => timeTip.IsOpen = false;
 
-        private (int, int, int)[] ExtractData()
+        private static (int, int, int)[] ExtractData(TelemetryFile file)
         {
-            int end = TelemetryFile.Count - 1;
-            (int, int, int)[] values = new (int, int, int)[end];
+            (int, int, int)[] values = new (int, int, int)[file.Count];
 
-            for (int i = 0; i < end; ++i)
+            for (int i = 0; i < file.Count; ++i)
             {
-                (int f, int s) = TelemetryFile[i];
+                (int f, int s) = file[i];
                 values[i] = (i, f, s);
             }
 
