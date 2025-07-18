@@ -435,7 +435,7 @@ namespace Suspension
 
         private void SaveButton_Click(object sender, RoutedEventArgs args)
         {
-            if (mainView.Content is TelemetryView view && view.IsDirty)
+            if (mainView.Content is TelemetryView view && (view.IsDirty || view.ProjectFile.FilePath is null))
                 view.RequestSave();
         }
 
