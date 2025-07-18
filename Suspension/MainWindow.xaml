@@ -132,105 +132,105 @@
             
             <MenuBar>
                 <MenuBarItem Title="File" KeyboardAcceleratorPlacementMode="Hidden">
-                <MenuFlyoutItem Text="Open" Click="OpenButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="O" />
-                        <KeyboardAccelerator Modifiers="Control" Key="T" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Open folder" Click="OpenFolderButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="O" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutSubItem x:Name="recentsMenu" Text="Recent" IsEnabled="False" />
+                    <MenuFlyoutItem Text="Open" Click="OpenButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="O" />
+                            <KeyboardAccelerator Modifiers="Control" Key="T" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Open folder" Click="OpenFolderButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="O" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSubItem x:Name="recentsMenu" Text="Recent" IsEnabled="False" />
 
-                <MenuFlyoutSeparator />
+                    <MenuFlyoutSeparator />
 
-                <MenuFlyoutItem x:Name="saveButton" Text="Save" IsEnabled="False" Click="SaveButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="S" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem x:Name="saveAsButton" Text="Save as" IsEnabled="False" Click="SaveAsButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="S" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem x:Name="saveAllButton" Text="Save all" IsEnabled="False" Click="SaveAllButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Menu" Key="S" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Name="saveButton" Text="Save" IsEnabled="False" Click="SaveButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="S" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Name="saveAsButton" Text="Save as" IsEnabled="False" Click="SaveAsButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="S" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Name="saveAllButton" Text="Save all" IsEnabled="False" Click="SaveAllButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Menu" Key="S" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
 
-                <MenuFlyoutSeparator />
+                    <MenuFlyoutSeparator />
 
-                <MenuFlyoutItem Text="New window" Click="NewWindowButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="N" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Close window" Click="CloseButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="W" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="New window" Click="NewWindowButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="N" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Close window" Click="CloseButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="W" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
 
-                <MenuFlyoutSeparator />
+                    <MenuFlyoutSeparator />
 
-                <MenuFlyoutItem Text="Close tab" Click="CloseTabButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="W" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Exit" Click="ExitButton_Click" />
+                    <MenuFlyoutItem Text="Close tab" Click="CloseTabButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="W" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Exit" Click="ExitButton_Click" />
 
-                <MenuBarItem.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Menu" Key="F" />
-                </MenuBarItem.KeyboardAccelerators>
-            </MenuBarItem>
+                    <MenuBarItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Menu" Key="F" />
+                    </MenuBarItem.KeyboardAccelerators>
+                </MenuBarItem>
 
                 <MenuBarItem x:Name="viewMenu" Title="View" IsEnabled="False" KeyboardAcceleratorPlacementMode="Hidden">
-                <MenuFlyoutItem x:Name="zoomInButton"
-                                Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
-                                Click="IncreaseZoomButton_Click" />
-                <MenuFlyoutItem x:Name="zoomOutButton"
-                                Text="Zoom out" KeyboardAcceleratorTextOverride="Ctrl+Minus"
-                                Click="DecreaseZoomButton_Click" />
-                <MenuFlyoutItem Text="Reset zoom" Click="ResetZoomButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="Number0" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Name="zoomInButton"
+                                    Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
+                                    Click="IncreaseZoomButton_Click" />
+                    <MenuFlyoutItem x:Name="zoomOutButton"
+                                    Text="Zoom out" KeyboardAcceleratorTextOverride="Ctrl+Minus"
+                                    Click="DecreaseZoomButton_Click" />
+                    <MenuFlyoutItem Text="Reset zoom" Click="ResetZoomButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Number0" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
 
-                <MenuFlyoutSeparator />
+                    <MenuFlyoutSeparator />
 
-                <MenuFlyoutItem Text="Add video" Click="AddVideoButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Add map" Click="AddMapButton_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
-                    </MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Edit map layers" Click="EditLayersButton_Click" />
+                    <MenuFlyoutItem Text="Add video" Click="AddVideoButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Add map" Click="AddMapButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Edit map layers" Click="EditLayersButton_Click" />
 
-                <MenuFlyoutSeparator />
+                    <MenuFlyoutSeparator />
 
-                <ToggleMenuFlyoutItem x:Name="airtimeToggle" Text="Airtimes" Click="AirtimeToggle_Click">
-                    <ToggleMenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control,Shift" Key="A" />
-                    </ToggleMenuFlyoutItem.KeyboardAccelerators>
-                </ToggleMenuFlyoutItem>
-                <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" Click="ToggleStatusBar_Click" />
+                    <ToggleMenuFlyoutItem x:Name="airtimeToggle" Text="Airtimes" Click="AirtimeToggle_Click">
+                        <ToggleMenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="A" />
+                        </ToggleMenuFlyoutItem.KeyboardAccelerators>
+                    </ToggleMenuFlyoutItem>
+                    <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" Click="ToggleStatusBar_Click" />
 
-                <MenuBarItem.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Menu" Key="V" />
-                </MenuBarItem.KeyboardAccelerators>
-            </MenuBarItem>
-        </MenuBar>
+                    <MenuBarItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Menu" Key="V" />
+                    </MenuBarItem.KeyboardAccelerators>
+                </MenuBarItem>
+            </MenuBar>
 
             <DropDownButton x:Name="assistantButton"
                             IsEnabled="False"
@@ -307,7 +307,10 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="{x:Bind FileName}" TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Text="{x:Bind FilePath}" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondary}" Grid.Row="1" />
+                                    <TextBlock Text="{x:Bind FilePath}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{ThemeResource TextFillColorSecondary}"
+                                               Grid.Row="1" />
 
                                     <TextBlock Text="{x:Bind LastModified}"
                                                TextTrimming="CharacterEllipsis"
