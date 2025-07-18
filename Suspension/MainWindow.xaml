@@ -123,8 +123,14 @@
 
         <Border Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}" Grid.RowSpan="3" Grid.Row="1" />
 
-        <MenuBar Grid.Row="1">
-            <MenuBarItem Title="File">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <MenuBar>
                 <MenuBarItem Title="File" KeyboardAcceleratorPlacementMode="Hidden">
                 <MenuFlyoutItem Text="Open" Click="OpenButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
@@ -225,6 +231,8 @@
                 </MenuBarItem.KeyboardAccelerators>
             </MenuBarItem>
         </MenuBar>
+
+        </Grid>
 
         <Grid Grid.Row="2">
             <Grid x:Name="welcomeView"
