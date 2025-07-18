@@ -22,6 +22,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Border x:Name="plotContainer"
@@ -49,14 +50,93 @@
         </Grid>
 
         <Grid x:Name="mapContainer"
-                Background="{ThemeResource CardBackgroundFillColorDefault}"
-                BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
-                Visibility="Collapsed"
-                CornerRadius="8"
-                Grid.Row="1" Grid.Column="1">
+              Background="{ThemeResource CardBackgroundFillColorDefault}"
+              BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+              Visibility="Collapsed"
+              CornerRadius="8"
+              Grid.Row="1" Grid.Column="1">
             <map:Map x:Name="map" MinZoomLevel="12" Background="Transparent">
                 <map:MapTileLayer TileSource="https://mts1.google.com/vt/lyrs=y&amp;x={x}&amp;y={y}&amp;z={z}" />
             </map:Map>
+        </Grid>
+
+        <Grid Background="{ThemeResource CardBackgroundFillColorDefault}"
+              BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+              CornerRadius="8"
+              Grid.RowSpan="2" Grid.Column="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid ColumnSpacing="12" Padding="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Suspension Assistant" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="4,0,0,0" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <Button Padding="6" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="New chat" Grid.Column="1">
+                    <FontIcon Glyph="&#xE932;" />
+                </Button>
+                <Button Padding="6,6,4,4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Close" Grid.Column="2">
+                    <FontIcon Glyph="&#xE711;" FontSize="22" />
+                </Button>
+            </Grid>
+
+            <ListView x:Name="aiList" Padding="8,0" ItemsSource="{x:Bind prompts}" SelectionMode="None" Grid.Row="1">
+                <ListView.ItemTemplateSelector>
+                    <local:AIPromptTemplateSelector>
+                        <local:AIPromptTemplateSelector.ModelTemplate>
+                            <DataTemplate x:DataType="ai:AIPrompt">
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefault}" CornerRadius="4" Padding="8" HorizontalAlignment="Left">
+                                    <mark:MarkdownTextBlock Text="{x:Bind Content}" Background="Transparent" TextWrapping="WrapWholeWords" />
+                                </Border>
+                            </DataTemplate>
+                        </local:AIPromptTemplateSelector.ModelTemplate>
+                        <local:AIPromptTemplateSelector.UserTemplate>
+                            <DataTemplate x:DataType="ai:AIPrompt">
+                                <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="8" HorizontalAlignment="Right">
+                                    <mark:MarkdownTextBlock Text="{x:Bind Content}" Background="Transparent" TextWrapping="WrapWholeWords" />
+                                </Border>
+                            </DataTemplate>
+                        </local:AIPromptTemplateSelector.UserTemplate>
+                    </local:AIPromptTemplateSelector>
+                </ListView.ItemTemplateSelector>
+
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView" VerticalAlignment="Bottom" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0,6,0,0" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+            <Grid ColumnSpacing="8" Padding="8" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="aiBox" KeyDown="AIBox_KeyDown" />
+
+                <ToggleButton x:Name="aiDataToggle" Padding="6" ToolTipService.ToolTip="Attach data" Grid.Column="1">
+                    <FontIcon Glyph="&#xE9D2;" />
+                </ToggleButton>
+                
+                <Button Padding="6" Click="SendButton_Click" ToolTipService.ToolTip="Send" Grid.Column="2">
+                    <FontIcon Glyph="&#xE724;" />
+                </Button>
+            </Grid>
         </Grid>
 
         <TeachingTip x:Name="timeTip">
