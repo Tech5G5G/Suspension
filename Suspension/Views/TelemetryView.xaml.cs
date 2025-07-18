@@ -59,6 +59,7 @@ namespace Suspension.Views
         {
             InitializeComponent();
 
+            //Populate properties
             TelemetryFile = file;
             ProjectFile = project;
 
