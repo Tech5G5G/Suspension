@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using Microsoft.UI.Dispatching;
-using Microsoft.Windows.AppLifecycle;
 
 namespace Suspension;
 
