@@ -125,6 +125,7 @@
 
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
+                <MenuBarItem Title="File" KeyboardAcceleratorPlacementMode="Hidden">
                 <MenuFlyoutItem Text="Open" Click="OpenButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="O" />
@@ -183,7 +184,7 @@
                 </MenuBarItem.KeyboardAccelerators>
             </MenuBarItem>
 
-            <MenuBarItem x:Name="viewMenu" Title="View" IsEnabled="False">
+                <MenuBarItem x:Name="viewMenu" Title="View" IsEnabled="False" KeyboardAcceleratorPlacementMode="Hidden">
                 <MenuFlyoutItem x:Name="zoomInButton"
                                 Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
                                 Click="IncreaseZoomButton_Click" />
