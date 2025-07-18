@@ -568,7 +568,7 @@ namespace Suspension.Views
                 {
                     { "SST Project", [".sstproj"] }
                 },
-                SuggestedFileName = ProjectFile.FilePath is null ? "New SST Project" : System.IO.Path.GetFileNameWithoutExtension(ProjectFile.FilePath),
+                SuggestedFileName = ProjectFile.FilePath is null ? "New SST Project" : Path.GetFileNameWithoutExtension(ProjectFile.FilePath),
                 SuggestedStartLocation = PickerLocationId.Downloads
             };
             WinRT.Interop.InitializeWithWindow.Initialize(picker, (nint)XamlRoot.ContentIslandEnvironment.AppWindowId.Value);
