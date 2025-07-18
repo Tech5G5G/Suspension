@@ -482,6 +482,40 @@ namespace Suspension.Views
             "You are the 'Suspension Assistant', who is an assistant for an application that views MTB and dirt bike suspension usage analytics. You were created by the Suspension app to assist with suspension metrics and analytics.");
 
         private readonly string telemetryCSV;
+
+        private void AIBox_KeyDown(object sender, KeyRoutedEventArgs args)
+        {
+            if (args.Key == Windows.System.VirtualKey.Enter)
+                SendButton_Click(sender, args);
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (aiDataToggle.IsChecked == true)
+            {
+                AnalyzeData($"Use the prior CSV to answer and/or help with the following prompt: {aiBox.Text}", aiBox.Text);
+                aiDataToggle.IsChecked = false;
+            }
+            else
+                MakeAIRequest(aiBox.Text);
+
+            aiBox.Text = string.Empty;
+        }
+
+        private void AnalyzeData(string prompt, string uiOverride) => MakeAIRequest(
+            $"Consider the following CSV as a representation of a bike's suspension usage. Timestamp is measured in 1/{TelemetryFile.SampleRate} of a second. Fork and Shock are measured in fractions of a degree.\n{telemetryCSV}\n{prompt}",
+            uiOverride);
+
+        private async void MakeAIRequest(string prompt, string uiOverride = null)
+        {
+            AIPrompt[] requests = [.. prompts, new(Role.User, prompt)];
+            prompts.Add(uiOverride is null ? requests[^1] : new(Role.User, uiOverride));
+
+            if (await aiModel.TryMakeRequest(requests) is AIResponse response)
+                prompts.Add(new(Role.Model, response.ToString()));
+        }
+
+        public void RequestRiderStyle() => AnalyzeData("Use the prior CSV to determine the style of the rider. Answer in a single word or phrase.", "What is my rider style?");
         private static string TrimDataToCSV((int, int, int)[] data)
         {
             var lines = data.Select(i => $"{i.Item1},{i.Item2},{i.Item3}").ToArray();
