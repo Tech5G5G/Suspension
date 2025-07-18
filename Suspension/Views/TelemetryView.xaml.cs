@@ -1,9 +1,9 @@
+using Windows.Media.Core;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Legends;
 using OxyPlot.Annotations;
-using Windows.Media.Core;
 using MapControl;
 
 namespace Suspension.Views
