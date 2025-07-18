@@ -6,9 +6,11 @@
     xmlns:local="using:Suspension.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ai="using:Suspension.AI"
     xmlns:oxy="using:OxyPlot"
     xmlns:con="using:OxyPlot.Controls"
     xmlns:map="using:MapControl"
+    xmlns:mark="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Loaded="View_Loaded">
 
