@@ -106,6 +106,7 @@ namespace Suspension.Views
             });
 
             DetermineAirtimes(data);
+            telemetryCSV = TrimDataToCSV(data);
 
 #pragma warning disable CS0618 //Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
@@ -467,6 +468,26 @@ namespace Suspension.Views
 
             foreach (var layer in layers.Reverse())
                 map.Children.Insert(0, new MapTileLayer { TileSource = new() { UriTemplate = layer } });
+        }
+
+        #endregion
+
+        #region AI
+
+        private readonly string telemetryCSV;
+        private static string TrimDataToCSV((int, int, int)[] data)
+        {
+            var lines = data.Select(i => $"{i.Item1},{i.Item2},{i.Item3}").ToArray();
+
+            double lineAverageLength = lines.Average(i => i.Length);
+            double maxLines = 50000 / lineAverageLength;
+            int skipEvery = (int)(lines.Length / maxLines);
+
+            List<string> selectedLines = ["Timestamp,Fork,Shock"];
+            for (int i = 0; i < lines.Length; i += skipEvery)
+                selectedLines.Add(lines[i]);
+
+            return string.Join("\n", selectedLines);
         }
 
         #endregion
