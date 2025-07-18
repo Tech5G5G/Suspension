@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Net.Http;
+﻿using System.Net.Http;
 
 namespace Suspension.AI;
 
@@ -7,25 +6,37 @@ namespace Suspension.AI;
 /// Represents a Google Gemini AI model.
 /// </summary>
 /// <param name="key">An API key for the Gemini API.</param>
-/// <param name="variant">The <see cref="ModelVariant"/> of the <see cref="Model"/>.</param>
-public partial class Model(string key, ModelVariant variant)
+/// <param name="variant">The <see cref="ModelVariant"/> of the <see cref="GeminiModel"/>.</param>
+public partial class GeminiModel(string key, ModelVariant variant, string systemInstruction = null)
 {
     /// <summary>
-    /// Gets the API key used by the <see cref="Model"/>.
+    /// Gets the API key used by the <see cref="GeminiModel"/>.
     /// </summary>
     public string Key { get; } = key;
 
     /// <summary>
-    /// Gets the <see cref="ModelVariant"/> of the <see cref="Model"/>.
+    /// Gets the <see cref="ModelVariant"/> of the <see cref="GeminiModel"/>.
     /// </summary>
     public ModelVariant Variant { get; } = variant;
 
     /// <summary>
+    /// Gets the system instruction given to the <see cref="GeminiModel"/>.
+    /// </summary>
+    public string SystemInstruction { get; } = systemInstruction;
+
+    /// <summary>
     /// Attempts to make a request to the specified <see cref="Variant"/>.
     /// </summary>
-    /// <param name="request">The <see cref="AIRequest"/> to present to the <see cref="Variant"/>.</param>
+    /// <param name="prompt">The prompt to present to the <see cref="Variant"/>.</param>
     /// <returns>If no errors occur (e.g., timeout, rate limit), an <see cref="AIResponse"/> from the <see cref="Variant"/>. Otherwise, <see langword="null"/>.</returns>
-    public async Task<AIResponse> TryMakeRequest(AIRequest request)
+    public Task<AIResponse> TryMakeRequest(string prompt) => TryMakeRequest([new(Role.User, prompt)]);
+
+    /// <summary>
+    /// Attempts to make a request to the specified <see cref="Variant"/>.
+    /// </summary>
+    /// <param name="prompts">The array of <see cref="AIPrompt"/> to present to the <see cref="Variant"/>.</param>
+    /// <returns>If no errors occur (e.g., timeout, rate limit), an <see cref="AIResponse"/> from the <see cref="Variant"/>. Otherwise, <see langword="null"/>.</returns>
+    public async Task<AIResponse> TryMakeRequest(AIPrompt[] prompts)
     {
         HttpClient client = new()
         {
@@ -37,17 +48,17 @@ public partial class Model(string key, ModelVariant variant)
         try
         {
             message = await client.SendAsync(
-            new(HttpMethod.Post, $"/v1beta/models/{Variant.GetModelString()}:generateContent")
-            {
-                Content = new StringContent(
-                JsonSerializer.Serialize(new Request(request)),
-                Encoding.UTF8,
-                "application/json"),
-                Headers =
+                new(HttpMethod.Post, $"/v1beta/models/{Variant.GetModelString()}:generateContent")
                 {
-                    { "x-goog-api-key", Key }
-                }
-            });
+                    Content = new StringContent(
+                    JsonSerializer.Serialize(new Request(prompts, SystemInstruction)),
+                    Encoding.UTF8,
+                    "application/json"),
+                    Headers =
+                    {
+                        { "x-goog-api-key", Key }
+                    }
+                });
         }
         catch
         {
@@ -76,7 +87,7 @@ public partial class Model(string key, ModelVariant variant)
 }
 
 /// <summary>
-/// Defines the variants available to be used by the <see cref="Model.Variant"/> property.
+/// Defines the variants available to be used by the <see cref="GeminiModel.Variant"/> property.
 /// </summary>
 public enum ModelVariant
 {

@@ -1,19 +1,18 @@
 ﻿namespace Suspension.AI;
 
-public partial class Model
+public partial class GeminiModel
 {
     private class Request
     {
-        public Request(AIRequest request)
+        public Request(AIPrompt[] prompts, string systemInstruction)
         {
-            Contents =
-            [
-                new()
-                {
-                    Parts = [.. request.Prompts.Select(i => new Part() { Text = i })]
-                }
-            ];
+            Contents = [.. prompts.Select(
+                i => new Content { Parts = [new() { Text = i.Content }], Role = i.Role.ToString().ToLower() })];
+            SystemInstruction = new() { Parts = [new() { Text = systemInstruction }] };
         }
+
+        [JsonPropertyName("system_instruction")]
+        public SystemContent SystemInstruction { get; set; }
 
         [JsonPropertyName("contents")]
         public Content[] Contents { get; set; }
@@ -22,6 +21,15 @@ public partial class Model
     #region Content
 
     private class Content
+    {
+        [JsonPropertyName("role")]
+        public string Role { get; set; }
+
+        [JsonPropertyName("parts")]
+        public Part[] Parts { get; set; }
+    }
+
+    private class SystemContent
     {
         [JsonPropertyName("parts")]
         public Part[] Parts { get; set; }
