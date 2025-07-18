@@ -105,8 +105,8 @@ namespace Suspension
                 welcomeView.Visibility = Visibility.Collapsed;
 
                 tabs.CanDragTabs = tabs.CanReorderTabs =
-                viewMenu.IsEnabled = saveButton.IsEnabled =
-                saveAsButton.IsEnabled = saveAllButton.IsEnabled = true;
+                viewMenu.IsEnabled = assistantButton.IsEnabled =
+                saveButton.IsEnabled = saveAsButton.IsEnabled = saveAllButton.IsEnabled = true;
 
                 ShowStatusBar(statusBarToggle.IsChecked);
             }
@@ -457,6 +457,12 @@ namespace Suspension
             statusBar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             mainView.Margin = show ? default : new(0, 0, 0, 8);
         }
+
+        #endregion
+
+        #region Assistant
+
+        private void RiderStyleButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestRiderStyle();
 
         #endregion
 
