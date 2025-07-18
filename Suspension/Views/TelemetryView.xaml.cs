@@ -606,4 +606,21 @@ namespace Suspension.Views
 
         #endregion
     }
+
+    public partial class AIPromptTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate UserTemplate { get; set; }
+
+        public DataTemplate ModelTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            if (item is AIPrompt prompt)
+                return prompt.Role == Role.User ? UserTemplate : ModelTemplate;
+            else
+                return base.SelectTemplateCore(item);
+        }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
+    }
 }
