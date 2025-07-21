@@ -13,6 +13,14 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Loaded="View_Loaded">
+    <Page.Resources>
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefault}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefault}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+    </Page.Resources>
 
     <Grid RowSpacing="8" ColumnSpacing="8" Padding="8,0">
         <Grid.RowDefinitions>
@@ -26,9 +34,8 @@
         </Grid.ColumnDefinitions>
 
         <Border x:Name="plotContainer"
-                Background="{ThemeResource CardBackgroundFillColorDefault}"
-                BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
-                CornerRadius="8" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                Style="{StaticResource CardBorderStyle}"
+                Grid.RowSpan="2" Grid.ColumnSpan="2">
             <oxy:PlotView x:Name="plot" Background="Transparent">
                 <oxy:PlotView.DefaultTrackerTemplate>
                     <ControlTemplate>
@@ -41,24 +48,21 @@
             </oxy:PlotView>
         </Border>
 
-        <Grid x:Name="mediaContainer"
-              Background="{ThemeResource CardBackgroundFillColorDefault}"
-              BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+        <Border x:Name="mediaContainer"
               Visibility="Collapsed"
-              CornerRadius="8" Grid.Column="1">
+                Style="{StaticResource CardBorderStyle}"
+                Grid.Column="1">
             <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" />
-        </Grid>
+        </Border>
 
-        <Grid x:Name="mapContainer"
-              Background="{ThemeResource CardBackgroundFillColorDefault}"
-              BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
+        <Border x:Name="mapContainer"
               Visibility="Collapsed"
-              CornerRadius="8"
+                Style="{StaticResource CardBorderStyle}"
               Grid.Row="1" Grid.Column="1">
             <map:Map x:Name="map" MinZoomLevel="12" Background="Transparent">
                 <map:MapTileLayer TileSource="https://mts1.google.com/vt/lyrs=y&amp;x={x}&amp;y={y}&amp;z={z}" />
             </map:Map>
-        </Grid>
+        </Border>
 
         <Grid Background="{ThemeResource CardBackgroundFillColorDefault}"
               BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
