@@ -137,7 +137,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="aiBox" KeyDown="AIBox_KeyDown" />
+                <TextBox x:Name="aiBox" PlaceholderText="Ask about suspension" TextWrapping="Wrap" KeyDown="AIBox_KeyDown" />
 
                 <ToggleButton x:Name="aiDataToggle" Padding="6" ToolTipService.ToolTip="Attach data" Grid.Column="1">
                     <FontIcon Glyph="&#xE9D2;" />
