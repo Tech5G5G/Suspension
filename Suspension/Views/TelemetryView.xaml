@@ -7,10 +7,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ai="using:Suspension.AI"
-    xmlns:oxy="using:OxyPlot"
-    xmlns:con="using:OxyPlot.Controls"
     xmlns:map="using:MapControl"
-    xmlns:mark="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:oxy="using:OxyPlot"
+    xmlns:oxycon="using:OxyPlot.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Loaded="View_Loaded">
 
@@ -32,10 +32,10 @@
             <oxy:PlotView x:Name="plot" Background="Transparent">
                 <oxy:PlotView.DefaultTrackerTemplate>
                     <ControlTemplate>
-                        <con:TrackerControl Position="{Binding Position}"
+                        <oxycon:TrackerControl Position="{Binding Position}"
                                             Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
                             <TextBlock Text="{Binding}" Foreground="{ThemeResource TextFillColorPrimary}" Margin="6" />
-                        </con:TrackerControl>
+                        </oxycon:TrackerControl>
                     </ControlTemplate>
                 </oxy:PlotView.DefaultTrackerTemplate>
             </oxy:PlotView>
@@ -93,6 +93,9 @@
                             <DataTemplate x:DataType="ai:AIPrompt">
                                 <Border Background="{ThemeResource CardBackgroundFillColorDefault}" CornerRadius="4" Padding="8" HorizontalAlignment="Left">
                                     <mark:MarkdownTextBlock Text="{x:Bind Content}" Background="Transparent" TextWrapping="WrapWholeWords" />
+                                    <controls:MarkdownTextBlock Text="{x:Bind Content}"
+                                                                Background="Transparent"
+                                                                TextWrapping="WrapWholeWords" />
                                 </Border>
                             </DataTemplate>
                         </local:AIPromptTemplateSelector.ModelTemplate>
@@ -100,6 +103,9 @@
                             <DataTemplate x:DataType="ai:AIPrompt">
                                 <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="8" HorizontalAlignment="Right">
                                     <mark:MarkdownTextBlock Text="{x:Bind Content}" Background="Transparent" TextWrapping="WrapWholeWords" />
+                                    <controls:MarkdownTextBlock Text="{x:Bind Content}"
+                                                                Background="Transparent"
+                                                                TextWrapping="WrapWholeWords" />
                                 </Border>
                             </DataTemplate>
                         </local:AIPromptTemplateSelector.UserTemplate>
