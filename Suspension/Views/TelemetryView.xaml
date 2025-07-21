@@ -64,10 +64,12 @@
             </map:Map>
         </Border>
 
-        <Grid Background="{ThemeResource CardBackgroundFillColorDefault}"
+        <Grid x:Name="aiPane"
+              Background="{ThemeResource CardBackgroundFillColorDefault}"
               BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
               CornerRadius="8"
-              Grid.RowSpan="2" Grid.Column="3">
+              Visibility="Collapsed"
+              Grid.RowSpan="2" Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
