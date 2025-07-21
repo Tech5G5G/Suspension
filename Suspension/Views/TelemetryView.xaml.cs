@@ -477,7 +477,7 @@ namespace Suspension.Views
 
         private readonly ObservableCollection<AIPrompt> prompts = [];
 
-        private readonly GeminiModel aiModel = new(
+        private static readonly GeminiModel aiModel = new(
             ModelVariant.Gemini25FlashLitePreview0617,
             "You are the 'Suspension Assistant', who is an assistant for an application that views MTB and dirt bike suspension usage analytics. You were created by the Suspension app to assist with suspension metrics and analytics.");
 
