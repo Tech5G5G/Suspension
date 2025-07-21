@@ -244,7 +244,7 @@
                 
                 <DropDownButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuFlyoutItem Text="New chat">
+                        <MenuFlyoutItem Text="New chat" Click="NewChatButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE932;" />
                             </MenuFlyoutItem.Icon>
@@ -252,8 +252,8 @@
 
                         <MenuFlyoutSeparator />
 
-                        <MenuFlyoutItem Text="Tuning advice" />
-                        <MenuFlyoutItem Text="Maintenance" />
+                        <MenuFlyoutItem Text="Tuning advice" Click="TuningAdviceButton_Click" />
+                        <MenuFlyoutItem Text="Maintenance" Click="MaintenanceButton_Click" />
                         <MenuFlyoutItem Text="Rider style" Click="RiderStyleButton_Click" />
                         <MenuFlyoutItem Text="Terrain" />
                     </MenuFlyout>

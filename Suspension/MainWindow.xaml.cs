@@ -462,7 +462,34 @@ namespace Suspension
 
         #region Assistant
 
-        private void RiderStyleButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestRiderStyle();
+        private void NewChatButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestAIChat(true);
+
+        private void RiderStyleButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+            {
+                view.RequestAIChat(false);
+                view.RequestRiderStyle();
+            }
+        }
+
+        private void TuningAdviceButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+            {
+                view.RequestAIChat(false);
+                view.RequestTuningAdvice();
+            }
+        }
+
+        private void MaintenanceButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+            {
+                view.RequestAIChat(false);
+                view.RequestMaintenanceAlerts();
+            }
+        }
 
         #endregion
 
