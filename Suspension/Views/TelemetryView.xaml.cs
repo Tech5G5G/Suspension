@@ -526,6 +526,19 @@ namespace Suspension.Views
 
             if (await aiModel.TryMakeRequest(requests) is AIResponse response)
                 prompts.Add(new(Role.Model, response.ToString()));
+            else
+                prompts.Add(new(
+                    Role.Model,
+                    """
+                    An error occurred while trying to contact the Suspension Assistant. One of the following reasons may be the cause:
+                    
+                    *   **No internet**
+                    *   **Gemini API rate limits**
+                    *   **Connection timeout**
+                    
+                    Please try again in a moment, and make sure you're connected to the internet.
+                    """));
+                    
             aiBox.IsEnabled = true;
         }
 
