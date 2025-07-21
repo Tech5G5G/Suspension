@@ -83,8 +83,11 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Suspension Assistant" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="4,0,0,0" Style="{StaticResource SubtitleTextBlockStyle}" />
-                <Button Padding="6" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="New chat" Grid.Column="1">
+                <TextBlock Text="Suspension Assistant"
+                           TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                           Margin="4,0,0,0"
+                           Style="{StaticResource SubtitleTextBlockStyle}" />
+                
                     <FontIcon Glyph="&#xE932;" />
                 </Button>
                 <Button Padding="6,6,4,4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Close" Grid.Column="2">
