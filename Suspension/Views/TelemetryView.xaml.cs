@@ -522,8 +522,11 @@ namespace Suspension.Views
             AIPrompt[] requests = [.. prompts, new(Role.User, prompt)];
             prompts.Add(uiOverride is null ? requests[^1] : new(Role.User, uiOverride));
 
+            aiBox.IsEnabled = false;
+
             if (await aiModel.TryMakeRequest(requests) is AIResponse response)
                 prompts.Add(new(Role.Model, response.ToString()));
+            aiBox.IsEnabled = true;
         }
 
         public void RequestRiderStyle() => AnalyzeData("Use the prior CSV to determine the style of the rider. Answer in a single word or phrase.", "What is my rider style?");
