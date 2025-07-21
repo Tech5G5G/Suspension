@@ -543,6 +543,26 @@ namespace Suspension.Views
         }
 
         public void RequestRiderStyle() => AnalyzeData("Use the prior CSV to determine the style of the rider. Answer in a single word or phrase.", "What is my rider style?");
+
+        public void RequestMaintenanceAlerts() => AnalyzeData("Use the prior CSV to determine if the suspension requires any maintenance. Condense your answer into a couple of bullet points, with an explanation under each bullet.", "Does my suspension need any maintenance?");
+
+        public void RequestTuningAdvice()
+        {
+            prompts.Add(new(Role.Model, "How would you like to tune your suspension?"));
+            aiDataToggle.IsChecked = true;
+            aiBox.Focus(FocusState.Keyboard);
+        }
+
+        public void RequestAIChat(bool clear)
+        {
+            if (contentGrid.ColumnDefinitions.Count < 3)
+            {
+                contentGrid.ColumnDefinitions.Add(new());
+                aiPane.Visibility = Visibility.Visible;
+            }
+            else if (clear)
+                prompts.Clear();
+        }
         private static string TrimDataToCSV((int, int, int)[] data)
         {
             var lines = data.Select(i => $"{i.Item1},{i.Item2},{i.Item3}").ToArray();
