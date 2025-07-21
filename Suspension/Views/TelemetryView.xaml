@@ -95,8 +95,9 @@
                     <local:AIPromptTemplateSelector>
                         <local:AIPromptTemplateSelector.ModelTemplate>
                             <DataTemplate x:DataType="ai:AIPrompt">
-                                <Border Background="{ThemeResource CardBackgroundFillColorDefault}" CornerRadius="4" Padding="8" HorizontalAlignment="Left">
-                                    <mark:MarkdownTextBlock Text="{x:Bind Content}" Background="Transparent" TextWrapping="WrapWholeWords" />
+                                <Border Background="{ThemeResource CardBackgroundFillColorDefault}"
+                                        CornerRadius="4" Padding="8"
+                                        HorizontalAlignment="Left">
                                     <controls:MarkdownTextBlock Text="{x:Bind Content}"
                                                                 Background="Transparent"
                                                                 TextWrapping="WrapWholeWords" />
@@ -105,8 +106,9 @@
                         </local:AIPromptTemplateSelector.ModelTemplate>
                         <local:AIPromptTemplateSelector.UserTemplate>
                             <DataTemplate x:DataType="ai:AIPrompt">
-                                <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="8" HorizontalAlignment="Right">
-                                    <mark:MarkdownTextBlock Text="{x:Bind Content}" Background="Transparent" TextWrapping="WrapWholeWords" />
+                                <Border Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        CornerRadius="4" Padding="8"
+                                        HorizontalAlignment="Right">
                                     <controls:MarkdownTextBlock Text="{x:Bind Content}"
                                                                 Background="Transparent"
                                                                 TextWrapping="WrapWholeWords" />
