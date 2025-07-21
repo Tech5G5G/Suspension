@@ -328,14 +328,31 @@ namespace Suspension
             WinRT.Interop.InitializeWithWindow.Initialize(picker, this.GetWindowHandle());
 
             if (await picker.PickSingleFolderAsync() is StorageFolder folder)
-            {
                 foreach (var file in await folder.GetFilesAsync())
                 {
                     if (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase) ||
                         file.FileType.Equals(".sstproj", StringComparison.OrdinalIgnoreCase))
                         TryAddTelemetryFile(file);
                 }
-            }
+        }
+
+        private void Content_DragEnter(object sender, DragEventArgs args)
+        {
+            if (args.DataView.AvailableFormats.Contains(StandardDataFormats.StorageItems) &&
+                args.AllowedOperations.HasFlag(DataPackageOperation.Copy))
+                args.AcceptedOperation = DataPackageOperation.Copy;
+        }
+
+        private async void Content_Drop(object sender, DragEventArgs args)
+        {
+            if (await args.DataView.GetStorageItemsAsync() is IReadOnlyList<IStorageItem> items)
+                foreach (var item in items)
+                {
+                    if (item is StorageFile file &&
+                        (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase) ||
+                        file.FileType.Equals(".sstproj", StringComparison.OrdinalIgnoreCase)))
+                        TryAddTelemetryFile(file);
+                }
         }
 
         public void LoadTelemetryFromArguments(AppActivationArguments args)

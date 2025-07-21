@@ -13,7 +13,9 @@
         <MicaBackdrop Kind="BaseAlt" />
     </Window.SystemBackdrop>
 
-    <Grid>
+    <Grid AllowDrop="True"
+          Drop="Content_Drop"
+          DragEnter="Content_DragEnter">
         <Grid.Resources>
             <convert:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </Grid.Resources>
