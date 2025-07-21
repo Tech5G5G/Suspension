@@ -502,6 +502,17 @@ namespace Suspension.Views
             aiBox.Text = string.Empty;
         }
 
+        private void CloseButton_Click(object sender, RoutedEventArgs args)
+        {
+            contentGrid.ColumnDefinitions.RemoveAt(2);
+            aiPane.Visibility = Visibility.Collapsed;
+
+            Focus(FocusState.Programmatic);
+            prompts.Clear();
+        }
+
+        private void NewChatButton_Click(object sender, RoutedEventArgs args) => RequestAIChat(true);
+
         private void AnalyzeData(string prompt, string uiOverride) => MakeAIRequest(
             $"Consider the following CSV as a representation of a bike's suspension usage. Timestamp is measured in 1/{TelemetryFile.SampleRate} of a second. Fork and Shock are measured in fractions of a degree.\n{telemetryCSV}\n{prompt}",
             uiOverride);
