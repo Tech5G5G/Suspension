@@ -165,6 +165,10 @@ namespace Suspension.Views
         private void View_Loaded2(object sender, RoutedEventArgs args) => allowPlay = true;
 
         private void View_Unloaded(object sender, RoutedEventArgs args) => allowPlay = false;
+
+
+        private void Plot_ActualThemeChanged(FrameworkElement sender, object args) => plot.InvalidatePlot(false);
+
         private static (int, int, int)[] ExtractData(TelemetryFile file)
         {
             (int, int, int)[] values = new (int, int, int)[file.Count];

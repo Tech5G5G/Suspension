@@ -36,7 +36,7 @@
         <Border x:Name="plotContainer"
                 Style="{StaticResource CardBorderStyle}"
                 Grid.RowSpan="2" Grid.ColumnSpan="2">
-            <oxy:PlotView x:Name="plot" Background="Transparent">
+            <oxy:PlotView x:Name="plot" Background="Transparent" ActualThemeChanged="Plot_ActualThemeChanged">
                 <oxy:PlotView.DefaultTrackerTemplate>
                     <ControlTemplate>
                         <oxycon:TrackerControl Position="{Binding Position}"
@@ -93,7 +93,7 @@
                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
                            Margin="4,0,0,0"
                            Style="{StaticResource SubtitleTextBlockStyle}" />
-                
+
                 <Button Padding="6"
                         Background="Transparent" BorderThickness="0"
                         Click="NewChatButton_Click"
