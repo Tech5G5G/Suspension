@@ -2,7 +2,7 @@
 
 public class Setting<T>(string key, T defaultValue)
 {
-    private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
     public T Value
     {
@@ -30,7 +30,7 @@ public class Setting<T>(string key, T defaultValue)
 
 public class EnumSetting<T>(string key, T defaultValue) where T : Enum
 {
-    private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
     public T Value
     {
