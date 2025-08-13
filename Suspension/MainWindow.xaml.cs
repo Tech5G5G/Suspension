@@ -1,9 +1,8 @@
-using Windows.System;
+using System.Globalization;
 using Windows.Graphics;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Globalization.NumberFormatting;
-using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 
 namespace Suspension
