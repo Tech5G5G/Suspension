@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <None Remove="Assets\Suspension.ico" />
+    <None Remove="Controls\EditMenuFlyoutItem.xaml" />
     <None Remove="Controls\MapLayerEditor.xaml" />
     <None Remove="Controls\ProfileEditor.xaml" />
   </ItemGroup>
@@ -66,6 +67,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\EditMenuFlyoutItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Controls\MapLayerEditorItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
