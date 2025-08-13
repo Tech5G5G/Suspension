@@ -439,7 +439,11 @@ namespace Suspension.Views
         /// Request a video to be added to the <see cref="TelemetryView"/> using the specified <paramref name="path"/>.
         /// </summary>
         /// <param name="path">A path to a video file.</param>
-        public void RequestVideo(string path) => ShowVideo(path);
+        public void RequestVideo(string path)
+        {
+            if (Path.Exists(path))
+                ShowVideo(path);
+        }
 
         private void ShowVideo(string path)
         {
