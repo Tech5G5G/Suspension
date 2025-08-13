@@ -53,6 +53,7 @@ namespace Suspension
             };
 
             LoadSettings();
+            LoadProfiles();
             SetupWelcome();
         }
 
@@ -476,6 +477,137 @@ namespace Suspension
 
         #endregion
 
+        #region Profiles
+
+        private async void LoadProfiles()
+        {
+            Guid selectedId = (profilesMenu.Items.FirstOrDefault(i => i is EditMenuFlyoutItem { IsChecked: true })?.DataContext as Profile)?.Id ?? Guid.Empty;
+            for (int i = profilesMenu.Items.Count - 2; i > 0; --i)
+                profilesMenu.Items.RemoveAt(0);
+
+            if (await Profile.GetProfilesAsync() is not Profile[] profiles || profiles.Length < 1)
+            {
+                await Profile.SaveProfile(new()
+                {
+                    Name = "Default",
+                    Id = Guid.NewGuid(),
+                    Icon = "\uE13D",
+                    Color = null,
+                    IsDefault = true,
+                    AngleDivisor = 1,
+                    ForkDimensions = new(),
+                    ShockDimensions = new()
+                });
+                profiles = await Profile.GetProfilesAsync();
+            }
+
+            Int32ToColorConverter converter = new();
+            foreach (var profile in profiles.Reverse())
+            {
+                FontIcon icon = new() { Glyph = profile.Icon };
+                if (profile.Color is not null)
+                    icon.Foreground = new SolidColorBrush(converter.Convert(profile.Color.Value));
+
+                EditMenuFlyoutItem item = new()
+                {
+                    Icon = icon,
+                    Text = profile.Name,
+                    DataContext = profile
+                };
+                item.EditClick += async (s, e) =>
+                {
+                    ProfileEditor editor = new() { Profile = profile };
+                    ContentDialog dialog = new()
+                    {
+                        Title = "Edit profile",
+                        Content = editor,
+                        PrimaryButtonText = "Save",
+                        CloseButtonText = "Cancel",
+                        XamlRoot = Content.XamlRoot,
+                        DefaultButton = ContentDialogButton.Primary,
+                    };
+
+                    if (Profile.GetProfilesAsync().Result.Length > 1)
+                        dialog.SecondaryButtonText = "Remove";
+
+                    switch (await dialog.ShowAsync())
+                    {
+                        case ContentDialogResult.Primary:
+                            if (editor.NewProfile.IsDefault &&
+                                Profile.GetProfilesAsync().Result.FirstOrDefault(i => i.IsDefault) is Profile oldProfile)
+                            {
+                                oldProfile.IsDefault = false;
+                                await Profile.SaveProfile(oldProfile);
+                            }
+                            else if (!editor.NewProfile.IsDefault &&
+                                Profile.GetProfilesAsync().Result.FirstOrDefault(i => i.IsDefault) is null)
+                                editor.NewProfile.IsDefault = true;
+
+                            await Profile.SaveProfile(editor.NewProfile);
+                            LoadProfiles();
+                            break;
+                        case ContentDialogResult.Secondary:
+                            await Profile.RemoveProfile(profile.Id);
+                            LoadProfiles();
+                            break;
+                    }
+                };
+                profilesMenu.Items.Insert(0, item);
+            }
+
+            if (profilesMenu.Items.FirstOrDefault(i => i.DataContext is Profile profile && profile.Id == selectedId) is EditMenuFlyoutItem selected)
+                selected.IsChecked = true;
+            else if (profilesMenu.Items.FirstOrDefault(i => i.DataContext is Profile { IsDefault: true }) is EditMenuFlyoutItem item)
+                item.IsChecked = true;
+            else if (profilesMenu.Items[0] is EditMenuFlyoutItem first)
+                first.IsChecked = true;
+        }
+
+        private async void NewProfile_Click(object sender, RoutedEventArgs args)
+        {
+            ProfileEditor editor = new()
+            {
+                Profile = new()
+                {
+                    Name = "New profile",
+                    Id = Guid.NewGuid(),
+                    Icon = "\uE13D",
+                    Color = null,
+                    IsDefault = false,
+                    AngleDivisor = 1,
+                    ForkDimensions = new(),
+                    ShockDimensions = new()
+                }
+            };
+            ContentDialog dialog = new()
+            {
+                Title = "Create profile",
+                Content = editor,
+                PrimaryButtonText = "Add",
+                CloseButtonText = "Cancel",
+                XamlRoot = Content.XamlRoot,
+                DefaultButton = ContentDialogButton.Primary,
+            };
+
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                if (editor.NewProfile.IsDefault &&
+                    Profile.GetProfilesAsync().Result.FirstOrDefault(i => i.IsDefault) is Profile oldProfile)
+                {
+                    oldProfile.IsDefault = false;
+                    await Profile.SaveProfile(oldProfile);
+                }
+                else if (!editor.NewProfile.IsDefault &&
+                    Profile.GetProfilesAsync().Result.FirstOrDefault(i => i.IsDefault) is null)
+                    editor.NewProfile.IsDefault = true;
+
+                await Profile.SaveProfile(editor.NewProfile);
+                LoadProfiles();
+            }
+        }
+
+        #endregion
+
         #region Assistant
 
         private void NewChatButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestAIChat(true);
@@ -586,6 +718,31 @@ namespace Suspension
         public ulong? ParseUInt(string text) => ulong.TryParse(text.Replace("%", null), out ulong value) ? value : null;
     }
 
+    public partial class UnitFormatter : INumberFormatter, INumberFormatter2, INumberParser
+    {
+        public string Unit { get; set; } = string.Empty;
+
+        private string GetFormattedUnit() => $"{(string.IsNullOrWhiteSpace(Unit) ? string.Empty : " ")}{Unit}";
+
+        public string Format(long value) => $"{value}{GetFormattedUnit()}";
+
+        public string Format(ulong value) => $"{value}{GetFormattedUnit()}";
+
+        public string Format(double value) => $"{value}{GetFormattedUnit()}";
+
+        public string FormatDouble(double value) => Format(value);
+
+        public string FormatInt(long value) => Format(value);
+
+        public string FormatUInt(ulong value) => Format(value);
+
+        public double? ParseDouble(string text) => double.TryParse(text.Replace($" {Unit}", null), out double value) ? value : null;
+
+        public long? ParseInt(string text) => long.TryParse(text.Replace($" {Unit}", null), out long value) ? value : null;
+
+        public ulong? ParseUInt(string text) => ulong.TryParse(text.Replace($" {Unit}", null), out ulong value) ? value : null;
+    }
+
     public partial class DoubleToPercentConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language) =>
@@ -593,6 +750,39 @@ namespace Suspension
 
         public object ConvertBack(object value, Type targetType, object parameter, string language) =>
             value is string str ? double.TryParse(str.Replace("%", null), out double num) ? num / 100 : value : value;
+    }
+
+    public partial class Int32ToColorConverter : IValueConverter
+    {
+        public Color Convert(int color) => (Color)Convert(color, null, null, null);
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is int color)
+            {
+                string colorStr = color.ToString("X6");
+                return Color.FromArgb(
+                    0xFF,
+                    byte.Parse(colorStr[..2], NumberStyles.HexNumber),
+                    byte.Parse(colorStr[2..4], NumberStyles.HexNumber),
+                    byte.Parse(colorStr[4..6], NumberStyles.HexNumber));
+            }
+            else
+                return value;
+        }
+
+        public int ConvertBack(Color color) => (int)ConvertBack(color, null, null, null);
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            if (value is Color color)
+            {
+                string colorStr = $"{color.R:X2}{color.G:X2}{color.B:X2}";
+                return int.Parse(colorStr, NumberStyles.HexNumber);
+            }
+            else
+                return value;
+        }
     }
 
     #endregion

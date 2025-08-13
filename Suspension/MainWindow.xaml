@@ -192,6 +192,15 @@
                     </MenuBarItem.KeyboardAccelerators>
                 </MenuBarItem>
 
+                    <MenuFlyoutSubItem x:Name="profilesMenu" Text="Profile">
+                        <MenuFlyoutSeparator />
+
+                        <MenuFlyoutItem Text="Create new" Click="NewProfile_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE710;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyoutSubItem>
                 <MenuBarItem x:Name="viewMenu" Title="View" IsEnabled="False" KeyboardAcceleratorPlacementMode="Hidden">
                     <MenuFlyoutItem x:Name="zoomInButton"
                                     Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
