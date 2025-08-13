@@ -735,10 +735,22 @@ namespace Suspension.Views
             aiBox.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Requests the AI chat to display the style of the rider.
+        /// </summary>
+        /// <remarks><see cref="RequestAIChat(bool)"/> must be called earlier to show the AI chat.</remarks>
         public void RequestRiderStyle() => AnalyzeData("Use the prior CSV to determine the style of the rider. Answer in a single word or phrase.", "What is my rider style?");
 
+        /// <summary>
+        /// Requests the AI chat to display any maintenace alerts.
+        /// </summary>
+        /// <remarks><see cref="RequestAIChat(bool)"/> must be called earlier to show the AI chat.</remarks>
         public void RequestMaintenanceAlerts() => AnalyzeData("Use the prior CSV to determine if the suspension requires any maintenance. Condense your answer into a couple of bullet points, with an explanation under each bullet.", "Does my suspension need any maintenance?");
 
+        /// <summary>
+        /// Requests the AI chat to give tuning advice to the user.
+        /// </summary>
+        /// <remarks><see cref="RequestAIChat(bool)"/> must be called earlier to show the AI chat.</remarks>
         public void RequestTuningAdvice()
         {
             prompts.Add(new(Role.Model, "How would you like to tune your suspension?"));
@@ -746,6 +758,9 @@ namespace Suspension.Views
             aiBox.Focus(FocusState.Keyboard);
         }
 
+        /// <summary>
+        /// Requests a pane to be shown to the right of the view that contains an AI chat.
+        /// </summary>
         public void RequestAIChat(bool clear)
         {
             if (contentGrid.ColumnDefinitions.Count < 3)
@@ -756,6 +771,7 @@ namespace Suspension.Views
             else if (clear)
                 prompts.Clear();
         }
+
         private static string TrimDataToCSV((int, int, int)[] data)
         {
             var lines = data.Select(i => $"{i.Item1},{i.Item2},{i.Item3}").ToArray();
