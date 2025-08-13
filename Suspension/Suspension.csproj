@@ -20,7 +20,7 @@
   <ItemGroup>
     <None Remove="Assets\Suspension.ico" />
     <None Remove="Controls\MapLayerEditor.xaml" />
-    <None Remove="Controls\MapLayerEditorItem.xaml" />
+    <None Remove="Controls\ProfileEditor.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +62,10 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\ProfileEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
     <Page Update="Controls\MapLayerEditorItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

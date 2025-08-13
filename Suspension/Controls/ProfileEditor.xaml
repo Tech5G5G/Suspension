@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Name="editor"
+    x:Class="Suspension.Controls.ProfileEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Suspension.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Margin="-24,0,-24,-24">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="FontIconForegroundBrush" Color="{ThemeResource TextFillColorPrimary}" />
+
+        <Style x:Key="SideNumberBoxStyle" TargetType="NumberBox">
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="SpinButtonPlacementMode" Value="Inline" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer Padding="24,0">
+        <StackPanel Spacing="12" Padding="0,0,0,24">
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ToggleButton x:Name="colorToggle"
+                              IsChecked="True"
+                              Padding="6" CornerRadius="4"
+                              Background="{ThemeResource CardBackgroundFillColorDefault}"
+                              BorderBrush="{ThemeResource ControlStrokeColorDefault}" BorderThickness="1"
+                              Click="ColorToggle_Click"
+                              ToolTipService.ToolTip="Toggle color">
+                    <FontIcon x:Name="icon" />
+                </ToggleButton>
+
+                <TextBox PlaceholderText="Name" Text="{x:Bind Profile.Name}" TextChanged="NameBox_TextChanged" Grid.Column="1" />
+
+                <CheckBox Content="Is default" IsChecked="{x:Bind Profile.IsDefault}" Margin="0,0,-26,0" Checked="DefaultCheck_Checked" Grid.Column="2" />
+            </Grid>
+
+            <Grid Height="474">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ColorPicker x:Name="picker" Background="Transparent" Margin="0,-4,12,-16" ColorChanged="Picker_ColorChanged" />
+
+                <GridView x:Name="icons"
+                          VerticalAlignment="Top"
+                          Padding="0,0,-4,-4"
+                          SelectionChanged="Icons_SelectionChanged"
+                          Grid.Column="1"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <FontIcon Glyph="{x:Bind}" Loaded="FontIcon_Loaded" />
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+
+                    <GridView.ItemContainerTransitions>
+                        <TransitionCollection />
+                    </GridView.ItemContainerTransitions>
+                </GridView>
+            </Grid>
+
+            <Grid ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Angle divisor" Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Button x:Name="divisorInfoButton"
+                        Background="Transparent"
+                        BorderThickness="0" Padding="0,0,-1,-1"
+                        CornerRadius="6"
+                        Click="DivisorInfoButton_Click"
+                        Grid.Column="1"
+                        ToolTipService.ToolTip="Info">
+                    <FontIcon Glyph="&#xE946;" FontSize="14" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}" />
+                </Button>
+
+                <TeachingTip x:Name="divisorTip"
+                             Title="Divisor explanation"
+                             Subtitle="Before calculating side C (travel), the angle is divided by the divisor.&#x0a;Set to 1 to leave angle unchanged."
+                             Target="{x:Bind divisorInfoButton}">
+                </TeachingTip>
+            </Grid>
+            <NumberBox PlaceholderText="1024"
+                       Minimum="1"
+                       SpinButtonPlacementMode="Inline"
+                       Value="{x:Bind Profile.AngleDivisor}"
+                       ValueChanged="Divisor_ValueChanged"
+                       Grid.Row="1" />
+
+            <Grid ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Fork dimensions" Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Button x:Name="forkInfoButton"
+                        Background="Transparent"
+                        BorderThickness="0" Padding="0,0,-1,-1"
+                        CornerRadius="6"
+                        Click="ForkInfoButton_Click"
+                        Grid.Column="1"
+                        ToolTipService.ToolTip="Info">
+                    <FontIcon Glyph="&#xE946;" FontSize="14" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}" />
+                </Button>
+
+                <TeachingTip x:Name="forkInfoTip"
+                             Title="Dimensions explanation"
+                             Subtitle="The top edge is side A.&#x0a;The vertical edge is side C.&#x0a;The angle measured is created by sides C and A."
+                             Target="{x:Bind forkInfoButton}">
+                </TeachingTip>
+            </Grid>
+            
+            <Grid RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Viewbox Stretch="Uniform" MaxWidth="150" MaxHeight="150" Grid.RowSpan="2" Grid.Column="1">
+                    <Polygon x:Name="forkTriangle" Stroke="{ThemeResource TextFillColorPrimary}" StrokeThickness="2" />
+                </Viewbox>
+
+                <NumberBox x:Name="forkA"
+                           Header="Side A" PlaceholderText="50 mm"
+                           VerticalAlignment="Bottom"
+                           Style="{StaticResource SideNumberBoxStyle}"
+                           ValueChanged="Fork_ValueChanged"
+                           Grid.Column="0" />
+                
+                <NumberBox x:Name="forkB"
+                           Header="Side B" PlaceholderText="40 mm"
+                           VerticalAlignment="Top"
+                           Style="{StaticResource SideNumberBoxStyle}"
+                           ValueChanged="Fork_ValueChanged"
+                           Grid.Row="1" Grid.Column="0" />
+            </Grid>
+
+
+            <Grid ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Shock dimensions" Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Button x:Name="shockInfoButton"
+                        Background="Transparent"
+                        BorderThickness="0" Padding="0,0,-1,-1"
+                        CornerRadius="6"
+                        Click="ShockInfoButton_Click"
+                        Grid.Column="1"
+                        ToolTipService.ToolTip="Info">
+                    <FontIcon Glyph="&#xE946;" FontSize="14" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}" />
+                </Button>
+
+                <TeachingTip x:Name="shockInfoTip"
+                             Title="Dimensions explanation"
+                             Subtitle="The top edge is side A.&#x0a;The vertical edge is side C.&#x0a;The angle measured is created by sides C and A."
+                             Target="{x:Bind shockInfoButton}">
+                </TeachingTip>
+            </Grid>
+            
+            <Grid RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Viewbox Stretch="Uniform" MaxWidth="150" MaxHeight="150" Grid.RowSpan="2" Grid.Column="1">
+                    <Polygon x:Name="shockTriangle" Stroke="{ThemeResource TextFillColorPrimary}" StrokeThickness="2" />
+                </Viewbox>
+
+                <NumberBox x:Name="shockA"
+                           Header="Side A" PlaceholderText="70 mm"
+                           VerticalAlignment="Bottom"
+                           Style="{StaticResource SideNumberBoxStyle}"
+                           ValueChanged="Shock_ValueChanged"
+                           Grid.Column="0" />
+                
+                <NumberBox x:Name="shockB"
+                           Header="Side B" PlaceholderText="60 mm"
+                           VerticalAlignment="Top"
+                           Style="{StaticResource SideNumberBoxStyle}"
+                           ValueChanged="Shock_ValueChanged"
+                           Grid.Row="1" Grid.Column="0" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
