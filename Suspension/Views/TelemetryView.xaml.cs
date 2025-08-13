@@ -19,12 +19,12 @@ namespace Suspension.Views
         /// </summary>
         public double ZoomFactor
         {
-            get => TelemetryFile.Count / TelemetryFile.SampleRate / (model.Axes[0].ActualMaximum - model.Axes[0].ActualMinimum);
+            get => TelemetryFile.Count / TelemetryFile.SampleRate / (model.DefaultXAxis.ActualMaximum - model.DefaultXAxis.ActualMinimum);
             set
             {
                 plot.ResetAllAxes();
                 plot.ZoomAllAxes(value);
-                plot.InvalidatePlot();
+                plot.InvalidatePlot(false);
             }
         }
 
