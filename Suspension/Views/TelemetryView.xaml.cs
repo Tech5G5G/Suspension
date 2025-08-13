@@ -45,6 +45,8 @@ namespace Suspension.Views
 
         private readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
+        private readonly PlotController controller = new();
+
         private readonly PlotModel model = new()
         {
             Legends = { new Legend { LegendPosition = LegendPosition.BottomRight } },
@@ -107,13 +109,35 @@ namespace Suspension.Views
                 Position = AxisPosition.Left
             });
 
+            //Create MediaPlaybackSession and hook event
+            MediaPlayer player = new();
+            media.SetMediaPlayer(player);
+            player.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
+
+            //Create annotation for displaying playback position
+            model.Annotations.Add(positionAnnot = new()
+            {
+                StrokeThickness = 0,
+                Color = OxyColors.Black,
+                LineStyle = LineStyle.Solid,
+                Type = LineAnnotationType.Vertical
+            });
+
+            //Feed data to other areas
             DetermineAirtimes(data);
             telemetryCSV = TrimDataToCSV(data);
 
 #pragma warning disable CS0618 //Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
+
+            model.MouseDown += Model_MouseDown;
+            model.MouseMove += Model_MouseMove;
+            model.MouseUp += Model_MouseUp;
+
+            positionAnnot.MouseDown += PositionAnnot_MouseDown;
 #pragma warning restore CS0618 //Type or member is obsolete
 
+            //Set plot model and controller
             plot.Model = model;
 
             controller.Bind(new OxyMouseEnterGesture(), PlotCommands.HoverSnapTrack);
@@ -123,7 +147,9 @@ namespace Suspension.Views
         private void View_Loaded(object sender, RoutedEventArgs args)
         {
             stopwatch.Stop();
+
             Loaded -= View_Loaded;
+            Loaded += View_Loaded2;
 
             timeTip.Title = $"Opened in {stopwatch.ElapsedMilliseconds:N0} ms.";
             timeTip.Focus(FocusState.Programmatic);
@@ -136,8 +162,9 @@ namespace Suspension.Views
         }
         }
 
-        private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args) => timeTip.IsOpen = false;
+        private void View_Loaded2(object sender, RoutedEventArgs args) => allowPlay = true;
 
+        private void View_Unloaded(object sender, RoutedEventArgs args) => allowPlay = false;
         private static (int, int, int)[] ExtractData(TelemetryFile file)
         {
             (int, int, int)[] values = new (int, int, int)[file.Count];
@@ -158,7 +185,7 @@ namespace Suspension.Views
         /// </summary>
         public bool AreAirtimesVisible
         {
-            get => model.Annotations.Count > 0;
+            get => model.Annotations.Count > 1;
             set
             {
                 if (AreAirtimesVisible == value)
@@ -224,6 +251,164 @@ namespace Suspension.Views
 
         #region Video
 
+        private readonly LineAnnotation positionAnnot;
+
+        private double offset;
+
+        private bool allowPlay = true;
+
+        #region Offsetting
+
+        private readonly LineAnnotation recommendedPositionAnnot = new()
+        {
+            StrokeThickness = 1,
+            LineStyle = LineStyle.Solid,
+            Type = LineAnnotationType.Vertical,
+            Color = OxyColor.FromArgb(0x7F, 0xFF, 0xFF, 0xFF)
+        };
+
+        private bool moving,
+                     offsetting;
+
+        private double position;
+
+        private void PositionAnnot_MouseDown(object sender, OxyMouseDownEventArgs args)
+        {
+            //Check for Ctrl key, left mouse button and paused media
+            if (!args.IsControlDown || args.ChangedButton != OxyMouseButton.Left ||
+                media.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
+                return;
+
+            //Set fields
+            offsetting = true;
+            position = positionAnnot.X;
+
+            //Show recommended position annotation at calculated offset
+            FileInfo info = new((media.MediaPlayer.Source as MediaSource).Uri.OriginalString);
+            var offset = info.LastWriteTime.Subtract(media.MediaPlayer.PlaybackSession.NaturalDuration) - TelemetryFile.Timestamp;
+
+            recommendedPositionAnnot.X = (offset.Ticks + media.MediaPlayer.PlaybackSession.Position.Ticks) / (double)TimeSpan.TicksPerSecond;
+            model.Annotations.Add(recommendedPositionAnnot);
+
+            plot.InvalidatePlot(false);
+
+            //Update cursor
+            ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.SizeWestEast);
+        }
+
+        private void Model_MouseDown(object sender, OxyMouseDownEventArgs args)
+        {
+            if (args.ChangedButton != OxyMouseButton.Left ||
+                positionAnnot.StrokeThickness == 0 ||
+                offsetting)
+                return;
+
+            moving = true;
+
+            media.MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(
+                (positionAnnot.X = Math.Clamp(
+                    Axis.InverseTransform(args.Position, model.DefaultXAxis, model.DefaultYAxis).X,
+                    0 + offset, (TelemetryFile.Count / TelemetryFile.SampleRate) + offset)) - offset);
+
+            plot.InvalidatePlot(false);
+            ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.SizeWestEast);
+        }
+
+        private void Model_MouseMove(object sender, OxyMouseEventArgs args)
+        {
+            if (offsetting)
+            {
+                positionAnnot.X = Axis.InverseTransform(args.Position, model.DefaultXAxis, model.DefaultYAxis).X;
+                plot.InvalidatePlot(false);
+            }
+            else if (moving)
+            {
+                media.MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(
+                    (positionAnnot.X = Math.Clamp(
+                        Axis.InverseTransform(args.Position, model.DefaultXAxis, model.DefaultYAxis).X,
+                        0 + offset, (TelemetryFile.Count / TelemetryFile.SampleRate) + offset)) - offset);
+
+                plot.InvalidatePlot(false);
+            }
+        }
+
+        private void Model_MouseUp(object sender, OxyMouseEventArgs args)
+        {
+            if (offsetting)
+            {
+                offset += positionAnnot.X - position;
+
+                offsetting = false;
+                position = 0;
+
+                model.Annotations.Remove(recommendedPositionAnnot);
+                plot.InvalidatePlot(false);
+            }
+
+            moving = false;
+            ProtectedCursor = null;
+        }
+
+        #endregion
+
+        private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
+        {
+            if (moving)
+                return;
+
+            positionAnnot.X = (sender.Position.Ticks / (double)TimeSpan.TicksPerSecond) + offset;
+
+            double? newMin = null;
+            double? newMax = null;
+            double range = model.DefaultXAxis.ActualMaximum - model.DefaultXAxis.ActualMinimum;
+
+            if (positionAnnot.X > model.DefaultXAxis.ActualMaximum)
+            {
+                newMin = positionAnnot.X;
+                newMax = positionAnnot.X + range;
+            }
+            else if (positionAnnot.X < model.DefaultXAxis.ActualMinimum)
+            {
+                newMin = positionAnnot.X - range;
+                newMax = positionAnnot.X;
+            }
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (allowPlay)
+                {
+                    if (newMin is not null && newMax is not null)
+                        model.DefaultXAxis.Zoom(newMin.Value, newMax.Value);
+
+                    plot.InvalidatePlot(false);
+                }
+            });
+        }
+
+        private void View_KeyDown(object sender, KeyRoutedEventArgs args)
+        {
+            switch (args.Key)
+            {
+                case VirtualKey.Space:
+                    if (media.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+                        media.MediaPlayer.Play();
+                    else
+                        media.MediaPlayer.Pause();
+                    break;
+                default:
+                    switch ((int)args.Key)
+                    {
+                        case 0xBC: //VK_OEM_COMMA
+                            media.MediaPlayer.StepBackwardOneFrame();
+                            break;
+                        case 0xBE: //VK_OEM_PERIOD
+                            media.MediaPlayer.StepForwardOneFrame();
+                            break;
+                    }
+                    break;
+            }
+        }
+
         /// <summary>
         /// Request a video to be added to the <see cref="TelemetryView"/>.
         /// </summary>
@@ -270,6 +455,11 @@ namespace Suspension.Views
                 }
                 else
                     Grid.SetRowSpan(mediaContainer, 2);
+
+            positionAnnot.X = 0;
+            positionAnnot.StrokeThickness = 1;
+
+            plot.InvalidatePlot(false);
             }
 
         #endregion

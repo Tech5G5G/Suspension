@@ -12,7 +12,8 @@
     xmlns:oxycon="using:OxyPlot.Controls"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
-    Loaded="View_Loaded">
+    Loaded="View_Loaded" Unloaded="View_Unloaded"
+    KeyDown="View_KeyDown">
     <Page.Resources>
         <Style x:Key="CardBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefault}" />
