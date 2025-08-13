@@ -678,7 +678,7 @@ namespace Suspension.Views
 
         private void AIBox_KeyDown(object sender, KeyRoutedEventArgs args)
         {
-            if (args.Key == Windows.System.VirtualKey.Enter)
+            if (args.Key == VirtualKey.Enter)
                 SendButton_Click(sender, args);
         }
 
