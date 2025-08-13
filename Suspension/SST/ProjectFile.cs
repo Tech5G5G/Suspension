@@ -56,7 +56,7 @@ public class ProjectFile : BaseFile
     /// Saves the file to the specified <paramref name="path"/>, replacing any files that exist.
     /// </summary>
     /// <param name="path">The path to save the <see cref="ProjectFile"/> to.</param>
-    /// <returns>A <see cref="Task"/> representing the asyncronous write operation.</returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous write operation.</returns>
     public Task Save(string path) => File.WriteAllTextAsync(path, JsonSerializer.Serialize(new Project
     {
         SST = SSTPath,
