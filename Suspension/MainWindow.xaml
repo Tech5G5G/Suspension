@@ -192,6 +192,21 @@
                     </MenuBarItem.KeyboardAccelerators>
                 </MenuBarItem>
 
+                <MenuBarItem x:Name="editMenu" Title="Edit" IsEnabled="False" KeyboardAcceleratorPlacementMode="Hidden">
+                    <MenuFlyoutItem Text="Add video" Click="AddVideoButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Add map" Click="AddMapButton_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Map layers" Click="EditLayersButton_Click" />
+
+                    <MenuFlyoutSeparator />
+
                     <MenuFlyoutSubItem x:Name="profilesMenu" Text="Profile">
                         <MenuFlyoutSeparator />
 
@@ -201,6 +216,12 @@
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                     </MenuFlyoutSubItem>
+
+                    <MenuBarItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Menu" Key="E" />
+                    </MenuBarItem.KeyboardAccelerators>
+                </MenuBarItem>
+
                 <MenuBarItem x:Name="viewMenu" Title="View" IsEnabled="False" KeyboardAcceleratorPlacementMode="Hidden">
                     <MenuFlyoutItem x:Name="zoomInButton"
                                     Text="Zoom in" KeyboardAcceleratorTextOverride="Ctrl+Plus" 
@@ -213,20 +234,6 @@
                             <KeyboardAccelerator Modifiers="Control" Key="Number0" />
                         </MenuFlyoutItem.KeyboardAccelerators>
                     </MenuFlyoutItem>
-
-                    <MenuFlyoutSeparator />
-
-                    <MenuFlyoutItem Text="Add video" Click="AddVideoButton_Click">
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="Control,Shift" Key="V" />
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Add map" Click="AddMapButton_Click">
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="Control,Shift" Key="M" />
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Edit map layers" Click="EditLayersButton_Click" />
 
                     <MenuFlyoutSeparator />
 
