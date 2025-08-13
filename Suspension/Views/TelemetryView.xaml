@@ -51,7 +51,13 @@
                 Visibility="Collapsed"
                 Style="{StaticResource CardBorderStyle}"
                 Grid.Column="1">
-            <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True" />
+            <MediaPlayerElement x:Name="media" AreTransportControlsEnabled="True">
+                <MediaPlayerElement.TransportControls>
+                    <MediaTransportControls IsSkipForwardEnabled="True" IsSkipForwardButtonVisible="True"
+                                            IsSkipBackwardEnabled="True" IsSkipBackwardButtonVisible="True"
+                                            Style="{StaticResource DefaultMediaTransportControlsStyle}" />
+                </MediaPlayerElement.TransportControls>
+            </MediaPlayerElement>
         </Border>
 
         <Border x:Name="mapContainer"

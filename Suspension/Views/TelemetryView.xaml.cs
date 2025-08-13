@@ -115,10 +115,8 @@ namespace Suspension.Views
 
             plot.Model = model;
 
-            media.TransportControls.IsSkipBackwardEnabled =
-            media.TransportControls.IsSkipBackwardButtonVisible =
-            media.TransportControls.IsSkipForwardEnabled =
-            media.TransportControls.IsSkipForwardButtonVisible = true;
+            controller.Bind(new OxyMouseEnterGesture(), PlotCommands.HoverSnapTrack);
+            plot.Controller = controller;
         }
 
         private void View_Loaded(object sender, RoutedEventArgs args)
