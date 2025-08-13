@@ -19,7 +19,7 @@ public class Program
             Application.Start((p) =>
             {
                 SynchronizationContext.SetSynchronizationContext(
-                    new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread()));
+                    new DispatcherQueueSynchronizationContext(Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()));
                 _ = new App();
             });
         }
