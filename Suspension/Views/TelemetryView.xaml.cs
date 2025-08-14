@@ -373,13 +373,14 @@ namespace Suspension.Views
 
         private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
         {
-            if (moving)
-                return;
-
-            positionAnnot.X = (sender.Position.Ticks / (double)TimeSpan.TicksPerSecond) + offset;
-
             double? newMin = null;
             double? newMax = null;
+
+            Location location = null;
+
+            if (!moving)
+            {
+                positionAnnot.X = (sender.Position.Ticks / (double)TimeSpan.TicksPerSecond) + offset;
             double range = model.DefaultXAxis.ActualMaximum - model.DefaultXAxis.ActualMinimum;
 
             if (positionAnnot.X > model.DefaultXAxis.ActualMaximum)
@@ -392,16 +393,32 @@ namespace Suspension.Views
                 newMin = positionAnnot.X - range;
                 newMax = positionAnnot.X;
             }
+            }
 
-            DispatcherQueue.TryEnqueue(() =>
+            if (points.Count > 0)
             {
-                if (allowPlay)
+                var firstTime = points[0].Time;
+                var point = points.FirstOrDefault(i =>
                 {
+                    var offset = Math.Abs(i.Time.Subtract(firstTime).TotalSeconds - positionAnnot.X);
+                    return offset < 2;
+                });
+
+                if (point is not null)
+                    location = new(point.Latitude, point.Longitude);
+            }
+
+            this.DispatcherQueue.TryEnqueue(() =>
+                {
+                if (!allowPlay)
+                    return;
+
                     if (newMin is not null && newMax is not null)
                         model.DefaultXAxis.Zoom(newMin.Value, newMax.Value);
-
                     plot.InvalidatePlot(false);
-                }
+
+                if (location is not null)
+                    pin.Location = location;
             });
         }
 
