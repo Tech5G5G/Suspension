@@ -269,7 +269,7 @@ namespace Suspension.Views
 
         private bool allowPlay = true;
 
-        #region Offsetting
+        #region Moving
 
         private readonly LineAnnotation recommendedPositionAnnot = new()
         {
