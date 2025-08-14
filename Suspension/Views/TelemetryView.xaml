@@ -65,7 +65,11 @@
                 Visibility="Collapsed"
                 Style="{StaticResource CardBorderStyle}"
                 Grid.Row="1" Grid.Column="1">
-            <map:Map x:Name="map" MinZoomLevel="12" Background="Transparent">
+            <map:Map x:Name="map"
+                     MinZoomLevel="12"
+                     Background="Transparent"
+                     PointerPressed="Map_PointerPressed"
+                     PointerReleased="Map_PointerReleased">
                 <map:MapTileLayer TileSource="https://mts1.google.com/vt/lyrs=y&amp;x={x}&amp;y={y}&amp;z={z}" />
 
                 <map:MapContentControl x:Name="pin" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
