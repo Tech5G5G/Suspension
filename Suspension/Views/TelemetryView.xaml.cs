@@ -484,11 +484,46 @@ namespace Suspension.Views
 
         private const double MapZoomPadding = 0.005;
 
+        private const double MapMoveThreshold = 0.001;
+
         private readonly List<TrackPoint> points = [];
 
-        private void Pin_LocationChanged(DependencyObject sender, DependencyProperty args)
+        private Windows.Foundation.Point start;
+
+        private void Map_PointerPressed(object sender, PointerRoutedEventArgs args) => start = args.GetCurrentPoint(map).Position;
+
+        private void Map_PointerReleased(object sender, PointerRoutedEventArgs args)
         {
-            //Fix incorrect rotation on way back (ask tata for another GPX)
+            var position = args.GetCurrentPoint(map).Position;
+            if (start != position)
+                return;
+
+            var location = map.ViewToLocation(position);
+
+            TrackPoint selectedPoint = null;
+            double currentLatitudeOffset = double.MaxValue;
+            double currentLongitudeOffset = double.MaxValue;
+
+            foreach (var point in points)
+        {
+                double latitudeOffset = Math.Abs(point.Latitude - location.Latitude);
+                double longitudeOffset = Math.Abs(point.Longitude - location.Longitude);
+
+                if (latitudeOffset > MapMoveThreshold / map.ZoomLevel || longitudeOffset > MapMoveThreshold / map.ZoomLevel ||
+                    latitudeOffset > currentLatitudeOffset || longitudeOffset > currentLongitudeOffset)
+                    continue;
+
+                selectedPoint = point;
+                currentLatitudeOffset = latitudeOffset;
+                currentLongitudeOffset = longitudeOffset;
+            }
+
+            if (selectedPoint is null)
+                return;
+
+            pin.Location = new(selectedPoint.Latitude, selectedPoint.Longitude);
+            media.MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(selectedPoint.Time.Subtract(points[0].Time).TotalSeconds - offset);
+        }
 
         private void Pin_LocationChanged(DependencyObject sender, DependencyProperty args)
         {
