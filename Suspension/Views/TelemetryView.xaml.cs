@@ -109,6 +109,10 @@ namespace Suspension.Views
                 Position = AxisPosition.Left
             });
 
+            //Feed data to other areas
+            DetermineAirtimes(data);
+            telemetryCSV = TrimDataToCSV(data);
+
             //Create MediaPlaybackSession and hook event
             MediaPlayer player = new();
             media.SetMediaPlayer(player);
