@@ -332,6 +332,14 @@ namespace Suspension.Views
             {
                 positionAnnot.X = Axis.InverseTransform(args.Position, model.DefaultXAxis, model.DefaultYAxis).X;
                 plot.InvalidatePlot(false);
+
+                var firstTime = points[0].Time;
+                if (points.FirstOrDefault(i =>
+                {
+                    var offset = Math.Abs((i.Time - firstTime).TotalSeconds - positionAnnot.X);
+                    return offset < 2;
+                }) is TrackPoint point)
+                    pin.Location = new(point.Latitude, point.Longitude);
             }
             else if (moving)
             {
