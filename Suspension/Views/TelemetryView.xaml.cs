@@ -127,9 +127,8 @@ namespace Suspension.Views
                 Type = LineAnnotationType.Vertical
             });
 
-            //Feed data to other areas
-            DetermineAirtimes(data);
-            telemetryCSV = TrimDataToCSV(data);
+            //Update rotation when position of pin changed
+            pin.RegisterPropertyChangedCallback(MapContentControl.LocationProperty, Pin_LocationChanged);
 
 #pragma warning disable CS0618 //Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
@@ -491,23 +490,29 @@ namespace Suspension.Views
         {
             //Fix incorrect rotation on way back (ask tata for another GPX)
 
+        private void Pin_LocationChanged(DependencyObject sender, DependencyProperty args)
+        {
+            //Get next location using current location
             if (pin.Location is not Location location ||
                 points.FirstOrDefault(i => i.Latitude == location.Latitude && i.Longitude == location.Longitude) is not TrackPoint point ||
                 points[Math.Min(points.IndexOf(point) + 1, points.Count - 1)] is not TrackPoint location2)
                 return;
 
+            //Calculate slope and degrees of locations
             double slope = (location2.Latitude - location.Latitude) / (location2.Longitude - location.Longitude);
             double degrees = Math.Atan(slope) * (180 / Math.PI);
 
-            if (location2.Latitude > location.Latitude && location2.Longitude > location.Latitude)
+            //Determine if rotation if negative or not
+            if (location2.Latitude > location.Latitude && location2.Longitude > location.Longitude) //top right
                 degrees = -Math.Abs(degrees);
-            else if (location2.Latitude > location.Latitude && location2.Longitude < location.Latitude)
-                degrees = -Math.Abs(degrees);
-            else if (location2.Latitude < location.Latitude && location2.Longitude > location.Latitude)
+            else if (location2.Latitude > location.Latitude && location2.Longitude < location.Longitude) //top left
+                degrees = (Math.Abs(degrees) < 45 ? -180 : 0) - Math.Abs(degrees);
+            else if (location2.Latitude < location.Latitude && location2.Longitude > location.Longitude) //bottom right
                 degrees = Math.Abs(degrees);
-            else if (location2.Latitude < location.Latitude && location2.Longitude < location.Latitude)
-                degrees = Math.Abs(degrees);
+            else if (location2.Latitude < location.Latitude && location2.Longitude < location.Longitude) //bottom left
+                degrees = (Math.Abs(degrees) < 45 ? 180 : 0) + Math.Abs(degrees);
 
+            //Set rotation of pin
             (pin.Content as UIElement).Rotation = (float)degrees;
         }
 
