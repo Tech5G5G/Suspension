@@ -17,7 +17,7 @@ public class TelemetryFile : BaseFile
     public int SampleRate { get; }
 
     /// <summary>
-    /// Gets the <see cref="DateTime"/> at which the <see cref="TelemetryFile"/> was recorded.
+    /// Gets the <see cref="DateTime"/> at which the <see cref="TelemetryFile"/> started being recorded.
     /// </summary>
     public DateTime Timestamp { get; }
 
