@@ -514,6 +514,12 @@ namespace Suspension.Views
 
             //Set rotation of pin
             (pin.Content as UIElement).Rotation = (float)degrees;
+
+            //Detect if location out of view bounds
+            var bounds = map.ViewRectToBoundingBox(new(0, 0, map.ActualWidth, map.ActualHeight));
+            if (bounds.North < location.Latitude || bounds.South > location.Latitude ||
+                bounds.East < location.Longitude || bounds.West > location.Longitude)
+                map.TargetCenter = location;
         }
 
         /// <summary>
