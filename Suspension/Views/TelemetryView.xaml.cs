@@ -472,6 +472,8 @@ namespace Suspension.Views
                 else
                     Grid.SetRowSpan(mediaContainer, 2);
 
+            pin.Visibility = Visibility.Visible;
+
             positionAnnot.X = 0;
             positionAnnot.StrokeThickness = 1;
 
