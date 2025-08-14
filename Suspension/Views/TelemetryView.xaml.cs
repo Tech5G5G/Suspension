@@ -590,58 +590,77 @@ namespace Suspension.Views
             ProjectFile.GPXPath = file.Path;
             IsDirty = makeDirty;
 
-            //Draw lines to display route(s)
             double minLatitude = int.MaxValue,
                 minLongitude = int.MaxValue,
                 maxLatitude = int.MinValue,
                 maxLongitude = int.MinValue;
 
+            //Draw lines to display route(s)
             foreach (var track in gpx.Tracks)
                 foreach (var segment in track.Segments)
                 {
+                    //Skip if empty
                     if (segment.Points.Length < 1)
                         continue;
 
-                    TrackPoint prevPoint = segment.Points[0];
-                    int threshold = 0,
-                        hr = 0;
+                    //Cache last point
+                    var lastPoint = segment.Points.LastOrDefault();
 
-                    foreach (var point in segment.Points.Skip(1).ToArray())
+                    double? zone = segment.Points[0].Extensions.GarminExtension.HeartRate is int hr ? GetHeartRateZone(hr) : null;
+                    List<Location> locations = [];
+
+                    foreach (var point in segment.Points)
                     {
-                        if (minLatitude > point.Latitude) minLatitude = point.Latitude;
-                        else if (maxLatitude < point.Latitude) maxLatitude = point.Latitude;
-
-                        if (minLongitude > point.Longitude) minLongitude = point.Longitude;
-                        else if (maxLongitude < point.Longitude) maxLongitude = point.Longitude;
-
-                        hr += point.Extensions.GarminExtension.HeartRate ?? 0;
                         points.Add(point);
 
-                        if (threshold > 5)
+                        //Determine minimum and maximum latitude and longitudes
+                        if (minLatitude > point.Latitude)
+                            minLatitude = point.Latitude;
+                        else if (maxLatitude < point.Latitude)
+                            maxLatitude = point.Latitude;
+
+                        if (minLongitude > point.Longitude)
+                            minLongitude = point.Longitude;
+                        else if (maxLongitude < point.Longitude)
+                            maxLongitude = point.Longitude;
+
+                        //Check heart rate zone of current point or if last point
+                        if ((zone is not null && GetHeartRateZone(point.Extensions.GarminExtension.HeartRate.Value) != zone) ||
+                            lastPoint == point)
                         {
+                            locations.Add(new(point.Latitude, point.Longitude));
+
+                            //Draw line with appropriate color
                             map.Children.Add(new MapPolyline
                             {
-                                Locations = LocationCollection.OrthodromeLocations(
-                                    new(prevPoint.Latitude, prevPoint.Longitude),
-                                    new(point.Latitude, point.Longitude)),
+                                Locations = locations,
                                 StrokeThickness = 2,
-                                Stroke = new SolidColorBrush((hr / 5.0 / 220) switch
+                                Stroke = new SolidColorBrush(zone switch
                                 {
-                                    0 => Colors.Black,
-                                    > 0.9 => Colors.Red,
-                                    > 0.8 => Colors.Orange,
-                                    > 0.7 => Colors.Yellow,
-                                    > 0.6 => Colors.YellowGreen,
+                                    4 => Colors.Red,
+                                    3 => Colors.Orange,
+                                    2 => Colors.Yellow,
+                                    1 => Colors.YellowGreen,
                                     _ => Colors.Green
                                 })
                             });
 
-                            threshold = hr = 0;
-                            prevPoint = point;
+                            //Reset variables
+                            locations = [];
+                            zone = GetHeartRateZone(point.Extensions.GarminExtension.HeartRate.Value);
                         }
-                        else
-                            ++threshold;
+
+                        locations.Add(new(point.Latitude, point.Longitude));
                     }
+
+                    //Draw white line if heart rate not present
+                    if (zone is null)
+                        map.Children.Add(new MapPolyline
+                        {
+                            Locations = locations,
+                            StrokeThickness = 2,
+                            Stroke = new SolidColorBrush(Colors.White)
+                        });
                 }
 
             //Zoom map to show drawn path(s)
@@ -661,6 +680,15 @@ namespace Suspension.Views
             map.Children.Move(
                 (uint)map.Children.IndexOf(pin),
                 (uint)Math.Max(map.Children.Count - 1, 0));
+
+            static int GetHeartRateZone(int hr) => (hr / 190.0) switch
+            {
+                > 0.9 => 4,
+                > 0.8 => 3,
+                > 0.7 => 2,
+                > 0.6 => 1,
+                _ => 0
+            };
         }
 
         /// <summary>
