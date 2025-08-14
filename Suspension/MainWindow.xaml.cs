@@ -395,6 +395,7 @@ namespace Suspension
                     if (project.Layers.Length > 0)
                         view.SetMapLayers(project.Layers);
 
+                    view.VideoOffset = project.VideoOffset;
                     this.telemetry.Add(new(Path.GetFileNameWithoutExtension(file.Path), telemetryFile, view));
                 }
                 else

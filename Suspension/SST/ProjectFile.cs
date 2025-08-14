@@ -31,6 +31,11 @@ public class ProjectFile : BaseFile
     public string FilePath { get; set; }
 
     /// <summary>
+    /// Gets or sets the offset in seconds between the video position to the graph and map position indicators in this project.
+    /// </summary>
+    public double VideoOffset { get; set; }
+
+    /// <summary>
     /// Creates a new instance of <see cref="ProjectFile"/>.
     /// </summary>
     public ProjectFile() : base() { }
@@ -49,6 +54,7 @@ public class ProjectFile : BaseFile
         SSTPath = project.SST;
         GPXPath = project.GPX;
         VideoPath = project.Video;
+        VideoOffset = project.Offset;
         Layers = [.. project.Layers.Select(i => i.URL)];
     }
 
@@ -62,6 +68,7 @@ public class ProjectFile : BaseFile
         SST = SSTPath,
         GPX = GPXPath,
         Video = VideoPath,
+        Offset = VideoOffset,
         Layers = [.. Layers.Select(i => new Layer { URL = i })]
     }));
 
@@ -72,6 +79,9 @@ public class ProjectFile : BaseFile
 
         [JsonPropertyName("video")]
         public string Video { get; set; }
+
+        [JsonPropertyName("offset")]
+        public double Offset { get; set; }
 
         [JsonPropertyName("gpx")]
         public string GPX { get; set; }

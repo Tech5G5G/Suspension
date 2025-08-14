@@ -265,7 +265,21 @@ namespace Suspension.Views
 
         private readonly LineAnnotation positionAnnot;
 
+        /// <summary>
+        /// Gets or sets the offset in seconds between the video position to the graph and map position indicators.
+        /// </summary>
+        public double VideoOffset
+        {
+            get => offset;
+            set
+            {
+                offset = value;
+                PlaybackSession_PositionChanged(media.MediaPlayer.PlaybackSession, null);
+            }
+        }
         private double offset;
+
+        private readonly LineAnnotation positionAnnot;
 
         private bool allowPlay = true;
 
@@ -356,7 +370,8 @@ namespace Suspension.Views
         {
             if (offsetting)
             {
-                offset += positionAnnot.X - position;
+                ProjectFile.VideoOffset = offset += positionAnnot.X - position;
+                IsDirty = true;
 
                 offsetting = false;
                 position = 0;
@@ -735,7 +750,13 @@ namespace Suspension.Views
 
             //Move pin to the front of the map
             if (points.Count > 0)
-                pin.Location = new(points[0].Latitude, points[0].Longitude);
+            {
+                //Account for project video offset
+                var firstTime = points[0].Time;
+                if (points.FirstOrDefault(i => Math.Abs(i.Time.Subtract(firstTime).TotalSeconds - offset) < 2)
+                    is TrackPoint point)
+                    pin.Location = new(point.Latitude, point.Longitude);
+            }
             else
                 pin.Location = new();
 
