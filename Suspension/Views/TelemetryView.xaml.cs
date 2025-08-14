@@ -644,12 +644,14 @@ namespace Suspension.Views
                     }
                 }
 
-            //Zoom map to show drawn paths
+            //Zoom map to show drawn path(s)
+            if (minLatitude < int.MaxValue)
             map.ZoomToBounds(new(
                 minLatitude - MapZoomPadding,
                 minLongitude - MapZoomPadding,
                 maxLatitude + MapZoomPadding,
                 maxLongitude + MapZoomPadding));
+
             //Move pin to the front of the map
             if (points.Count > 0)
                 pin.Location = new(points[0].Latitude, points[0].Longitude);
