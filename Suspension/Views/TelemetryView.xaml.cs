@@ -483,6 +483,30 @@ namespace Suspension.Views
 
         private readonly List<TrackPoint> points = [];
 
+        private void Pin_LocationChanged(DependencyObject sender, DependencyProperty args)
+        {
+            //Fix incorrect rotation on way back (ask tata for another GPX)
+
+            if (pin.Location is not Location location ||
+                points.FirstOrDefault(i => i.Latitude == location.Latitude && i.Longitude == location.Longitude) is not TrackPoint point ||
+                points[Math.Min(points.IndexOf(point) + 1, points.Count - 1)] is not TrackPoint location2)
+                return;
+
+            double slope = (location2.Latitude - location.Latitude) / (location2.Longitude - location.Longitude);
+            double degrees = Math.Atan(slope) * (180 / Math.PI);
+
+            if (location2.Latitude > location.Latitude && location2.Longitude > location.Latitude)
+                degrees = -Math.Abs(degrees);
+            else if (location2.Latitude > location.Latitude && location2.Longitude < location.Latitude)
+                degrees = -Math.Abs(degrees);
+            else if (location2.Latitude < location.Latitude && location2.Longitude > location.Latitude)
+                degrees = Math.Abs(degrees);
+            else if (location2.Latitude < location.Latitude && location2.Longitude < location.Latitude)
+                degrees = Math.Abs(degrees);
+
+            (pin.Content as UIElement).Rotation = (float)degrees;
+        }
+
         /// <summary>
         /// Request a map to be added to the <see cref="TelemetryView"/>.
         /// </summary>

@@ -67,6 +67,36 @@
                 Grid.Row="1" Grid.Column="1">
             <map:Map x:Name="map" MinZoomLevel="12" Background="Transparent">
                 <map:MapTileLayer TileSource="https://mts1.google.com/vt/lyrs=y&amp;x={x}&amp;y={y}&amp;z={z}" />
+
+                <map:MapContentControl x:Name="pin" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                    <Grid Rotation="0" CenterPoint="17.5,17.5,0">
+                        <Ellipse Height="35" Width="35">
+                            <Ellipse.Fill>
+                                <AcrylicBrush TintColor="#FCFCFC" TintOpacity="0.5" FallbackColor="#F9F9F9" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Path HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{ThemeResource SystemAccentColor}">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathGeometry.Figures>
+                                        <PathFigure StartPoint="2.5,0">
+                                            <PathFigure.Segments>
+                                                <LineSegment Point="22.5,10"/>
+                                                <LineSegment Point="2.5,20"/>
+                                                <LineSegment Point="5,10"/>
+                                                <LineSegment Point="2.5,0"/>
+                                            </PathFigure.Segments>
+                                        </PathFigure>
+                                    </PathGeometry.Figures>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+
+                        <Grid.RotationTransition>
+                            <ScalarTransition />
+                        </Grid.RotationTransition>
+                    </Grid>
+                </map:MapContentControl>
             </map:Map>
         </Border>
 
