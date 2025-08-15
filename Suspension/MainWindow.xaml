@@ -277,6 +277,16 @@
                     </MenuFlyout>
                 </DropDownButton.Flyout>
 
+                <DropDownButton.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="API key" Click="KeyButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8D7;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </DropDownButton.ContextFlyout>
+
                 <DropDownButton.Resources>
                     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
                     <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SubtleFillColorTertiary}" />

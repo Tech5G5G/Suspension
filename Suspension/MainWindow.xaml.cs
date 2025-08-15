@@ -640,6 +640,34 @@ namespace Suspension
             }
         }
 
+        private async void KeyButton_Click(object sender, RoutedEventArgs args)
+        {
+            PasswordBox box = new()
+            {
+                Width = 385,
+                PlaceholderText = "Gemini API key",
+                Password = GeminiKeyVault.Key
+            };
+
+            ContentDialog dialog = new()
+            {
+                Title = "Edit API key",
+                Content = box,
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+                IsPrimaryButtonEnabled = false,
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = Content.XamlRoot
+            };
+
+            bool canBeEmpty = !string.IsNullOrWhiteSpace(box.Password);
+            box.PasswordChanged += (s, e) =>
+                dialog.IsPrimaryButtonEnabled = box.Password.Length == 39 || (box.Password.Length == 0 && canBeEmpty);
+
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                GeminiKeyVault.Key = box.Password;
+        }
+
         #endregion
 
         #region Zooming

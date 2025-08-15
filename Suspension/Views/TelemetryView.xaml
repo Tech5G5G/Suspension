@@ -203,6 +203,11 @@
                     <FontIcon Glyph="&#xE724;" />
                 </Button>
             </Grid>
+
+            <TeachingTip x:Name="aiKeyTip"
+                         Target="{x:Bind aiBox}"
+                         Title="Add an API key"
+                         Subtitle="Before continuing, add a Gemini API key by right-clicking the Suspension Assistant button and selecting 'API key'." />
         </Grid>
 
         <TeachingTip x:Name="timeTip">

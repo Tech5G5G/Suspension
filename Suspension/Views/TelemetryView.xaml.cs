@@ -838,11 +838,18 @@ namespace Suspension.Views
 
         #region AI
 
-        private readonly ObservableCollection<AIPrompt> prompts = [];
+        private const string SystemInstruction =
+            "You are the 'Suspension Assistant', who is an assistant for an application that views MTB and dirt bike suspension usage analytics. You were created by the Suspension app to assist with suspension metrics and analytics.";
 
-        private static readonly GeminiModel aiModel = new(
-            ModelVariant.Gemini25FlashLitePreview0617,
-            "You are the 'Suspension Assistant', who is an assistant for an application that views MTB and dirt bike suspension usage analytics. You were created by the Suspension app to assist with suspension metrics and analytics.");
+        private static GeminiModel aiModel;
+
+        static TelemetryView()
+        {
+            aiModel = new(GeminiKeyVault.Key, ModelVariant.Gemini25FlashLitePreview0617, SystemInstruction);
+            GeminiKeyVault.KeyChanged += (s, e) => aiModel = new(e, ModelVariant.Gemini25FlashLitePreview0617, SystemInstruction);
+        }
+
+        private readonly ObservableCollection<AIPrompt> prompts = [];
 
         private readonly string telemetryCSV;
 
@@ -854,6 +861,9 @@ namespace Suspension.Views
 
         private void SendButton_Click(object sender, RoutedEventArgs args)
         {
+            if (string.IsNullOrWhiteSpace(aiBox.Text))
+                return;
+
             if (aiDataToggle.IsChecked == true)
             {
                 AnalyzeData($"Use the prior CSV to answer and/or help with the following prompt: {aiBox.Text}", aiBox.Text);
@@ -882,6 +892,12 @@ namespace Suspension.Views
 
         private async void MakeAIRequest(string prompt, string uiOverride = null)
         {
+            if (string.IsNullOrWhiteSpace(aiModel.Key))
+            {
+                aiKeyTip.IsOpen = true;
+                return;
+            }
+
             AIPrompt[] requests = [.. prompts, new(Role.User, prompt)];
             prompts.Add(uiOverride is null ? requests[^1] : new(Role.User, uiOverride));
 
