@@ -10,7 +10,7 @@ using Windows.Media.Playback;
 namespace Suspension.Views
 {
     /// <summary>
-    /// A page that shows information stored by a <see cref="TelemetryFile"/>.
+    /// A page that shows information stored by a <see cref="SST.TelemetryFile"/>.
     /// </summary>
     public sealed partial class TelemetryView : Page
     {
