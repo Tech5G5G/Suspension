@@ -549,15 +549,22 @@ namespace Suspension
                     switch (await dialog.ShowAsync())
                     {
                         case ContentDialogResult.Primary:
+                            var profiles = Profile.GetProfilesAsync().Result;
+
                             if (editor.NewProfile.IsDefault &&
-                                Profile.GetProfilesAsync().Result.FirstOrDefault(i => i.IsDefault) is Profile oldProfile)
+                                profiles.FirstOrDefault(i => i.IsDefault) is Profile oldProfile &&
+                                oldProfile.Id != editor.NewProfile.Id)
                             {
                                 oldProfile.IsDefault = false;
                                 await Profile.SaveProfile(oldProfile);
                             }
                             else if (!editor.NewProfile.IsDefault &&
-                                Profile.GetProfilesAsync().Result.FirstOrDefault(i => i.IsDefault) is null)
-                                editor.NewProfile.IsDefault = true;
+                                profiles.FirstOrDefault(i => i.IsDefault) is Profile current && current.Id == editor.NewProfile.Id &&
+                                profiles.FirstOrDefault() is Profile defaultProfile)
+                            {
+                                defaultProfile.IsDefault = true;
+                                await Profile.SaveProfile(defaultProfile);
+                            }
 
                             await Profile.SaveProfile(editor.NewProfile);
                             LoadProfiles();
