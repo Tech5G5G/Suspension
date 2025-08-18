@@ -30,6 +30,11 @@ public class Profile : ICloneable
 
     #endregion
 
+    /// <summary>
+    /// Occurs after a profile has been changed; that is, after the <see cref="SaveProfile(Profile)"/> or <see cref="RemoveProfile(Guid)"/> method.
+    /// </summary>
+    public static event TypedEventHandler<Profile[], ProfileChangedEventArgs> ProfileChanged;
+
     private static Profile[] _profiles;
 
     private const string FileName = "profiles.json";
@@ -88,6 +93,7 @@ public class Profile : ICloneable
             profiles = [.. profiles, profile];
 
         await TryWriteProfiles(profiles);
+        ProfileChanged?.Invoke(_profiles, new(false, profile.Id, profile));
     }
 
     /// <summary>
@@ -105,9 +111,10 @@ public class Profile : ICloneable
         if (profiles.FirstOrDefault(i => i.Id == id) is Profile profile)
         {
             profiles.Remove(profile);
-            await TryWriteProfiles([.. profiles]);
-        }
 
+            await TryWriteProfiles([.. profiles]);
+            ProfileChanged?.Invoke(_profiles, new(true, id, null));
+        }
     }
 
     private async static Task TryWriteProfiles(Profile[] profiles)
@@ -146,6 +153,26 @@ public class Dimensions
     [JsonPropertyName("a")]
     public double SideA { get; set; }
 
-    [JsonPropertyName ("b")]
+    [JsonPropertyName("b")]
     public double SideB { get; set; }
+}
+
+public class ProfileChangedEventArgs(bool removed, Guid id, Profile profile) : EventArgs
+{
+    /// <summary>
+    /// Gets whether <see cref="Profile"/> was removed.
+    /// </summary>
+    /// <remarks>If <see langword="false"/>, properties changed.</remarks>
+    public bool Removed { get; } = removed;
+
+    /// <summary>
+    /// Gets the <see cref="Profile.Id"/> of the <see cref="Profiles.Profile"/> changed.
+    /// </summary>
+    public Guid ProfileId { get; } = id;
+
+    /// <summary>
+    /// Gets the <see cref="Profiles.Profile"/> changed.
+    /// </summary>
+    /// <remarks>Will be <see langword="null"/> if <see cref="Removed"/> is <see langword="true"/>.</remarks>
+    public Profile Profile { get; } = profile;
 }
