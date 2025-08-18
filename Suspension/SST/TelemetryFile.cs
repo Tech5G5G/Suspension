@@ -1,10 +1,12 @@
-﻿namespace Suspension.SST;
+﻿using System.Collections;
+
+namespace Suspension.SST;
 
 /// <summary>
 /// Represents an SST file.
 /// </summary>
-/// <remarks>Data can be accessed using the indexer.</remarks>
-public class TelemetryFile : BaseFile
+/// <remarks>Index is time since <see cref="Timestamp"/> times <see cref="SampleRate"/>.</remarks>
+public partial class TelemetryFile : BaseFile, IEnumerable<(int Fork, int Shock)>
 {
     /// <summary>
     /// Gets the size of the <see cref="TelemetryFile"/> in bytes.
@@ -26,15 +28,7 @@ public class TelemetryFile : BaseFile
     /// </summary>
     public int Count { get; }
 
-    /// <summary>
-    /// Gets a tuple of <see cref="int"/>.
-    /// </summary>
-    /// <remarks><see cref="ValueTuple{T1, T2}.Item1"/> represents the fork. <see cref="ValueTuple{T1, T2}.Item2"/> represents the shock.</remarks>
-    /// <param name="index">The timestamp at which to get the tuple at.</param>
-    /// <returns>A tuple containing information about the fork and shock.</returns>
-    public (int, int) this[int index] => data[index];
-
-    private readonly Dictionary<int, (int, int)> data = [];
+    private readonly List<(int, int)> data = [];
 
     /// <summary>
     /// Creates a new instance of <see cref="TelemetryFile"/> using a <see cref="Stream"/>.
@@ -46,7 +40,7 @@ public class TelemetryFile : BaseFile
     {
         var bytes = ReadAllBytes(fileStream);
 
-        if (bytes.Length < 3 || System.Text.Encoding.UTF8.GetString(bytes[..3]) != "SST") //Check header of SST file
+        if (bytes.Length < 3 || Encoding.UTF8.GetString(bytes[..3]) != "SST") //Check header of SST file
             throw new InvalidDataException("Incorrect file contents. It may be corrupt or of a different format.");
 
         //Populate properties from file and file header
@@ -54,13 +48,10 @@ public class TelemetryFile : BaseFile
         SampleRate = BitConverter.ToUInt16(bytes, 4);
         Timestamp = DateTimeOffset.FromUnixTimeSeconds(BitConverter.ToInt64(bytes, 8)).ToLocalTime().DateTime;
 
-        int counter = 0;
         for (int i = 16; i < bytes.Length; i += 4)
-        {
-            data.Add(
-                counter++,
-                (BitConverter.ToUInt16(bytes, i), BitConverter.ToUInt16(bytes, i + 2)));
-        }
+            data.Add((
+                BitConverter.ToUInt16(bytes, i),
+                BitConverter.ToUInt16(bytes, i + 2)));
 
         //Cache count
         Count = data.Count;
@@ -75,4 +66,12 @@ public class TelemetryFile : BaseFile
         stream.CopyTo(memoryStream);
         return memoryStream.ToArray();
     }
+
+    #region IEnumerable
+
+    public IEnumerator<(int, int)> GetEnumerator() => data.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    #endregion
 }
