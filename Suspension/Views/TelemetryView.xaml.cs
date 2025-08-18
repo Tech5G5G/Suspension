@@ -217,7 +217,7 @@ namespace Suspension.Views
         private const float AirtimeTravelThreshold = 3,
                             AirtimeDurationThreshold = 0.20f;
 
-        private void DetermineAirtimes((int, int, int)[] data)
+        private void DetermineAirtimes((double Time, double Fork, double Shock)[] data)
             {
             AirtimeItem currentItem = new() { Min = double.NegativeInfinity };
 
@@ -959,15 +959,15 @@ namespace Suspension.Views
                 prompts.Clear();
         }
 
-        private static string TrimDataToCSV((int, int, int)[] data)
+        private static string TrimDataToCSV((double Time, double Fork, double Shock)[] data)
         {
-            var lines = data.Select(i => $"{i.Item1},{i.Item2},{i.Item3}").ToArray();
+            var lines = data.Select(i => $"{i.Time},{i.Fork},{i.Shock}").ToArray();
 
             double averageLength = lines.Average(i => i.Length);
             double maxLines = 50000 / averageLength;
             int skip = (int)(lines.Length / maxLines);
 
-            List<string> selectedLines = ["Timestamp,Fork,Shock"];
+            List<string> selectedLines = ["Time,Fork,Shock"];
             for (int i = 0; i < lines.Length; i += skip)
                 selectedLines.Add(lines[i]);
 
