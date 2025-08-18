@@ -929,7 +929,7 @@ namespace Suspension.Views
         public void RequestRiderStyle() => AnalyzeData("Use the prior CSV to determine the style of the rider. Answer in a single word or phrase.", "What is my rider style?");
 
         /// <summary>
-        /// Requests the AI chat to display any maintenace alerts.
+        /// Requests the AI chat to display any maintenance alerts.
         /// </summary>
         /// <remarks><see cref="RequestAIChat(bool)"/> must be called earlier to show the AI chat.</remarks>
         public void RequestMaintenanceAlerts() => AnalyzeData("Use the prior CSV to determine if the suspension requires any maintenance. Condense your answer into a couple of bullet points, with an explanation under each bullet.", "Does my suspension need any maintenance?");
