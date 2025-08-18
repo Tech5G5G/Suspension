@@ -553,6 +553,12 @@ namespace Suspension
                             break;
                     }
                 };
+                item.Click += (s, e) =>
+                {
+                    if (mainView.Content is TelemetryView view)
+                        view.Profile = profile;
+                };
+
                 profilesMenu.Items.Insert(0, item);
             }
 
