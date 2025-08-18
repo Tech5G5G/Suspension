@@ -888,7 +888,7 @@ namespace Suspension.Views
         private void NewChatButton_Click(object sender, RoutedEventArgs args) => RequestAIChat(true);
 
         private void AnalyzeData(string prompt, string uiOverride) => MakeAIRequest(
-            $"Consider the following CSV as a representation of a bike's suspension usage. Timestamp is measured in 1/{TelemetryFile.SampleRate} of a second. Fork and Shock are measured in fractions of a degree.\n{telemetryCSV}\n{prompt}",
+            $"Consider the following CSV as a representation of a bike's suspension usage. Time is measured in seconds. Fork and Shock are measured in millimeters.\n{telemetryCSV}\n{prompt}",
             uiOverride);
 
         private async void MakeAIRequest(string prompt, string uiOverride = null)
