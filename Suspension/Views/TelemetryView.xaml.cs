@@ -104,6 +104,7 @@ namespace Suspension.Views
             model.Axes.Add(new LinearAxis
             {
                 Title = "Travel",
+                Unit = "mm",
                 StartPosition = 1,
                 EndPosition = 0,
                 IsZoomEnabled = false,
