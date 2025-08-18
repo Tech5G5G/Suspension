@@ -58,13 +58,15 @@ namespace Suspension.Views
         /// </summary>
         /// <param name="file">The <see cref="SST.TelemetryFile"/> to display.</param>
         /// <param name="project">The <see cref="SST.ProjectFile"/> to manage.</param>
-        public TelemetryView(TelemetryFile file, ProjectFile project)
+        /// <param name="profile">The <see cref="Settings.Profiles.Profile"/> to set <see cref="Profile"/> as.</param>
+        public TelemetryView(TelemetryFile file, ProjectFile project, Profile profile)
         {
             InitializeComponent();
 
             //Populate properties
             TelemetryFile = file;
             ProjectFile = project;
+            Profile = profile;
 
             //Add layers if none exist
             project.Layers ??= [.. map.Children.Where(i => i is MapTileLayer).Select(i => (i as MapTileLayer).TileSource.UriTemplate)];
