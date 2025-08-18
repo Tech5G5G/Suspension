@@ -195,6 +195,12 @@ namespace Suspension
                 sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
                 pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
 
+            var items = profilesMenu.Items.Where(i => i is EditMenuFlyoutItem);
+            if (items.Cast<EditMenuFlyoutItem>().FirstOrDefault(i => i.IsChecked) is EditMenuFlyoutItem checkedItem)
+                checkedItem.IsChecked = false;
+            if (items.FirstOrDefault(i => (i.DataContext as Profile).Id == item.TelemetryView.Profile.Id) is EditMenuFlyoutItem flyoutItem)
+                flyoutItem.IsChecked = true;
+
                 if (args.RemovedItems.Count > 0 &&
                     args.RemovedItems[0] is TelemetryItem prevItem)
                     DeregisterZooming(prevItem.TelemetryView);
