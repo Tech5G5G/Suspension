@@ -367,10 +367,16 @@ namespace Suspension
             {
                 using var stream = await file.OpenStreamForReadAsync();
 
+                var profiles = Profile.GetProfilesAsync().Result;
+                var defaultProfile = profiles.FirstOrDefault(i => i.IsDefault, profiles.First());
+
                 if (file.FileType.Equals(".sst", StringComparison.OrdinalIgnoreCase))
                 {
                     TelemetryFile telemetry = new(stream);
-                    this.telemetry.Add(new(file.Name, telemetry, new(telemetry, new() { SSTPath = file.Path })));
+                    this.telemetry.Add(new(file.Name, telemetry, new(
+                        telemetry,
+                        new() { SSTPath = file.Path, ProfileId = defaultProfile.Id },
+                        defaultProfile)));
                 }
                 else if (file.FileType.Equals(".sstproj", StringComparison.OrdinalIgnoreCase))
                 {
@@ -384,7 +390,10 @@ namespace Suspension
 
                     StorageFile telemetry = await StorageFile.GetFileFromPathAsync(project.SSTPath);
                     TelemetryFile telemetryFile = new(await telemetry.OpenStreamForReadAsync());
-                    TelemetryView view = new(telemetryFile, project);
+                    TelemetryView view = new(
+                        telemetryFile,
+                        project,
+                        profiles.FirstOrDefault(i => i.Id == project.ProfileId, defaultProfile));
                     
                     if (project.VideoPath is not null)
                         view.RequestVideo(project.VideoPath);
