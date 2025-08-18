@@ -378,7 +378,7 @@ namespace Suspension
 
                     if (!new FileInfo(project.SSTPath).Exists)
                     {
-                        ShowErrorDialog("Project SST file does not exist.");
+                        ShowErrorDialog("SST project file does not exist.");
                         return;
                     }
 
