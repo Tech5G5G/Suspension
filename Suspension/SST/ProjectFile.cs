@@ -40,6 +40,8 @@ public class ProjectFile : BaseFile
     /// </summary>
     public ProjectFile() : base() { }
 
+    private readonly JsonSerializerOptions options = new() { WriteIndented = true };
+
     /// <summary>
     /// Creates a new instance of <see cref="ProjectFile"/> using a <see cref="Stream"/>.
     /// </summary>
@@ -71,6 +73,7 @@ public class ProjectFile : BaseFile
         Offset = VideoOffset,
         Layers = [.. Layers.Select(i => new Layer { URL = i })]
     }));
+    }, options));
 
     private class Project
     {
