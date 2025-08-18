@@ -269,10 +269,10 @@ namespace Suspension.Views
         /// </summary>
         public bool AreAirtimesVisible
         {
-            get => model.Annotations.Count > 1;
+            get => airtimes;
             set
             {
-                if (AreAirtimesVisible == value)
+                if (airtimes == value)
                     return;
                 else if (value)
                     foreach (var annot in airAnnots)
@@ -281,9 +281,12 @@ namespace Suspension.Views
                     foreach (var annot in airAnnots)
                         model.Annotations.Remove(annot);
 
-                model.InvalidatePlot(true);
+                airtimes = value;
+                plot.InvalidatePlot();
             }
         }
+        private bool airtimes;
+
         private readonly List<RectangleAnnotation> airAnnots = [];
 
         private const float AirtimeTravelThreshold = 3,
@@ -291,10 +294,13 @@ namespace Suspension.Views
 
         private void DetermineAirtimes((double Time, double Fork, double Shock)[] data)
             {
+            AreAirtimesVisible = false;
+            airAnnots.Clear();
+
             AirtimeItem currentItem = new() { Min = double.NegativeInfinity };
 
-            foreach (var item in data.Where(i => i.Item2 < AirtimeTravelThreshold && i.Item3 < AirtimeTravelThreshold)
-                                     .Select(i => (double)i.Item1 / TelemetryFile.SampleRate)
+            foreach (var item in data.Where(i => i.Fork < AirtimeTravelThreshold && i.Shock < AirtimeTravelThreshold)
+                                     .Select(i => i.Time)
                                      .Select(i =>
                 {
                                          if (currentItem.Min == double.NegativeInfinity)
@@ -318,11 +324,14 @@ namespace Suspension.Views
                     Text = $"{item.Max - item.Min:0.#}s air time",
                     TextRotation = 270,
                     MaximumX = item.Max,
-                    MinimumX = item.Min,
+                    MinimumX = item.Min
                 };
                 model.Annotations.Add(annot);
                 airAnnots.Add(annot);
             }
+
+            airtimes = true;
+            AreAirtimesVisible = false;
         }
 
         private record AirtimeItem
