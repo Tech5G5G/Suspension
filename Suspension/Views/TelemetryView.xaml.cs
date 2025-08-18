@@ -130,6 +130,9 @@ namespace Suspension.Views
             //Update rotation when position of pin changed
             pin.RegisterPropertyChangedCallback(MapContentControl.LocationProperty, Pin_LocationChanged);
 
+            //Update measurements if current profile changed
+            Profile.ProfileChanged += ProfileChanged;
+
 #pragma warning disable CS0618 //Type or member is obsolete
             model.Axes[0].AxisChanged += (s, e) => ZoomFactorChanged?.Invoke(s, ZoomFactor);
 
@@ -209,7 +212,18 @@ namespace Suspension.Views
                 values[i] = (i, f, s);
             }
 
-            return values;
+        private void ProfileChanged(Profile[] sender, ProfileChangedEventArgs args)
+        {
+            if (args.ProfileId != profile.Id)
+                return;
+
+            if (args.Removed)
+            {
+                var profiles = Profile.GetProfilesAsync().Result;
+                Profile = profiles.FirstOrDefault(i => i.IsDefault, profiles.First());
+            }
+            else
+                Profile = args.Profile;
         }
 
         #endregion
