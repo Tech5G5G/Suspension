@@ -164,7 +164,7 @@ namespace Suspension.Controls
 
         private void NameBox_TextChanged(object sender, TextChangedEventArgs args) => NewProfile.Name = (sender as TextBox).Text;
 
-        private void DefaultCheck_Checked(object sender, RoutedEventArgs args) => NewProfile.IsDefault = (sender as CheckBox).IsChecked == true;
+        private void DefaultCheck_Click(object sender, RoutedEventArgs args) => NewProfile.IsDefault = (sender as CheckBox).IsChecked == true;
 
         #endregion
     }

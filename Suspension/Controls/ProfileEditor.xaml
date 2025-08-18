@@ -39,7 +39,7 @@
 
                 <TextBox PlaceholderText="Name" Text="{x:Bind Profile.Name}" TextChanged="NameBox_TextChanged" Grid.Column="1" />
 
-                <CheckBox Content="Is default" IsChecked="{x:Bind Profile.IsDefault}" Margin="0,0,-26,0" Checked="DefaultCheck_Checked" Grid.Column="2" />
+                <CheckBox Content="Is default" IsChecked="{x:Bind Profile.IsDefault}" Margin="0,0,-26,0" Click="DefaultCheck_Click" Grid.Column="2" />
             </Grid>
 
             <Grid Height="474">
