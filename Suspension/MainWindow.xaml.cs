@@ -185,9 +185,10 @@ namespace Suspension
 
         private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs args)
         {
-            if (args.AddedItems.Count > 0 &&
-                args.AddedItems[0] is TelemetryItem item)
-            {
+            if (args.AddedItems.Count < 1 ||
+                args.AddedItems[0] is not TelemetryItem item)
+                return;
+
                 mainView.Content = item.TelemetryView;
                 item.TelemetryView.AreAirtimesVisible = airtimeToggle.IsChecked;
 
@@ -200,7 +201,6 @@ namespace Suspension
 
                 RegisterZooming(item.TelemetryView);
             }
-        }
 
         private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
         {

@@ -259,7 +259,7 @@
                 <DropDownButton.Content>
                     <FontIcon Glyph="&#xF22C;" FontSize="16" />
                 </DropDownButton.Content>
-                
+
                 <DropDownButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
                         <MenuFlyoutItem Text="New chat" Click="NewChatButton_Click">
