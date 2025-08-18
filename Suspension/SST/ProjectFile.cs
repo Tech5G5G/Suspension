@@ -21,19 +21,24 @@ public class ProjectFile : BaseFile
     public string VideoPath { get; set; }
 
     /// <summary>
+    /// Gets or sets the offset in seconds between the video position to the graph and map position indicators in this project.
+    /// </summary>
+    public double VideoOffset { get; set; }
+
+    /// <summary>
     /// Gets or sets the array of strings representing each map layer URL used in this project.
     /// </summary>
     public string[] Layers { get; set; }
 
     /// <summary>
+    /// Gets or sets the ID of the profile used in this project.
+    /// </summary>
+    public Guid ProfileId { get; set; }
+
+    /// <summary>
     /// Gets or sets the path of the SST project file.
     /// </summary>
     public string FilePath { get; set; }
-
-    /// <summary>
-    /// Gets or sets the offset in seconds between the video position to the graph and map position indicators in this project.
-    /// </summary>
-    public double VideoOffset { get; set; }
 
     /// <summary>
     /// Creates a new instance of <see cref="ProjectFile"/>.
@@ -58,6 +63,7 @@ public class ProjectFile : BaseFile
         VideoPath = project.Video;
         VideoOffset = project.Offset;
         Layers = [.. project.Layers.Select(i => i.URL)];
+        ProfileId = project.Profile;
     }
 
     /// <summary>
@@ -71,8 +77,8 @@ public class ProjectFile : BaseFile
         GPX = GPXPath,
         Video = VideoPath,
         Offset = VideoOffset,
-        Layers = [.. Layers.Select(i => new Layer { URL = i })]
-    }));
+        Layers = [.. Layers.Select(i => new Layer { URL = i })],
+        Profile = ProfileId
     }, options));
 
     private class Project
@@ -91,6 +97,9 @@ public class ProjectFile : BaseFile
 
         [JsonPropertyName("layers")]
         public Layer[] Layers { get; set; }
+
+        [JsonPropertyName("profile")]
+        public Guid Profile { get; set; }
     }
 
     private class Layer
