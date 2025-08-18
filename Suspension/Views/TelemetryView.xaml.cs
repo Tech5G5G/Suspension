@@ -852,7 +852,7 @@ namespace Suspension.Views
 
         private readonly ObservableCollection<AIPrompt> prompts = [];
 
-        private readonly string telemetryCSV;
+        private string telemetryCSV;
 
         private void AIBox_KeyDown(object sender, KeyRoutedEventArgs args)
         {
