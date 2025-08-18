@@ -170,6 +170,28 @@ namespace Suspension.Views
         private void View_Unloaded(object sender, RoutedEventArgs args) => allowPlay = false;
 
         private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+
+        #region Data
+
+        /// <summary>
+        /// Gets or sets the <see cref="Settings.Profiles.Profile"/> of the <see cref="TelemetryView"/>.
+        /// </summary>
+        public Profile Profile
+        {
+            get => profile;
+            set
+            {
+                profile = value;
+                SetData();
+
+                if (value.Id != ProjectFile.ProfileId)
+                {
+                    ProjectFile.ProfileId = value.Id;
+                    IsDirty = true;
+                }
+            }
+        }
+        private Profile profile;
         {
             timeTip.IsOpen = false;
             Focus(FocusState.Programmatic);
@@ -189,6 +211,8 @@ namespace Suspension.Views
 
             return values;
         }
+
+        #endregion
 
         #region Airtime
 
