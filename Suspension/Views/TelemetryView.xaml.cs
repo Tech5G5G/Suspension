@@ -448,6 +448,7 @@ namespace Suspension.Views
                         media.MediaPlayer.Pause();
                     break;
                 default:
+                    if (media.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.None)
                     switch ((int)args.Key)
                     {
                         case 0xBC: //VK_OEM_COMMA
