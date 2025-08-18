@@ -146,11 +146,17 @@ namespace Suspension.Views
         }
         }
 
+        private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            timeTip.IsOpen = false;
+            Focus(FocusState.Programmatic);
+        }
+
         private void View_Loaded2(object sender, RoutedEventArgs args) => allowPlay = true;
 
         private void View_Unloaded(object sender, RoutedEventArgs args) => allowPlay = false;
 
-        private void HideTimeTip_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        private void Plot_ActualThemeChanged(FrameworkElement sender, object args) => plot.InvalidatePlot(false);
 
         #region Data
 
