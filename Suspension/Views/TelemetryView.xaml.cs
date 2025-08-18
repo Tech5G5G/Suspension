@@ -71,27 +71,6 @@ namespace Suspension.Views
             //Add layers if none exist
             project.Layers ??= [.. map.Children.Where(i => i is MapTileLayer).Select(i => (i as MapTileLayer).TileSource.UriTemplate)];
 
-            //Item1 is the timestamp
-            //Item2 is the fork
-            //Item3 is the shock
-            var data = ExtractData(file);
-
-            //Create graph line for fork
-            model.Series.Add(new LineSeries
-            {
-                Title = "Fork",
-                Color = OxyColor.FromRgb(0x84, 0x43, 0x54),
-                ItemsSource = data.Select(i => new DataPoint((double)i.Item1 / file.SampleRate, i.Item2)).ToArray()
-            });
-
-            //Create graph line for shock
-            model.Series.Add(new LineSeries
-            {
-                Title = "Shock",
-                Color = OxyColor.FromRgb(0x37, 0xA9, 0xCF),
-                ItemsSource = data.Select(i => new DataPoint((double)i.Item1 / file.SampleRate, i.Item3)).ToArray()
-            });
-
             //Create X-Axis
             model.Axes.Add(new TimeSpanAxis
             {
@@ -111,10 +90,6 @@ namespace Suspension.Views
                 IsPanEnabled = false,
                 Position = AxisPosition.Left
             });
-
-            //Feed data to other areas
-            DetermineAirtimes(data);
-            telemetryCSV = TrimDataToCSV(data);
 
             //Create MediaPlaybackSession and hook event
             MediaPlayer player = new();
@@ -198,21 +173,77 @@ namespace Suspension.Views
             }
         }
         private Profile profile;
+
+        private void SetData()
         {
-            timeTip.IsOpen = false;
-            Focus(FocusState.Programmatic);
+            //Create array using file
+            double rate = TelemetryFile.SampleRate;
+            (double Time, double Fork, double Shock)[] data = [.. TelemetryFile.Index()
+                                                                               .Select(i => (i.Index / rate, i.Item.Fork, i.Item.Shock))];
+
+            //Calculate measurements
+            const double Radians = Math.PI / 180;
+            const double Ratio = 360.0 / 4096;
+
+            double forkA = profile.ForkDimensions.SideA,
+                forkB = profile.ForkDimensions.SideB;
+
+            double shockA = profile.ShockDimensions.SideA,
+                shockB = profile.ShockDimensions.SideB;
+
+            bool forkRaw = forkA * forkB < 1,
+                shockRaw = shockA * shockB < 1;
+
+            for (int i = 0; i < data.Length; ++i)
+        {
+                var item = data[i];
+
+                if (!forkRaw)
+                {
+                    double cos = Math.Cos(item.Fork / profile.AngleDivisor * Ratio * Radians);
+                    double c = forkA * forkA + forkB * forkB - 2 * forkA * forkB * cos;
+                    item.Fork = Math.Sqrt(Math.Max(c, 0));
         }
 
-        private void Plot_ActualThemeChanged(FrameworkElement sender, object args) => plot.InvalidatePlot(false);
+                if (!shockRaw)
+                {
+                    double cos = Math.Cos(item.Shock / profile.AngleDivisor * Ratio * Radians);
+                    double c = shockA * shockA + shockB * shockB - 2 * shockA * shockB * cos;
+                    item.Shock = Math.Sqrt(Math.Max(c, 0));
+                }
 
-        private static (int, int, int)[] ExtractData(TelemetryFile file)
+                data[i] = item;
+            }
+
+            //Clear all previous graph lines
+            model.Series.Clear();
+
+            //Create graph lines for fork and shock
+            string formatString = @"{0}\n{1}: {2:hh\:mm\:ss}\n{3}: {4:0.##} mm".Replace(@"\n", "\n");
+
+            model.Series.Add(new LineSeries
         {
-            (int, int, int)[] values = new (int, int, int)[file.Count];
+                Title = "Fork",
+                Color = OxyColor.FromRgb(0x84, 0x43, 0x54),
+                ItemsSource = data.Select(i => new DataPoint(i.Time, i.Fork)).ToArray(),
+                TrackerFormatString = formatString
+            });
 
-            for (int i = 0; i < file.Count; ++i)
+            model.Series.Add(new LineSeries
             {
-                (int f, int s) = file[i];
-                values[i] = (i, f, s);
+                Title = "Shock",
+                Color = OxyColor.FromRgb(0x37, 0xA9, 0xCF),
+                ItemsSource = data.Select(i => new DataPoint(i.Time, i.Shock)).ToArray(),
+                TrackerFormatString = formatString
+            });
+
+            //Show airtimes
+            bool showAir = airtimes;
+            DetermineAirtimes(data);
+            AreAirtimesVisible = showAir;
+
+            //Get telemetry CSV
+            telemetryCSV = TrimDataToCSV(data);
             }
 
         private void ProfileChanged(Profile[] sender, ProfileChangedEventArgs args)
