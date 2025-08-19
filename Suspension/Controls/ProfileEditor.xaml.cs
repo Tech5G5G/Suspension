@@ -38,6 +38,7 @@ namespace Suspension.Controls
                                                         .Select(i => i.ToString())
                                                         .ToArray();
 
+            maxTravel.NumberFormatter =
             forkA.NumberFormatter = forkB.NumberFormatter =
             shockA.NumberFormatter = shockB.NumberFormatter = new UnitFormatter { Unit = "mm" };
 
@@ -157,6 +158,14 @@ namespace Suspension.Controls
         private void Divisor_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args) => NewProfile.AngleDivisor = args.NewValue;
 
         private void DivisorInfoButton_Click(object sender, RoutedEventArgs args) => divisorTip.IsOpen = !divisorTip.IsOpen;
+
+        #endregion
+
+        #region Travel
+
+        private void MaxTravel_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args) => NewProfile.MaxTravel = args.NewValue;
+
+        private void TravelInfoButton_Click(object sender, RoutedEventArgs args) => travelTip.IsOpen = !travelTip.IsOpen;
 
         #endregion
 

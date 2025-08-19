@@ -180,6 +180,30 @@ namespace Suspension.Views
         }
         private Profile profile;
 
+        /// <summary>
+        /// Gets or sets whether the graph shows the max travel.
+        /// </summary>
+        /// <remarks>Always sets to <see langword="false"/> if <see cref="Profile"/> <see cref="Profile.MaxTravel"/> is zero.</remarks>
+        public bool IsClampedToMaxTravel
+        {
+            get => clamped;
+            set
+            {
+                clamped = value;
+
+                if (model.DefaultYAxis is null)
+                    return;
+
+                if (profile.MaxTravel > 0)
+                    model.DefaultYAxis.Maximum = value ? profile.MaxTravel : double.NaN;
+                else
+                    model.DefaultYAxis.Maximum = double.NaN;
+
+                plot.InvalidatePlot(false);
+            }
+        }
+        private bool clamped;
+
         private void SetData()
         {
             //Create array using file
@@ -242,6 +266,9 @@ namespace Suspension.Views
                 ItemsSource = data.Select(i => new DataPoint(i.Time, i.Shock)).ToArray(),
                 TrackerFormatString = formatString
             });
+
+            //Update max clamp
+            IsClampedToMaxTravel = clamped;
 
             //Show airtimes
             bool showAir = airtimes;
@@ -975,7 +1002,7 @@ namespace Suspension.Views
         private void NewChatButton_Click(object sender, RoutedEventArgs args) => RequestAIChat(true);
 
         private void AnalyzeData(string prompt, string uiOverride) => MakeAIRequest(
-            $"Consider the following CSV as a representation of a bike's suspension usage. Time is measured in seconds. Fork and Shock are measured in millimeters.\n{telemetryCSV}\n{prompt}",
+            $"Consider the following CSV as a representation of a bike's suspension usage. Time is measured in seconds. Fork and Shock are measured in millimeters.{(profile.MaxTravel != 0 ? $" Maximum travel is {profile.MaxTravel} mm." : string.Empty)}\n{telemetryCSV}\n{prompt}",
             uiOverride);
 
         private async void MakeAIRequest(string prompt, string uiOverride = null)

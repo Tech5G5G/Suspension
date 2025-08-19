@@ -242,6 +242,9 @@
                             <KeyboardAccelerator Modifiers="Control,Shift" Key="A" />
                         </ToggleMenuFlyoutItem.KeyboardAccelerators>
                     </ToggleMenuFlyoutItem>
+
+                    <ToggleMenuFlyoutItem x:Name="travelToggle" Text="Max travel" Click="TravelToggle_Click" />
+
                     <ToggleMenuFlyoutItem x:Name="statusBarToggle" Text="Status bar" Click="ToggleStatusBar_Click" />
 
                     <MenuBarItem.KeyboardAccelerators>

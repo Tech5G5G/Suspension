@@ -191,6 +191,7 @@ namespace Suspension
 
                 mainView.Content = item.TelemetryView;
                 item.TelemetryView.AreAirtimesVisible = airtimeToggle.IsChecked;
+            travelToggle.IsChecked = item.TelemetryView.IsClampedToMaxTravel;
 
                 sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
                 pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
@@ -455,6 +456,12 @@ namespace Suspension
         {
             if (mainView.Content is TelemetryView view)
                 view.AreAirtimesVisible = SettingValues.Airtimes.Value = (sender as ToggleMenuFlyoutItem).IsChecked;
+        }
+
+        private void TravelToggle_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.IsClampedToMaxTravel = travelToggle.IsChecked;
         }
 
         private void ToggleStatusBar_Click(object sender, RoutedEventArgs args) =>

@@ -22,6 +22,9 @@ public class Profile : ICloneable
     [JsonPropertyName("divisor")]
     public double AngleDivisor { get; set; }
 
+    [JsonPropertyName("max")]
+    public double MaxTravel { get; set; }
+
     [JsonPropertyName("fork")]
     public Dimensions ForkDimensions { get; set; }
 

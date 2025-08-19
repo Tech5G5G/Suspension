@@ -142,15 +142,14 @@
                            Header="Side A" PlaceholderText="50 mm"
                            VerticalAlignment="Bottom"
                            Style="{StaticResource SideNumberBoxStyle}"
-                           ValueChanged="Fork_ValueChanged"
-                           Grid.Column="0" />
+                           ValueChanged="Fork_ValueChanged" />
                 
                 <NumberBox x:Name="forkB"
                            Header="Side B" PlaceholderText="40 mm"
                            VerticalAlignment="Top"
                            Style="{StaticResource SideNumberBoxStyle}"
                            ValueChanged="Fork_ValueChanged"
-                           Grid.Row="1" Grid.Column="0" />
+                           Grid.Row="1" />
             </Grid>
 
 
@@ -197,16 +196,46 @@
                            Header="Side A" PlaceholderText="70 mm"
                            VerticalAlignment="Bottom"
                            Style="{StaticResource SideNumberBoxStyle}"
-                           ValueChanged="Shock_ValueChanged"
-                           Grid.Column="0" />
+                           ValueChanged="Shock_ValueChanged" />
                 
                 <NumberBox x:Name="shockB"
                            Header="Side B" PlaceholderText="60 mm"
                            VerticalAlignment="Top"
                            Style="{StaticResource SideNumberBoxStyle}"
                            ValueChanged="Shock_ValueChanged"
-                           Grid.Row="1" Grid.Column="0" />
+                           Grid.Row="1" />
             </Grid>
+
+            <Grid ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Max travel" Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Button x:Name="travelInfoButton"
+                        Background="Transparent"
+                        BorderThickness="0" Padding="0,0,-1,-1"
+                        CornerRadius="6"
+                        Click="TravelInfoButton_Click"
+                        Grid.Column="1"
+                        ToolTipService.ToolTip="Info">
+                    <FontIcon Glyph="&#xE946;" FontSize="14" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}" />
+                </Button>
+
+                <TeachingTip x:Name="travelTip"
+                             Title="Max travel explanation"
+                             Subtitle="Setting max travel helps with operations.&#x0a;You can show it on the graph in the View menu.&#x0a;Set to 0 if unknown."
+                             Target="{x:Bind travelInfoButton}">
+                </TeachingTip>
+            </Grid>
+            <NumberBox x:Name="maxTravel"
+                       PlaceholderText="100 mm"
+                       VerticalAlignment="Top"
+                       Value="{x:Bind Profile.MaxTravel}"
+                       ValueChanged="MaxTravel_ValueChanged"
+                       Style="{StaticResource SideNumberBoxStyle}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
