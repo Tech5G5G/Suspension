@@ -189,12 +189,12 @@ namespace Suspension
                 args.AddedItems[0] is not TelemetryItem item)
                 return;
 
-                mainView.Content = item.TelemetryView;
-                item.TelemetryView.AreAirtimesVisible = airtimeToggle.IsChecked;
+            mainView.Content = item.TelemetryView;
+            item.TelemetryView.AreAirtimesVisible = airtimeToggle.IsChecked;
             travelToggle.IsChecked = item.TelemetryView.IsClampedToMaxTravel;
 
-                sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
-                pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
+            sizeText.Text = $"{item.TelemetryFile.Size / 1024:N0} KB";
+            pointsText.Text = $"{item.TelemetryFile.Count * 2:N0} points";
 
             var items = profilesMenu.Items.Where(i => i is EditMenuFlyoutItem);
             if (items.Cast<EditMenuFlyoutItem>().FirstOrDefault(i => i.IsChecked) is EditMenuFlyoutItem checkedItem)
@@ -202,12 +202,12 @@ namespace Suspension
             if (items.FirstOrDefault(i => (i.DataContext as Profile).Id == item.TelemetryView.Profile.Id) is EditMenuFlyoutItem flyoutItem)
                 flyoutItem.IsChecked = true;
 
-                if (args.RemovedItems.Count > 0 &&
-                    args.RemovedItems[0] is TelemetryItem prevItem)
-                    DeregisterZooming(prevItem.TelemetryView);
+            if (args.RemovedItems.Count > 0 &&
+                args.RemovedItems[0] is TelemetryItem prevItem)
+                DeregisterZooming(prevItem.TelemetryView);
 
-                RegisterZooming(item.TelemetryView);
-            }
+            RegisterZooming(item.TelemetryView);
+        }
 
         private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
         {
@@ -401,7 +401,7 @@ namespace Suspension
                         telemetryFile,
                         project,
                         profiles.FirstOrDefault(i => i.Id == project.ProfileId, defaultProfile));
-                    
+
                     if (project.VideoPath is not null)
                         view.RequestVideo(project.VideoPath);
 
@@ -480,7 +480,7 @@ namespace Suspension
         }
 
         private void SaveAsButton_Click(object sender, RoutedEventArgs args) => (mainView.Content as TelemetryView)?.RequestSaveLocation();
-        
+
         private void SaveAllButton_Click(object sender, RoutedEventArgs args)
         {
             foreach (var item in telemetry)
@@ -673,6 +673,12 @@ namespace Suspension
                 view.RequestAIChat(false);
                 view.RequestMaintenanceAlerts();
             }
+        }
+
+        private void TerrainButton_Click(object sender, RoutedEventArgs args)
+        {
+            if (mainView.Content is TelemetryView view)
+                view.RequestTerrain();
         }
 
         private async void KeyButton_Click(object sender, RoutedEventArgs args)

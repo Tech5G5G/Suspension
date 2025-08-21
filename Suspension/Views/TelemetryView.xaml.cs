@@ -1060,6 +1060,62 @@ namespace Suspension.Views
         }
 
         /// <summary>
+        /// Requests AI to identify the terrain on the graph.
+        /// </summary>
+        /// <remarks>Calling this method again will remove the previous terrain identification.</remarks>
+        public async void RequestTerrain()
+        {
+            if (model.Annotations.Any(i => i.Tag is string str && str == "Terrain"))
+                foreach (var annot in model.Annotations.Where(i => i.Tag is string str && str == "Terrain").ToArray())
+                    model.Annotations.Remove(annot);
+            else
+            {
+                if (await aiModel.TryMakeRequest(
+                    $"""
+                    Consider the following CSV as a representation of a bike's suspension usage. Time is measured in seconds. Fork and Shock are measured in millimeters.{(profile.MaxTravel != 0 ? $" Maximum travel is {profile.MaxTravel} mm." : string.Empty)}
+                    {telemetryCSV}
+                    Use the prior CSV to determine the various terrains of the ride (e.g., rocky, sandy, road, etc.). 
+                    Merge similar or the same terrain segments.
+                    Make each segment of terrain as long as possible. Try not to alternate between terrain types.
+                    Do not output trail difficulty (e.g., hard trail, difficult trail, etc.).
+                    Do not explain your output.
+
+                    Always output in only a JSON array of elements containing the following elements no matter what:
+                    Terrain type described in a natural, sentenced cased, single word (terrain, string)
+                    Color that represents the terrain (e.g., black for road, yellow for sand, gray for rocky, etc.) (color, number (not array) in decimal),
+                    Start time of terrain (start, number),
+                    End time of terrain (end, number)
+                    """)
+                    is not AIResponse response)
+                    return;
+
+                Terrain[] terrains;
+                try
+                {
+                    string json = response.ToString().Replace("```json", null).Replace("```", null);
+                    terrains = JsonSerializer.Deserialize<Terrain[]>(json);
+                }
+                catch
+                {
+                    return;
+                }
+
+                foreach (var terrain in terrains)
+                    model.Annotations.Add(new RectangleAnnotation
+                    {
+                        Fill = OxyColor.FromUInt32((uint)terrain.Color + 0x4E000000),
+                        Text = terrain.Name,
+                        TextRotation = 270,
+                        MaximumX = terrain.End,
+                        MinimumX = terrain.Start,
+                        Tag = "Terrain"
+                    });
+            }
+
+            plot.InvalidatePlot(false);
+        }
+
+        /// <summary>
         /// Requests a pane to be shown to the right of the view that contains an AI chat.
         /// </summary>
         public void RequestAIChat(bool clear)
@@ -1086,6 +1142,21 @@ namespace Suspension.Views
                 selectedLines.Add(lines[i]);
 
             return string.Join("\n", selectedLines);
+        }
+
+        private class Terrain
+        {
+            [JsonPropertyName("terrain")]
+            public string Name { get; set; }
+
+            [JsonPropertyName("color")]
+            public int Color { get; set; }
+
+            [JsonPropertyName("start")]
+            public double Start { get; set; }
+
+            [JsonPropertyName("end")]
+            public double End { get; set; }
         }
 
         #endregion

@@ -276,7 +276,7 @@
                         <MenuFlyoutItem Text="Tuning advice" Click="TuningAdviceButton_Click" />
                         <MenuFlyoutItem Text="Maintenance" Click="MaintenanceButton_Click" />
                         <MenuFlyoutItem Text="Rider style" Click="RiderStyleButton_Click" />
-                        <MenuFlyoutItem Text="Terrain" />
+                        <MenuFlyoutItem Text="Terrain" Click="TerrainButton_Click" />
                     </MenuFlyout>
                 </DropDownButton.Flyout>
 
