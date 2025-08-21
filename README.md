@@ -14,4 +14,7 @@
 * Tabs for cross-examination
 
 ## Installation
-To install Suspension, you will need to clone this repo and build it yourself.
+### Via Releases tab
+Head to the [Releases](https://github.com/Tech5G5G/Suspension/releases/) tab, download the latest release, and install the provided MSIX package.
+### Via Build
+Clone the repo and build Suspension yourself.
